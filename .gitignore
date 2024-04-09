@@ -38,3 +38,4 @@ build/
 .DS_Store
 /.idea/
 /Core/local-tomcat/
+/Core/src/main/resources/application.properties
