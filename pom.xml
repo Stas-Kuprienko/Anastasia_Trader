@@ -8,8 +8,11 @@
     <artifactId>anastasia_trader</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
+
     <modules>
         <module>Core</module>
+        <module>Event_stream</module>
+        <module>Telegram_bot</module>
     </modules>
 
     <properties>

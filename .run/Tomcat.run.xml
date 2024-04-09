@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Unnamed" type="com.poratu.idea.plugins.tomcat" nameIsGenerated="true">
+  <configuration default="false" name="TomcatRun" type="com.poratu.idea.plugins.tomcat">
     <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
     <predefined_log_file enabled="true" id="Tomcat Access Log" />
     <predefined_log_file id="Tomcat Catalina Log" />

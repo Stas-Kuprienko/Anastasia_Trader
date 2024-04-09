@@ -39,3 +39,5 @@ build/
 /.idea/
 /Core/local-tomcat/
 /Core/src/main/resources/application.properties
+/Event_stream/src/main/resources/application.properties
+/Telegram_bot/src/main/resources/application.properties
