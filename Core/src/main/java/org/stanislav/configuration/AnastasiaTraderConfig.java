@@ -11,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.stanislav.database.DatabaseRepository;
+import org.stanislav.database.hibernate.HibernateRepository;
 
 @Configuration
 @EnableWebMvc
@@ -29,6 +31,12 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
+    }
+
+
+    @Bean
+    public DatabaseRepository databaseRepository() {
+        return new HibernateRepository();
     }
 
     @Bean
