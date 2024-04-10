@@ -23,7 +23,6 @@ public final class MarketController {
     private MarketData marketData;
 
     @Autowired
-    @Qualifier("hibernateRepository")
     private DatabaseRepository databaseRepository;
 
 

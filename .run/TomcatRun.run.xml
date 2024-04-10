@@ -6,7 +6,7 @@
     <predefined_log_file id="Tomcat Manager Log" />
     <predefined_log_file id="Tomcat Host Manager Log" />
     <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\Anastasia_Trader\Core" />
-    <option name="contextPath" value="/aaa" />
+    <option name="contextPath" value="/anastasia" />
     <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Core\src\main\webapp" />
     <option name="envOptions">
       <map />
@@ -20,7 +20,7 @@
       </TomcatInfo>
     </option>
     <option name="vmOptions" value="" />
-    <module name="Core" />
+    <module name="core" />
     <method v="2">
       <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/Core/pom.xml" goal="package" />
     </method>

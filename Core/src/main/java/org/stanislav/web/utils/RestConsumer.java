@@ -1,6 +1,7 @@
 package org.stanislav.web.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,8 @@ public class RestConsumer {
 
     private String token;
 
-    @Autowired
-    public RestConsumer(RestTemplate restTemplate, ApiDataParser dataParser) {
+    public RestConsumer(@Autowired RestTemplate restTemplate,
+                        @Autowired @Qualifier("jsonParser") ApiDataParser dataParser) {
         this.restTemplate = restTemplate;
         this.dataParser = dataParser;
     }

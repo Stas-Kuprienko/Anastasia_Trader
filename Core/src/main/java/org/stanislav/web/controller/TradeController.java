@@ -25,7 +25,6 @@ public final class TradeController {
     private TradingService tradingService;
 
     @Autowired
-    @Qualifier("hibernateRepository")
     private DatabaseRepository databaseRepository;
 
     @GetMapping(value = "/orders")
