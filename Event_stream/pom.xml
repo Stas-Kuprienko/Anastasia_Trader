@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>anastasia_trader</artifactId>
-        <groupId>org.stanislav</groupId>
+        <groupId>com.stanislav</groupId>
         <version>1.0</version>
     </parent>
 

@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>org.stanislav</groupId>
+	<groupId>com.stanislav</groupId>
 	<artifactId>telegram_bot</artifactId>
 	<version>1.0.0</version>
 
