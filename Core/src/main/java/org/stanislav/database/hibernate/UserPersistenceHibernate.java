@@ -1,15 +1,15 @@
 package org.stanislav.database.hibernate;
 
 import org.hibernate.SessionFactory;
-import org.stanislav.database.UserDAO;
+import org.stanislav.database.UserPersistence;
 import org.stanislav.entities.user.User;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UserDAOHibernate extends HibernateDAO<User> implements UserDAO {
+public class UserPersistenceHibernate extends HibernatePersistence<User> implements UserPersistence {
 
-    public UserDAOHibernate(SessionFactory sessionFactory) {
+    public UserPersistenceHibernate(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 
@@ -36,12 +36,5 @@ public class UserDAOHibernate extends HibernateDAO<User> implements UserDAO {
     @Override
     public void delete(User user) {
         deleteFromDatabase(user);
-    }
-
-    @Override
-    public User create(String name, String login, String password) {
-        User user = new User(login, password, name);
-        saveToDatabase(user);
-        return user;
     }
 }

@@ -59,7 +59,7 @@ public final class FinamOrderResponse {
 
 
     public Order toOrderClass(DatabaseRepository databaseRepository) {
-        Account account = databaseRepository.accountRepository().getById(clientId);
+        Account account = databaseRepository.accountPersistence().getById(clientId);
         return Order.builder()
                 .id(transactionId)
                 .account(account)

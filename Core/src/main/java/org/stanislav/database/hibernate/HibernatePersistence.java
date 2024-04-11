@@ -3,15 +3,14 @@ package org.stanislav.database.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class HibernateDAO<ENTITY> {
+public abstract class HibernatePersistence<ENTITY> {
 
     protected final SessionFactory sessionFactory;
 
-    public HibernateDAO(SessionFactory sessionFactory) {
+    public HibernatePersistence(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -59,11 +58,6 @@ public abstract class HibernateDAO<ENTITY> {
             session.remove(entity);
             session.getTransaction().commit();
         }
-    }
-
-    @PreDestroy
-    protected void close() {
-        sessionFactory.close();
     }
 
     enum Query {

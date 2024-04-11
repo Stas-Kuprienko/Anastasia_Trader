@@ -29,14 +29,14 @@ public final class MarketController {
     @GetMapping(value = "/stock/{ticker}")
     public Stock getStock(@PathVariable String ticker, @RequestParam String id) {
 
-        Account account = databaseRepository.accountRepository().getById(id);
+        Account account = databaseRepository.accountPersistence().getById(id);
         return marketData.getStock(account, ticker);
     }
 
     @GetMapping(value = "/stocks/{ticker}")
     public List<Stock> getStocks(@RequestParam String id) {
 
-        Account account = databaseRepository.accountRepository().getById(id);
+        Account account = databaseRepository.accountPersistence().getById(id);
         return marketData.getStocks(account);
     }
 
@@ -44,7 +44,7 @@ public final class MarketController {
     public DayCandles getDayCandles(@PathVariable String ticker, @RequestParam String id, @RequestParam String timeFrame,
                                     @RequestParam LocalDate from, @RequestParam LocalDate to, @RequestParam(required = false) Integer count) {
 
-        Account account = databaseRepository.accountRepository().getById(id);
+        Account account = databaseRepository.accountPersistence().getById(id);
         return marketData.getDayCandles(account, ticker, timeFrame, from, to, count);
     }
 
@@ -52,7 +52,7 @@ public final class MarketController {
     public IntraDayCandles getIntraDayCandles(@PathVariable String ticker, @RequestParam String id, @RequestParam String timeFrame,
                                               @RequestParam LocalDateTime from, @RequestParam LocalDateTime to, @RequestParam(required = false) Integer count) {
 
-        Account account = databaseRepository.accountRepository().getById(id);
+        Account account = databaseRepository.accountPersistence().getById(id);
         return marketData.getIntraDayCandles(account, ticker, timeFrame, from, to, count);
     }
 }

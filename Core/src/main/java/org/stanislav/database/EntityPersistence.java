@@ -3,7 +3,7 @@ package org.stanislav.database;
 import java.util.List;
 import java.util.function.Consumer;
 
-public interface DAO<ENTITY> {
+public interface EntityPersistence<ENTITY> {
 
     void save(ENTITY object);
 

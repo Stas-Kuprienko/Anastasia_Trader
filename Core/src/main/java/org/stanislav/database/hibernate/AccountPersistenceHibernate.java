@@ -1,29 +1,22 @@
 package org.stanislav.database.hibernate;
 
 import org.hibernate.SessionFactory;
-import org.stanislav.database.AccountDAO;
+import org.stanislav.database.AccountPersistence;
 import org.stanislav.entities.user.Account;
 import org.stanislav.entities.user.User;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AccountDAOHibernate extends HibernateDAO<Account> implements AccountDAO {
+public class AccountPersistenceHibernate extends HibernatePersistence<Account> implements AccountPersistence {
 
-    public AccountDAOHibernate(SessionFactory sessionFactory) {
+    public AccountPersistenceHibernate(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 
     @Override
     public List<Account> getByUser(User user) {
         return null;
-    }
-
-    @Override
-    public Account create(String clientId, User user, String broker, String token) {
-        Account account = new Account(clientId, user, broker, token);
-        saveToDatabase(account);
-        return account;
     }
 
     @Override

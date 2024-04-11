@@ -39,7 +39,7 @@ public final class FinamOrderRequest {
 
 
     public Order toOrderClass(DatabaseRepository databaseRepository) {
-        Account account = databaseRepository.accountRepository().getById(clientId);
+        Account account = databaseRepository.accountPersistence().getById(clientId);
         return Order.builder().account(account)
                 .ticker(securityCode)
                 .price(BigDecimal.valueOf(price))

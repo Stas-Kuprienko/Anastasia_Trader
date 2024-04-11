@@ -36,7 +36,7 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
 
     @Bean
     public DatabaseRepository databaseRepository() {
-        return new HibernateRepository();
+        return new HibernateRepository("hibernate.cfg.xml");
     }
 
     @Bean

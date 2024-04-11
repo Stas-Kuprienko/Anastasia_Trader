@@ -29,7 +29,7 @@ public final class TradeController {
 
     @GetMapping(value = "/orders")
     public List<Order> getOrders(@RequestParam boolean includeMatched, @RequestParam boolean includeCanceled, @RequestParam boolean includeActive) {
-        Account account = databaseRepository.accountRepository().getById(id); //temporary. just for testing
+        Account account = databaseRepository.accountPersistence().getById(id); //temporary. just for testing
 
         return tradingService.getOrders(account, includeMatched, includeCanceled, includeActive);
     }
@@ -41,7 +41,7 @@ public final class TradeController {
                           @RequestParam int quantity,
                           @RequestParam String direction) {
         //TODO
-        User user = databaseRepository.userRepository().getById(login);
+        User user = databaseRepository.userPersistence().getById(login);
         Account account = user.getAccounts().get(0);
         Order order = Order.builder()
                 .account(account)

@@ -6,9 +6,9 @@ public interface DatabaseRepository {
 
     EntityManagerFactory entityManagerFactory();
 
-    UserDAO userRepository();
+    UserPersistence userPersistence();
 
-    AccountDAO accountRepository();
+    AccountPersistence accountPersistence();
 
-    OrderDAO orderRepository();
+    OrderPersistence orderPersistence();
 }

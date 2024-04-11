@@ -1,36 +1,35 @@
 package org.stanislav.database.hibernate;
 
+import javax.annotation.PreDestroy;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
-import org.stanislav.database.AccountDAO;
+import org.stanislav.database.AccountPersistence;
 import org.stanislav.database.DatabaseRepository;
-import org.stanislav.database.OrderDAO;
-import org.stanislav.database.UserDAO;
+import org.stanislav.database.OrderPersistence;
+import org.stanislav.database.UserPersistence;
 import org.stanislav.entities.orders.Order;
 import org.stanislav.entities.user.Account;
 import org.stanislav.entities.user.User;
 
 public class HibernateRepository implements DatabaseRepository {
 
-    private static final String CONFIGURATION = "hibernate.cfg.xml";
-
     private final SessionFactory sessionFactory;
 
-    private final UserDAOHibernate userRepository;
-    private final AccountDAOHibernate accountRepository;
-    private final OrderDAOHibernate orderRepository;
+    private final UserPersistenceHibernate userPersistence;
+    private final AccountPersistenceHibernate accountPersistence;
+    private final OrderPersistenceHibernate orderPersistence;
 
 
-    public HibernateRepository() {
+    public HibernateRepository(String configuration) {
         this.sessionFactory = new org.hibernate.cfg.Configuration()
-                .configure(CONFIGURATION)
+                .configure(configuration)
                 .addAnnotatedClass(Account.class)
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(Order.class)
                 .buildSessionFactory();
-        this.userRepository = new UserDAOHibernate(sessionFactory);
-        this.accountRepository = new AccountDAOHibernate(sessionFactory);
-        this.orderRepository = new OrderDAOHibernate(sessionFactory);
+        this.userPersistence = new UserPersistenceHibernate(sessionFactory);
+        this.accountPersistence = new AccountPersistenceHibernate(sessionFactory);
+        this.orderPersistence = new OrderPersistenceHibernate(sessionFactory);
     }
 
     @Override
@@ -39,17 +38,22 @@ public class HibernateRepository implements DatabaseRepository {
     }
 
     @Override
-    public UserDAO userRepository() {
-        return userRepository;
+    public UserPersistence userPersistence() {
+        return userPersistence;
     }
 
     @Override
-    public AccountDAO accountRepository() {
-        return accountRepository;
+    public AccountPersistence accountPersistence() {
+        return accountPersistence;
     }
 
     @Override
-    public OrderDAO orderRepository() {
-        return orderRepository;
+    public OrderPersistence orderPersistence() {
+        return orderPersistence;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        sessionFactory.close();
     }
 }
