@@ -1,5 +1,6 @@
 package com.stanislav.domain.trading.finam.order_dto;
 
+import com.stanislav.database.AccountPersistence;
 import com.stanislav.database.DatabaseRepository;
 import com.stanislav.entities.orders.Direction;
 import com.stanislav.entities.orders.Order;
@@ -38,8 +39,8 @@ public final class FinamOrderRequest {
     }
 
 
-    public Order toOrderClass(DatabaseRepository databaseRepository) {
-        Account account = databaseRepository.accountPersistence().getById(clientId);
+    public Order toOrderClass(AccountPersistence accountPersistence) {
+        Account account = accountPersistence.getById(clientId);
         return Order.builder().account(account)
                 .ticker(securityCode)
                 .price(BigDecimal.valueOf(price))
