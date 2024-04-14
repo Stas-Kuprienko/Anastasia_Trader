@@ -3,15 +3,20 @@ package com.stanislav.database.hibernate;
 import com.stanislav.entities.orders.Order;
 import org.hibernate.SessionFactory;
 import com.stanislav.database.OrderPersistence;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@Service("orderPersistence")
 public class OrderPersistenceHibernate extends HibernatePersistence<Order> implements OrderPersistence {
 
+    @Autowired
     public OrderPersistenceHibernate(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
+
 
     @Override
     public void save(Order order) {

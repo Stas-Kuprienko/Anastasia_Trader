@@ -4,15 +4,20 @@ import org.hibernate.SessionFactory;
 import com.stanislav.database.AccountPersistence;
 import com.stanislav.entities.user.Account;
 import com.stanislav.entities.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@Service("accountPersistence")
 public class AccountPersistenceHibernate extends HibernatePersistence<Account> implements AccountPersistence {
 
+    @Autowired
     public AccountPersistenceHibernate(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
+
 
     @Override
     public List<Account> getByUser(User user) {

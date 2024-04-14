@@ -20,6 +20,7 @@ import com.stanislav.database.hibernate.HibernateRepository;
 @PropertySource("classpath:application.properties")
 public class AnastasiaTraderConfig implements WebMvcConfigurer {
 
+
     @Bean
     public ViewResolver getInternalResourceViewResolver(){
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -33,12 +34,6 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
         configurer.enable();
     }
 
-
-    @Bean
-    public DatabaseRepository databaseRepository() {
-        return new HibernateRepository("hibernate.cfg.xml");
-    }
-
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -47,5 +42,10 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
+    }
+
+    @Bean
+    public DatabaseRepository databaseRepository() {
+        return new HibernateRepository("hibernate.cfg.xml");
     }
 }

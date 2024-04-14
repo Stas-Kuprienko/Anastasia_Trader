@@ -1,6 +1,8 @@
 package com.stanislav.domain.trading.finam;
 
+import com.stanislav.database.AccountPersistence;
 import com.stanislav.database.DatabaseRepository;
+import com.stanislav.database.OrderPersistence;
 import com.stanislav.domain.trading.TradingService;
 import com.stanislav.domain.trading.finam.order_dto.*;
 import com.stanislav.entities.Board;
@@ -30,16 +32,20 @@ public class FinamTradingService implements TradingService {
 
     private final ApiDataParser dataParser;
     private final RestConsumer restConsumer;
-    private final DatabaseRepository databaseRepository;
+
+    private final AccountPersistence accountPersistence;
+    private final OrderPersistence orderPersistence;
 
 
     public FinamTradingService(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
                                @Autowired RestConsumer restConsumer,
-                               @Autowired DatabaseRepository databaseRepository,
+                               @Autowired AccountPersistence accountPersistence,
+                               @Autowired OrderPersistence orderPersistence,
                                @Value("${broker.finam}") String resource) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
-        this.databaseRepository = databaseRepository;
+        this.accountPersistence = accountPersistence;
+        this.orderPersistence = orderPersistence;
         this.restConsumer.setAuthorization(RestConsumer.Authorization.API_KEY);
         this.restConsumer.setResource(resource);
     }
@@ -56,7 +62,7 @@ public class FinamTradingService implements TradingService {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, account.getToken());
             String[] layers = {"data", "orders"};
             List<FinamOrderResponse> dtoList = dataParser.parseObjectsList(response, FinamOrderResponse.class, layers);
-            return dtoList.stream().map(o -> o.toOrderClass(databaseRepository)).toList();
+            return dtoList.stream().map(o -> o.toOrderClass(accountPersistence)).toList();
         } catch (HttpClientErrorException e) {
             return new ArrayList<>();
             //TODO
@@ -92,7 +98,7 @@ public class FinamTradingService implements TradingService {
         String response = restConsumer.doPostJson(Resource.ORDERS.value, finamOrder, account.getToken());
         int id = (int) dataParser.getJsonMap(response, "data").get("transactionId");
         order.setId(id);
-        databaseRepository.orderPersistence().save(order);
+        orderPersistence.save(order);
     }
 
     @Override
