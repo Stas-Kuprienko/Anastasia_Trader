@@ -22,7 +22,7 @@ public class Example {
 
         try (FinamEventStreamService streamService = new FinamEventStreamService(resource, token)) {
 
-            streamService.subscribe("SBER", "TQBR");
+            streamService.subscribe("SiN4", "FUT");
         }
     }
 }

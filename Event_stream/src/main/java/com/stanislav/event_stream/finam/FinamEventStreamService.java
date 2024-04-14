@@ -1,11 +1,13 @@
 package com.stanislav.event_stream.finam;
 
 import com.stanislav.event_stream.EventStreamService;
-import io.grpc.stub.StreamObserver;
 import com.stanislav.event_stream.grpc_impl.Authenticator;
 import com.stanislav.event_stream.grpc_impl.gRpcClient;
+import io.grpc.stub.StreamObserver;
 import proto.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.EventsOuterClass;
+
+import java.util.concurrent.CountDownLatch;
 
 public class FinamEventStreamService extends gRpcClient implements EventStreamService {
 
@@ -27,55 +29,40 @@ public class FinamEventStreamService extends gRpcClient implements EventStreamSe
                 .setSecurityBoard(board)
                 .setSecurityCode(ticker).build();
 
+        CountDownLatch countDown = new CountDownLatch(1);
+
         EventsGrpc.EventsStub stub = EventsGrpc.newStub(channel).withCallCredentials(authenticator);
 
-        StreamObserver<EventsOuterClass.Event> responseObserve = new OrderBookStreamObserver();
+        StreamObserver<EventsOuterClass.Event> responseObserve = new StreamObserver<>() {
+
+            @Override
+            public void onNext(EventsOuterClass.Event event) {
+                System.out.println(event.toString());
+                System.out.println("notify");
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                countDown.countDown();
+            }
+
+            @Override
+            public void onCompleted() {
+                countDown.countDown();
+            }
+        };
 
         StreamObserver<EventsOuterClass.SubscriptionRequest> requestStream = stub.getEvents(responseObserve);
 
         EventsOuterClass.SubscriptionRequest subscriptionRequest =
                 EventsOuterClass.SubscriptionRequest.newBuilder().setOrderBookSubscribeRequest(request).build();
 
-        for (int i = 0; i < 10; i++) {
-            try {
-                requestStream.onNext(subscriptionRequest);
-
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        requestStream.onCompleted();
-
+        requestStream.onNext(subscriptionRequest);
         //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     @Override
     public void unsubscribe(String board, String ticker) {
 
-    }
-
-
-    public static class OrderBookStreamObserver implements StreamObserver<EventsOuterClass.Event> {
-
-        @Override
-        public void onNext(EventsOuterClass.Event event) {
-            if (event.hasOrderBook()) {
-                //TODO
-                System.out.println(event.getOrderBook());
-            }
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-            //TODO
-            throwable.printStackTrace();
-        }
-
-        @Override
-        public void onCompleted() {
-            //TODO
-            System.out.println("on complete");
-        }
     }
 }
