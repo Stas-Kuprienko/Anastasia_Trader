@@ -10,9 +10,7 @@ public interface TradingService {
 
     List<Order> getOrders(Account account, boolean matched, boolean canceled, boolean active);
 
-    void makeOrder(Account account, Order order);
-
-    void makeOrder(Account account, Order order, boolean useCredit);
+    void makeOrder(Account account, Order order, TradeCriteria tradeCriteria);
 
     void cancelOrder(Account account, int id);
 

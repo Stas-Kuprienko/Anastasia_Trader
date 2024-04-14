@@ -4,6 +4,7 @@ import com.stanislav.entities.orders.Direction;
 import org.springframework.lang.NonNull;
 
 public enum FinamBuySell {
+
     Buy, Sell;
 
     public static FinamBuySell convert(@NonNull Direction direction) {

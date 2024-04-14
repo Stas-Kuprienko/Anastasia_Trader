@@ -1,7 +1,6 @@
 package com.stanislav.domain.trading.finam.order_dto;
 
 import com.stanislav.database.AccountPersistence;
-import com.stanislav.database.DatabaseRepository;
 import com.stanislav.entities.orders.Direction;
 import com.stanislav.entities.orders.Order;
 import lombok.Builder;
@@ -21,11 +20,11 @@ public final class FinamOrderRequest {
     private double price;
     private Property property;
     private FinamOrderCondition condition;
-    private FInamOrderValidBefore validBefore;
+    private FinamOrderValidBefore validBefore;
 
     public FinamOrderRequest(String clientId, String securityBoard, String securityCode,
                              FinamBuySell buySell, int quantity, boolean useCredit, double price,
-                             Property property, FinamOrderCondition condition, FInamOrderValidBefore validBefore) {
+                             Property property, FinamOrderCondition condition, FinamOrderValidBefore validBefore) {
         this.clientId = clientId;
         this.securityBoard = securityBoard;
         this.securityCode = securityCode;
@@ -121,11 +120,11 @@ public final class FinamOrderRequest {
         this.condition = condition;
     }
 
-    public FInamOrderValidBefore getValidBefore() {
+    public FinamOrderValidBefore getValidBefore() {
         return validBefore;
     }
 
-    public void setValidBefore(FInamOrderValidBefore validBefore) {
+    public void setValidBefore(FinamOrderValidBefore validBefore) {
         this.validBefore = validBefore;
     }
 

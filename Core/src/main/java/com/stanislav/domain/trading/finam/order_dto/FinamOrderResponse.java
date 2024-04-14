@@ -1,13 +1,11 @@
 package com.stanislav.domain.trading.finam.order_dto;
 
 import com.stanislav.database.AccountPersistence;
-import com.stanislav.database.DatabaseRepository;
 import com.stanislav.entities.Market;
 import com.stanislav.entities.orders.Direction;
 import com.stanislav.entities.orders.Order;
 import lombok.Builder;
 import com.stanislav.entities.user.Account;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
@@ -27,7 +25,7 @@ public final class FinamOrderResponse {
     private String message;
     private String currency;
     private FinamOrderCondition condition;
-    private FInamOrderValidBefore validBefore;
+    private FinamOrderValidBefore validBefore;
     private String acceptedAt;
     private String securityBoard;
     private Market market;
@@ -36,7 +34,7 @@ public final class FinamOrderResponse {
     public FinamOrderResponse(int orderNo, int transactionId, String securityCode, String clientId,
                               OrderStatus status, FinamBuySell buySell, String createdAt,
                               double price, int quantity, int balance, String message, String currency,
-                              FinamOrderCondition condition, FInamOrderValidBefore validBefore,
+                              FinamOrderCondition condition, FinamOrderValidBefore validBefore,
                               String acceptedAt, String securityBoard, Market market) {
         this.orderNo = orderNo;
         this.transactionId = transactionId;
@@ -177,11 +175,11 @@ public final class FinamOrderResponse {
         this.condition = condition;
     }
 
-    public FInamOrderValidBefore getValidBefore() {
+    public FinamOrderValidBefore getValidBefore() {
         return validBefore;
     }
 
-    public void setValidBefore(FInamOrderValidBefore validBefore) {
+    public void setValidBefore(FinamOrderValidBefore validBefore) {
         this.validBefore = validBefore;
     }
 

@@ -1,15 +1,17 @@
 package com.stanislav.entities.orders;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.stanislav.entities.Board;
 import jakarta.persistence.*;
 import com.stanislav.entities.user.Account;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
-public final class Order {
+public final class Order implements Serializable {
 
     @Id
     @Column
@@ -22,6 +24,8 @@ public final class Order {
 
     @Column
     private String ticker;
+
+    private Board board;
 
     @Column
     private BigDecimal price;
@@ -37,10 +41,12 @@ public final class Order {
     private String status;
 
 
-    public Order(int id, Account account, String ticker, BigDecimal price, int quantity, Direction direction, String status) {
+    public Order(int id, Account account, String ticker, Board board,
+                 BigDecimal price, int quantity, Direction direction, String status) {
         this.id = id;
         this.account = account;
         this.ticker = ticker;
+        this.board = board;
         this.price = price;
         this.quantity = quantity;
         this.direction = direction;
@@ -76,6 +82,14 @@ public final class Order {
 
     public void setTicker(String ticker) {
         this.ticker = ticker;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public BigDecimal getPrice() {
@@ -116,13 +130,16 @@ public final class Order {
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
         return id == order.id && quantity == order.quantity &&
-                Objects.equals(account, order.account) && Objects.equals(ticker, order.ticker) &&
-                Objects.equals(price, order.price) && direction == order.direction;
+                Objects.equals(account, order.account) &&
+                Objects.equals(ticker, order.ticker) &&
+                Objects.equals(board, order.board) &&
+                Objects.equals(price, order.price) &&
+                direction == order.direction;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, account.hashCode(), ticker, price, quantity, direction);
+        return Objects.hash(id, account.hashCode(), ticker, board, price, quantity, direction);
     }
 
     @Override

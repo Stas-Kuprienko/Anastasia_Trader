@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 
 @RestController
@@ -26,33 +28,44 @@ public final class MarketController {
     private AccountPersistence accountPersistence;
 
 
-    @GetMapping(value = "/stock/{ticker}")
-    public Stock getStock(@PathVariable String ticker, @RequestParam String id) {
+    @GetMapping("/stock/{ticker}")
+    public Stock getStock(@PathVariable("ticker") String ticker, @RequestParam("id") String id) {
 
         Account account = accountPersistence.getById(id);
         return marketData.getStock(account, ticker);
     }
 
-    @GetMapping(value = "/stocks/{ticker}")
-    public List<Stock> getStocks(@RequestParam String id) {
+    @GetMapping("/stocks")
+    public List<Stock> getStocks(@RequestParam("id") String id) {
 
         Account account = accountPersistence.getById(id);
         return marketData.getStocks(account);
     }
 
-    @GetMapping(value = "/day-candles/{ticker}")
-    public DayCandles getDayCandles(@PathVariable String ticker, @RequestParam String id, @RequestParam String timeFrame,
-                                    @RequestParam LocalDate from, @RequestParam LocalDate to, @RequestParam(required = false) Integer count) {
+    @GetMapping("/day-candles/{ticker}")
+    public DayCandles getDayCandles(@PathVariable("ticker") String ticker,
+                                    @RequestParam("id") String id,
+                                    @RequestParam("timeFrame") String timeFrame,
+                                    @RequestParam("from") LocalDate from,
+                                    @RequestParam("to") LocalDate to,
+                                    @RequestParam(value = "count", required = false) Integer count) {
 
         Account account = accountPersistence.getById(id);
         return marketData.getDayCandles(account, ticker, timeFrame, from, to, count);
     }
 
-    @GetMapping(value = "/intra-day-candles/{ticker}")
-    public IntraDayCandles getIntraDayCandles(@PathVariable String ticker, @RequestParam String id, @RequestParam String timeFrame,
-                                              @RequestParam LocalDateTime from, @RequestParam LocalDateTime to, @RequestParam(required = false) Integer count) {
+    @GetMapping("/intra-day-candles/{ticker}")
+    public IntraDayCandles getIntraDayCandles(@PathVariable("ticker") String ticker,
+                                              @RequestParam("id") String id,
+                                              @RequestParam("timeFrame") String timeFrame,
+                                              @RequestParam("from") String from,
+                                              @RequestParam("to") String to,
+                                              @RequestParam(value = "count", required = false) Integer count) {
 
         Account account = accountPersistence.getById(id);
-        return marketData.getIntraDayCandles(account, ticker, timeFrame, from, to, count);
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(DateTimeFormatter.ISO_DATE_TIME).toFormatter();
+        LocalDateTime timeFrom = formatter.parse(from, LocalDateTime::from);
+        LocalDateTime timeTo = formatter.parse(to, LocalDateTime::from);
+        return marketData.getIntraDayCandles(account, ticker, timeFrame, timeFrom, timeTo, count);
     }
 }

@@ -1,8 +1,9 @@
 package com.stanislav.entities.candles;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
-public record IntraDayCandles(IntraDayCandleDTO[] candles) implements Candles {
+public record IntraDayCandles(Candle[] candles) implements Candles {
 
     @Override
     public String toString() {
@@ -11,7 +12,20 @@ public record IntraDayCandles(IntraDayCandleDTO[] candles) implements Candles {
                 '}';
     }
 
-    public record IntraDayCandleDTO(String timestamp, Decimal open,
-                                    Decimal close, Decimal high,
-                                    Decimal low, int volume) {}
+    public record Candle (String timestamp, Decimal open,
+                          Decimal close, Decimal high,
+                          Decimal low, int volume) {
+
+        @Override
+        public String toString() {
+            return "Candle{" +
+                    "timestamp='" + timestamp + '\'' +
+                    ", open=" + open +
+                    ", close=" + close +
+                    ", high=" + high +
+                    ", low=" + low +
+                    ", volume=" + volume +
+                    '}';
+        }
+    }
 }

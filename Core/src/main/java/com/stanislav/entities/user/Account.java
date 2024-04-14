@@ -5,12 +5,13 @@ import com.stanislav.entities.candles.Decimal;
 import jakarta.persistence.*;
 import org.springframework.lang.NonNull;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table(name = "account")
-public final class Account {
+public final class Account implements Serializable {
 
     @Id
     @Column

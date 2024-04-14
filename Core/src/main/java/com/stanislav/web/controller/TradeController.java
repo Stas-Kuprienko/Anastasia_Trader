@@ -2,7 +2,9 @@ package com.stanislav.web.controller;
 
 import com.stanislav.database.AccountPersistence;
 import com.stanislav.database.UserPersistence;
+import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.TradingService;
+import com.stanislav.domain.trading.finam.FinamOrderTradeCriteria;
 import com.stanislav.entities.orders.Direction;
 import com.stanislav.entities.orders.Order;
 import com.stanislav.entities.user.Account;
@@ -55,7 +57,8 @@ public final class TradeController {
                 .direction(Direction.parse(direction))
                 .build();
 
-        tradingService.makeOrder(account, order);
+        TradeCriteria tradeCriteria = FinamOrderTradeCriteria.simpleOrderAtMarketPrice(Direction.Buy);
+        tradingService.makeOrder(account, order, tradeCriteria);
         return order;
     }
 

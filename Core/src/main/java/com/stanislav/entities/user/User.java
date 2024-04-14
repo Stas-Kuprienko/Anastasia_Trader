@@ -2,13 +2,14 @@ package com.stanislav.entities.user;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "user")
-public final class User {
+public final class User implements Serializable {
 
     @Id
     @Column

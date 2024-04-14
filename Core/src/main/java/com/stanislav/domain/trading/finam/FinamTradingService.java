@@ -1,11 +1,10 @@
 package com.stanislav.domain.trading.finam;
 
 import com.stanislav.database.AccountPersistence;
-import com.stanislav.database.DatabaseRepository;
 import com.stanislav.database.OrderPersistence;
+import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.TradingService;
 import com.stanislav.domain.trading.finam.order_dto.*;
-import com.stanislav.entities.Board;
 import com.stanislav.entities.orders.Order;
 import com.stanislav.entities.orders.Stop;
 import com.stanislav.entities.user.Account;
@@ -19,8 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.stanislav.domain.trading.finam.FinamTradingService.Args.*;
@@ -64,34 +62,26 @@ public class FinamTradingService implements TradingService {
             List<FinamOrderResponse> dtoList = dataParser.parseObjectsList(response, FinamOrderResponse.class, layers);
             return dtoList.stream().map(o -> o.toOrderClass(accountPersistence)).toList();
         } catch (HttpClientErrorException e) {
-            return new ArrayList<>();
             //TODO
+            return Collections.emptyList();
         }
     }
 
     @Override
-    public void makeOrder(Account account, Order order) {
-        makeOrder(account, order, false);
-    }
-
-    @Override
-    public void makeOrder(Account account, Order order, boolean useCredit) {
+    public void makeOrder(Account account, Order order, TradeCriteria tradeCriteria) {
+        FinamOrderTradeCriteria finamOrderCriteria = (FinamOrderTradeCriteria) tradeCriteria;
         FinamBuySell buySell = FinamBuySell.convert(order.getDirection());
-        FinamOrderCondition condition = new FinamOrderCondition(
-                FinamOrderCondition.Type.Ask, order.getPrice(), null);
-        FInamOrderValidBefore validBefore = new FInamOrderValidBefore(
-                FInamOrderValidBefore.Type.TillEndSession, LocalDateTime.now().toString());
         FinamOrderRequest finamOrder = FinamOrderRequest.builder()
                 .clientId(account.getClientId())
-                .securityBoard(Board.TQBR.toString())
+                .securityBoard(order.getBoard().toString())
                 .securityCode(order.getTicker())
                 .buySell(buySell)
                 .quantity(order.getQuantity())
-                .useCredit(useCredit)
+                .useCredit(finamOrderCriteria.useCredit())
                 .price(order.getPrice().doubleValue())
-                .property(ORDER_PROPERTY)
-                .condition(condition)
-                .validBefore(validBefore)
+                .property(finamOrderCriteria.property())
+                .condition(finamOrderCriteria.condition())
+                .validBefore(finamOrderCriteria.validBefore())
                 .build();
         orderCriteria(finamOrder);
 

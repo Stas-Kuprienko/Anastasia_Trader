@@ -1,10 +1,12 @@
 package com.stanislav.domain.trading.finam;
 
+import com.stanislav.domain.trading.MarketData;
 import com.stanislav.domain.trading.finam.securities_dto.FinamSecuritiesResponse;
 import com.stanislav.entities.Board;
 import com.stanislav.entities.candles.DayCandles;
 import com.stanislav.entities.candles.IntraDayCandles;
 import com.stanislav.entities.markets.Stock;
+import com.stanislav.entities.user.Account;
 import com.stanislav.web.utils.ApiDataParser;
 import com.stanislav.web.utils.GetQueryBuilder;
 import com.stanislav.web.utils.RestConsumer;
@@ -15,11 +17,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
-import com.stanislav.entities.user.Account;
-import com.stanislav.domain.trading.MarketData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.stanislav.domain.trading.finam.FinamMarketData.Args.*;
@@ -51,15 +53,14 @@ public class FinamMarketData implements MarketData {
             String[] layers = {"data", "securities"};
             List<FinamSecuritiesResponse> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponse.class, layers);
             if (dtoList.isEmpty()) {
-                //TODO
-                return null;
+                return Stock.emptyStock();
             } else {
                 return dtoList.get(0).toStockClass();
             }
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
             //TODO
-            return null;
+            return Stock.emptyStock();
         }
     }
 
@@ -72,15 +73,14 @@ public class FinamMarketData implements MarketData {
             String[] layers = {"data", "securities"};
             List<FinamSecuritiesResponse> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponse.class, layers);
             if (dtoList.isEmpty()) {
-                //TODO
-                return null;
+                return Collections.emptyList();
             } else {
                 return dtoList.stream().map(FinamSecuritiesResponse::toStockClass).toList();
             }
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
             //TODO
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -101,7 +101,7 @@ public class FinamMarketData implements MarketData {
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
             //TODO
-            return new DayCandles(new DayCandles.DayCandleDTO[0]);
+            return new DayCandles(new DayCandles.Candle[0]);
         }
     }
 
@@ -109,6 +109,7 @@ public class FinamMarketData implements MarketData {
     public IntraDayCandles getIntraDayCandles(@NonNull Account account, @NonNull String ticker, @NonNull String timeFrame,
                                               @NonNull LocalDateTime from, @NonNull LocalDateTime to, Integer interval) {
         GetQueryBuilder query = new GetQueryBuilder(INTRA_DAY.value);
+        //TODO parameters validation
         query.add(SECURITY_BOARD.value, Board.TQBR)
                 .add(SECURITY_CODE.value, ticker)
                 .add(TIME_FRAME.value, timeFrame)
@@ -122,7 +123,7 @@ public class FinamMarketData implements MarketData {
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
             //TODO
-            return new IntraDayCandles(new IntraDayCandles.IntraDayCandleDTO[0]);
+            return new IntraDayCandles(new IntraDayCandles.Candle[0]);
         }
     }
 

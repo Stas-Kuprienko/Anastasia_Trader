@@ -29,6 +29,9 @@ public final class Stock {
 
     public Stock() {}
 
+    public static Stock emptyStock() {
+        return new Stock("incorrect", 0, 0, null, null, null, null);
+    }
 
     public String getTicker() {
         return ticker;

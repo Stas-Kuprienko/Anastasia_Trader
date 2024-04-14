@@ -188,4 +188,25 @@ public final class FinamSecuritiesResponse {
 
         Positive, NonNegative, Any
     }
+
+    @Override
+    public String toString() {
+        return "FinamSecuritiesResponse{" +
+                "code='" + code + '\'' +
+                ", board='" + board + '\'' +
+                ", market=" + market +
+                ", decimals=" + decimals +
+                ", lotSize=" + lotSize +
+                ", minStep=" + minStep +
+                ", currency='" + currency + '\'' +
+                ", shortName='" + shortName + '\'' +
+                ", properties=" + properties +
+                ", timeZoneName='" + timeZoneName + '\'' +
+                ", bpCost=" + bpCost +
+                ", accruedInterest=" + accruedInterest +
+                ", priceSign=" + priceSign +
+                ", ticker='" + ticker + '\'' +
+                ", lotDivider=" + lotDivider +
+                '}';
+    }
 }
