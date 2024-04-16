@@ -20,9 +20,12 @@ public class Example {
         String resource = appProp.getProperty("api.resource");
         String token = appProp.getProperty("api.token");
 
-        try (FinamEventStreamService streamService = new FinamEventStreamService(resource, token)) {
-
-            streamService.subscribe("SiN4", "FUT");
+        try {
+            FinamEventStreamService streamService = new FinamEventStreamService(resource, token);
+            streamService.subscribe("SiM4", "FUT");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
     }
 }

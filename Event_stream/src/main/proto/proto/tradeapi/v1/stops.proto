@@ -5,7 +5,7 @@ package proto.tradeapi.v1;
 option csharp_namespace = "Finam.TradeApi.Proto.V1";
 
 import "google/protobuf/timestamp.proto";
-import "tradeapi/v1/common.proto";
+import "proto/tradeapi/v1/common.proto";
 
 // Stop order status.
 // Состояние заявки.
@@ -288,16 +288,4 @@ message NewStopResult {
   // Trading Board.
   // Режим торгов.
   string security_board = 4;
-}
-
-service Stops {
-  // Returns the list of Stop Orders.
-  // Возвращает список стоп-заявок.
-  rpc GetStops(proto.tradeapi.v1.GetStopsRequest) returns (proto.tradeapi.v1.GetStopsResult);
-  // Cancels Stop Order.
-  // Снимает стоп-заявку.
-  rpc CancelStop(proto.tradeapi.v1.CancelStopRequest) returns (proto.tradeapi.v1.CancelStopResult);
-  // Creates new Stop Order.
-  // Выставляет стоп-заявку.
-  rpc NewStop(proto.tradeapi.v1.NewStopRequest) returns (proto.tradeapi.v1.NewStopResult);
 }

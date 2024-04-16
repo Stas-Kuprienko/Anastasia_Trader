@@ -4,9 +4,7 @@ package proto.tradeapi.v1;
 
 option csharp_namespace = "Finam.TradeApi.Proto.V1";
 
-import "tradeapi/v1/common.proto";
-import "google/protobuf/wrappers.proto";
-
+import "proto/tradeapi/v1/common.proto";
 
 // Security price sign.
 // Разрешенный знак цены у инструмента.
@@ -86,29 +84,4 @@ message Security {
   // The split ratio of a security in one standard lot.
   // Коэффициент дробления ценной бумаги в одном стандартном лоте.
   sint32 lot_divider = 16;
-}
-
-// Securities list request.
-// Запрос списка инструментов.
-message GetSecuritiesRequest {
-  // Trading Board.
-  // Режим торгов
-  google.protobuf.StringValue board = 1;
-  // Security Code.
-  // Тикер инструмента.
-  google.protobuf.StringValue seccode = 2;
-}
-
-// Result of get security lists request.
-// Результат выполнения запроса списка инструментов.
-message GetSecuritiesResult {
-  // Securities list.
-  // Список инструментов.
-  repeated proto.tradeapi.v1.Security securities = 1;
-}
-
-service Securities {
-  // Securities table.
-  // Справочник инструментов.
-  rpc GetSecurities(GetSecuritiesRequest) returns (GetSecuritiesResult);
 }

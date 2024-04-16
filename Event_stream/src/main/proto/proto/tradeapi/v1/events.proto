@@ -4,9 +4,9 @@ package proto.tradeapi.v1;
 
 option csharp_namespace = "Finam.TradeApi.Proto.V1";
 
-import "tradeapi/v1/common.proto";
-import "tradeapi/v1/orders.proto";
-import "tradeapi/v1/portfolios.proto";
+import "proto/tradeapi/v1/common.proto";
+import "proto/tradeapi/v1/orders.proto";
+import "proto/tradeapi/v1/portfolios.proto";
 import "google/protobuf/timestamp.proto";
 
 // Timeframe.
@@ -306,10 +306,4 @@ message KeepAliveRequest {
   // Request ID.
   // Идентификатор запроса.
   string request_id = 1;
-}
-
-service Events {
-  // Event Service sends events after explicit subscription.
-  // Сервис событий. Отправляет события после вызова соответствующих методов подписки.
-  rpc GetEvents (stream proto.tradeapi.v1.SubscriptionRequest) returns (stream proto.tradeapi.v1.Event);
 }

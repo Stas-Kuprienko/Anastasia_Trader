@@ -4,7 +4,7 @@ package proto.tradeapi.v1;
 
 option csharp_namespace = "Finam.TradeApi.Proto.V1";
 
-import "tradeapi/v1/common.proto";
+import "proto/tradeapi/v1/common.proto";
 
 // What kind of data the response contains.
 // Какие данные будут в ответе.
@@ -145,10 +145,4 @@ message GetPortfolioResult {
   // Money positions.
   // Денежные позиции.
   repeated MoneyRow money = 7;
-}
-
-service Portfolios {
-  // Returns portfolio.
-  // Возвращает портфель.
-  rpc GetPortfolio(proto.tradeapi.v1.GetPortfolioRequest) returns (proto.tradeapi.v1.GetPortfolioResult);
 }
