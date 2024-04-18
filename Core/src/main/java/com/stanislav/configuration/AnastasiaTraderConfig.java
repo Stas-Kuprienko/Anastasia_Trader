@@ -1,6 +1,8 @@
 package com.stanislav.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stanislav.event_stream.OrderBookStreamService;
+import com.stanislav.event_stream.finam.FinamOrderBookStreamService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -47,5 +49,10 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
     @Bean
     public DatabaseRepository databaseRepository() {
         return new HibernateRepository("hibernate.cfg.xml");
+    }
+
+    @Bean
+    public OrderBookStreamService orderBookStreamService() {
+        return new FinamOrderBookStreamService("${api.grpc.resource}", "${api.token}");
     }
 }

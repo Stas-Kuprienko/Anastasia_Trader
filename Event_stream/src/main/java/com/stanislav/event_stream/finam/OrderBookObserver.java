@@ -4,7 +4,6 @@ import io.grpc.stub.StreamObserver;
 import lombok.extern.log4j.Log4j;
 import proto.tradeapi.v1.Events;
 
-@Log4j
 class OrderBookObserver implements StreamObserver<Events.Event> {
 
     private final OrderBookStreamListener listener;
