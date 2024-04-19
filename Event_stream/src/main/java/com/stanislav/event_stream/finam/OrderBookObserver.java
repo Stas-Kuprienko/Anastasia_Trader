@@ -6,17 +6,16 @@ import proto.tradeapi.v1.Events;
 
 class OrderBookObserver implements StreamObserver<Events.Event> {
 
-    private final OrderBookStreamListener listener;
+    private final Collector collector;
 
-
-    public OrderBookObserver(OrderBookStreamListener listener) {
-        this.listener = listener;
+    public OrderBookObserver(Collector collector) {
+        this.collector = collector;
     }
 
 
     @Override
     public void onNext(Events.Event event) {
-        listener.processing(event);
+        collector.addOrderBookEvent(event);
     }
 
     @Override

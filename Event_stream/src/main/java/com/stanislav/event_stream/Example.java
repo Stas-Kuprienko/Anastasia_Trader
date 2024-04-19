@@ -21,7 +21,7 @@ public class Example {
         String token = appProp.getProperty("api.token");
 
         try {
-            FinamOrderBookStreamService streamService = new FinamOrderBookStreamService(resource, token);
+            FinamOrderBookStreamService streamService = new FinamOrderBookStreamService(resource, token, 1);
             streamService.subscribe("SiM4", "FUT");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
