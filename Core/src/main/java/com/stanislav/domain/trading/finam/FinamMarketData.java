@@ -101,7 +101,7 @@ public class FinamMarketData implements MarketData {
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
             //TODO
-            return new DayCandles(new DayCandles.Candle[0]);
+            return new DayCandles(new DayCandles.DayCandle[0]);
         }
     }
 

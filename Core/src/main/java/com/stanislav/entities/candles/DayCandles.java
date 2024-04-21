@@ -1,9 +1,8 @@
 package com.stanislav.entities.candles;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 
-public record DayCandles(Candle[] candles) implements Candles {
+public record DayCandles(DayCandle[] candles) implements Candles {
 
     @Override
     public String toString() {
@@ -12,9 +11,9 @@ public record DayCandles(Candle[] candles) implements Candles {
                 '}';
     }
 
-    public record Candle (String date, Decimal open,
+    public record DayCandle (String date, Decimal open,
                           Decimal close, Decimal high,
-                          Decimal low, int volume) {
+                          Decimal low, int volume) implements Candles.Candle {
 
         @Override
         public String toString() {
