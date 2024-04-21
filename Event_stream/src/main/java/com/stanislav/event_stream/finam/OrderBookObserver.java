@@ -1,5 +1,6 @@
 package com.stanislav.event_stream.finam;
 
+import com.stanislav.event_stream.EventStreamException;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.log4j.Log4j;
 import proto.tradeapi.v1.Events;
@@ -15,7 +16,11 @@ class OrderBookObserver implements StreamObserver<Events.Event> {
 
     @Override
     public void onNext(Events.Event event) {
-        collector.addOrderBookEvent(event);
+        try {
+            collector.addOrderBookEvent(event);
+        } catch (EventStreamException e) {
+            onCompleted();
+        }
     }
 
     @Override

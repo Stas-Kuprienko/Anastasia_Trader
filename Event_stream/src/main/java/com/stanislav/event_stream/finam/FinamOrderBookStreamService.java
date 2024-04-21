@@ -4,12 +4,10 @@ import com.stanislav.event_stream.OrderBookStreamService;
 import com.stanislav.event_stream.grpc_impl.Authenticator;
 import com.stanislav.event_stream.grpc_impl.gRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
-import io.grpc.stub.StreamObserver;
 import proto.tradeapi.v1.Events;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
+
+import javax.annotation.PreDestroy;
+import java.util.concurrent.*;
 
 public class FinamOrderBookStreamService extends gRpcClient implements OrderBookStreamService {
 
@@ -17,14 +15,14 @@ public class FinamOrderBookStreamService extends gRpcClient implements OrderBook
     private final Authenticator authenticator;
 
     private final ScheduledExecutorService scheduler;
-    private final ConcurrentHashMap<String, Future<Collector>> eventStreams;
+    private final ConcurrentHashMap<String, OrderBookStreamListener> eventStreamMap;
 
 
     public FinamOrderBookStreamService(String resource, String apiToken, int threadPoolSize) {
         super(resource);
         this.authenticator = Authenticator.XApiKeyAuthorization(apiToken);
         this.scheduler = Executors.newScheduledThreadPool(threadPoolSize);
-        this.eventStreams = new ConcurrentHashMap<>();
+        this.eventStreamMap = new ConcurrentHashMap<>();
     }
 
 
@@ -33,8 +31,12 @@ public class FinamOrderBookStreamService extends gRpcClient implements OrderBook
         EventsGrpc.EventsStub stub = EventsGrpc.newStub(channel).withCallCredentials(authenticator);
         var request = buildSubscriptionRequest(ticker, board);
 
-        eventStreams.put(ticker, scheduler.submit(new OrderBookStreamListener(request, stub)));
         //TODO need to fix !!!!!!!!
+        OrderBookStreamListener listener = new OrderBookStreamListener(request,stub);
+        var eventStream =
+                scheduler.scheduleAtFixedRate(listener.initStreamObserveThread(), 1, 1, TimeUnit.SECONDS);
+        listener.setScheduledFuture(eventStream);
+        eventStreamMap.put(ticker, listener);
     }
 
     @Override
@@ -42,8 +44,13 @@ public class FinamOrderBookStreamService extends gRpcClient implements OrderBook
 
     }
 
-    public ConcurrentHashMap<String, Future<Collector>> getEventStreams() {
-        return eventStreams;
+    public OrderBookStreamListener getEventStream(String ticker) {
+        return eventStreamMap.get(ticker);
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        scheduler.shutdown();
     }
 
     private Events.SubscriptionRequest buildSubscriptionRequest(String ticker, String board) {

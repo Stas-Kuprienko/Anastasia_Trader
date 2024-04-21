@@ -1,5 +1,6 @@
 package com.stanislav.event_stream.finam;
 
+import com.stanislav.event_stream.EventStreamException;
 import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -32,11 +33,20 @@ public class Collector {
         return bids.getLast();
     }
 
-    public void addOrderBookEvent(Events.Event event) {
-        checkSize(asks);
-        checkSize(bids);
-        asks.add(event.getOrderBook().getAsks(0));
-        asks.add(event.getOrderBook().getBids(0));
+    public void addOrderBookEvent(Events.Event event) throws EventStreamException {
+        if (event.hasOrderBook()) {
+            checkSize(asks);
+            checkSize(bids);
+            asks.add(event.getOrderBook().getAsks(0));
+            asks.add(event.getOrderBook().getBids(0));
+        } else {
+            System.out.println(event.getResponse());
+            if (!event.getResponse().getSuccess()) {
+                //TODO loggers
+                event.getResponse().getErrorsList();
+                throw new EventStreamException();
+            }
+        }
     }
 
     public ConcurrentLinkedDeque<Events.OrderBookRow> getAsks() {
