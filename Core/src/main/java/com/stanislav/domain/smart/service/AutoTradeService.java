@@ -1,19 +1,19 @@
 package com.stanislav.domain.smart.service;
 
 import com.stanislav.entities.user.Account;
-import com.stanislav.event_stream.EventStreamListener;
-import com.stanislav.event_stream.EventStreamService;
+import com.stanislav.event_stream.EventStreamKit;
+import com.stanislav.event_stream.service.EventStreamListener;
+import com.stanislav.event_stream.service.EventStream;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AutoTradeService {
 
-    private final EventStreamService orderBookStreamService;
+    private final EventStream orderBookStreamService;
 
-    public AutoTradeService(@Autowired @Qualifier("orderBookStreamService") EventStreamService orderBookStreamService) {
-        this.orderBookStreamService = orderBookStreamService;
+    public AutoTradeService(@Autowired EventStreamKit eventStreamKit) {
+        this.orderBookStreamService = eventStreamKit.getOrderBookStreamService();
     }
 
     public void getPriceStream(Account account, String ticker, String board) {

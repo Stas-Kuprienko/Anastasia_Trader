@@ -1,9 +1,13 @@
-package com.stanislav.event_stream;
+package com.stanislav.event_stream.service;
+
+import com.stanislav.event_stream.EventStreamException;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledFuture;
 
 public interface EventStreamListener {
+
+    boolean isUsing();
 
     EventCollector getCollector();
 

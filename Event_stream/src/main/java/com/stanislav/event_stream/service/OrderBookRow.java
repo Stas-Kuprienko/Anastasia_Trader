@@ -1,4 +1,4 @@
-package com.stanislav.event_stream;
+package com.stanislav.event_stream.service;
 
 public interface OrderBookRow {
 

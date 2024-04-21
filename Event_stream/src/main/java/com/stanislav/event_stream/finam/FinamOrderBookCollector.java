@@ -1,8 +1,8 @@
 package com.stanislav.event_stream.finam;
 
 import com.stanislav.event_stream.EventStreamException;
-import com.stanislav.event_stream.EventStreamListener;
-import com.stanislav.event_stream.OrderBookRow;
+import com.stanislav.event_stream.service.EventStreamListener;
+import com.stanislav.event_stream.service.OrderBookRow;
 import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentLinkedDeque;

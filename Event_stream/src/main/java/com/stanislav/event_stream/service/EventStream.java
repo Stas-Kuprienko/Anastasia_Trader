@@ -1,6 +1,6 @@
-package com.stanislav.event_stream;
+package com.stanislav.event_stream.service;
 
-public interface EventStreamService {
+public interface EventStream {
 
     EventStreamListener subscribe(String board, String ticker);
 

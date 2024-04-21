@@ -1,7 +1,9 @@
 package com.stanislav.event_stream;
 
-import com.stanislav.event_stream.finam.FinamOrderBookStreamService;
+import com.stanislav.event_stream.finam.FinamOrderBookStream;
 import com.stanislav.event_stream.finam.FinamOrderBookCollector;
+import com.stanislav.event_stream.grpc_impl.GRpcClient;
+import com.stanislav.event_stream.service.EventStreamListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,8 @@ public class Example {
         String ticker = "SiM4";
 
         EventStreamListener listener;
-        try (FinamOrderBookStreamService streamService = new FinamOrderBookStreamService(resource, token, 1)) {
+        try (GRpcClient client = new GRpcClient(resource, token, 1)) {
+            FinamOrderBookStream streamService = new FinamOrderBookStream(client);
             streamService.subscribe(ticker, "FUT");
             listener = streamService.getEventStream(ticker);
             Thread.sleep(2000);
@@ -34,9 +37,15 @@ public class Example {
             System.out.println(listener.getScheduledFuture().isDone());
             System.out.println(collector.getAsks());
             Thread.sleep(2000);
+            streamService.unsubscribe(listener);
+            System.out.print("is cancelled - ");
+            System.out.println(listener.getScheduledFuture().isCancelled());
+            System.out.print("is done - ");
+            System.out.println(listener.getScheduledFuture().isDone());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
         System.out.println(listener.getScheduledFuture().isDone());
     }
 }

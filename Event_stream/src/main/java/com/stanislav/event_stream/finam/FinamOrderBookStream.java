@@ -1,29 +1,27 @@
 package com.stanislav.event_stream.finam;
 
-import com.stanislav.event_stream.EventStreamListener;
-import com.stanislav.event_stream.EventStreamService;
-import com.stanislav.event_stream.grpc_impl.Authenticator;
-import com.stanislav.event_stream.grpc_impl.gRpcClient;
+import com.stanislav.event_stream.service.EventStreamListener;
+import com.stanislav.event_stream.service.EventStream;
+import com.stanislav.event_stream.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class FinamOrderBookStreamService extends gRpcClient implements EventStreamService {
+public class FinamOrderBookStream implements EventStream {
 
     private static final String ORDER_BOOK_REQUEST_ID = "32ef5786-e887";
-    private final EventsGrpc.EventsStub stub;
+
     private final ScheduledExecutorService scheduler;
+    private final EventsGrpc.EventsStub stub;
     private final ConcurrentHashMap<String, OrderBookStreamListener> eventStreamMap;
 
 
-    public FinamOrderBookStreamService(String resource, String apiToken, int threadPoolSize) {
-        super(resource);
-        this.stub = EventsGrpc.newStub(channel).withCallCredentials(Authenticator.XApiKeyAuthorization(apiToken));
-        this.scheduler = Executors.newScheduledThreadPool(threadPoolSize);
+    public FinamOrderBookStream(GRpcClient rpcClient) {
+        this.scheduler = rpcClient.getScheduler();
+        this.stub = EventsGrpc.newStub(rpcClient.getChannel()).withCallCredentials(rpcClient.getAuthenticator());
         this.eventStreamMap = new ConcurrentHashMap<>();
     }
 
@@ -48,13 +46,9 @@ public class FinamOrderBookStreamService extends gRpcClient implements EventStre
 
     @Override
     public void unsubscribe(EventStreamListener listener, boolean isForced) {
-        listener.stopStream();
-        if (isForced) {
-            if (!listener.getScheduledFuture().isDone() && !listener.getScheduledFuture().isCancelled()) {
-
-                listener.getScheduledFuture().cancel(true);
-                listener.stopStream();
-            }
+        if (isForced || !(listener.isUsing())) {
+            listener.getScheduledFuture().cancel(true);
+            listener.stopStream();
         }
     }
 

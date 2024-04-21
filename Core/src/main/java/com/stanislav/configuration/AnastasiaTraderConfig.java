@@ -1,8 +1,10 @@
 package com.stanislav.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stanislav.event_stream.EventStreamService;
-import com.stanislav.event_stream.finam.FinamOrderBookStreamService;
+import com.stanislav.database.DatabaseRepository;
+import com.stanislav.database.hibernate.HibernateRepository;
+import com.stanislav.event_stream.EventStreamKit;
+import com.stanislav.event_stream.grpc_impl.GRPCEventStreamKit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,8 +16,6 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import com.stanislav.database.DatabaseRepository;
-import com.stanislav.database.hibernate.HibernateRepository;
 
 @Configuration
 @EnableWebMvc
@@ -61,7 +61,7 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public EventStreamService orderBookStreamService() {
-        return new FinamOrderBookStreamService(apiGRPCResource, apiGRPCToken, grpcThreadPoolSize);
+    public EventStreamKit eventStreamKit() {
+        return new GRPCEventStreamKit(apiGRPCResource, apiGRPCToken, grpcThreadPoolSize);
     }
 }
