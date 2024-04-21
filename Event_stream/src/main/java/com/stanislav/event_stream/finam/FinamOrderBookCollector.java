@@ -2,20 +2,22 @@ package com.stanislav.event_stream.finam;
 
 import com.stanislav.event_stream.EventStreamException;
 import com.stanislav.event_stream.EventStreamListener;
+import com.stanislav.event_stream.OrderBookRow;
 import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class FinamOrderBookCollector implements
-        EventStreamListener.Collector, EventStreamListener.OrderBookCollector<Events.Event, Events.OrderBookRow> {
+        EventStreamListener.EventCollector, EventStreamListener.OrderBookCollector<Events.Event, Events.OrderBookRow> {
 
+    private static final byte DEFAULT_CAPACITY = 10;
     private final int capacity;
     private final ConcurrentLinkedDeque<Events.OrderBookRow> asks;
     private final ConcurrentLinkedDeque<Events.OrderBookRow> bids;
 
 
     public FinamOrderBookCollector() {
-        this.capacity = 10;
+        this.capacity = DEFAULT_CAPACITY;
         this.asks = new ConcurrentLinkedDeque<>();
         this.bids = new ConcurrentLinkedDeque<>();
     }
@@ -28,13 +30,13 @@ public class FinamOrderBookCollector implements
 
 
     @Override
-    public Events.OrderBookRow currentAsk() {
-        return asks.getLast();
+    public OrderBookRow currentAsk() {
+        return new FinamOrderBookRowProxy(asks.getLast());
     }
 
     @Override
-    public Events.OrderBookRow currentBid() {
-        return bids.getLast();
+    public OrderBookRow currentBid() {
+        return new FinamOrderBookRowProxy(bids.getLast());
     }
 
     @Override

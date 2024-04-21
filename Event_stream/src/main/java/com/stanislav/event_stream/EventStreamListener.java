@@ -5,7 +5,7 @@ import java.util.concurrent.ScheduledFuture;
 
 public interface EventStreamListener {
 
-    Collector getCollector();
+    EventCollector getCollector();
 
     Runnable initStreamThread();
 
@@ -13,13 +13,15 @@ public interface EventStreamListener {
 
     void setScheduledFuture(ScheduledFuture<?> scheduledFuture);
 
-    interface Collector {}
+    void stopStream();
 
-    interface OrderBookCollector <E, R> extends Collector {
+    interface EventCollector {}
 
-        R currentAsk();
+    interface OrderBookCollector <E, R> extends EventCollector {
 
-        R currentBid();
+        OrderBookRow currentAsk();
+
+        OrderBookRow currentBid();
 
         void addOrderBookEvent(E event) throws EventStreamException;
 

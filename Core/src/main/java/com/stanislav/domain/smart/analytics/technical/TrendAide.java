@@ -1,4 +1,4 @@
-package com.stanislav.domain.automation.analytics.technical;
+package com.stanislav.domain.smart.analytics.technical;
 
 import com.stanislav.entities.candles.Candles;
 import com.stanislav.entities.candles.Decimal;

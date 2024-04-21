@@ -2,9 +2,11 @@ package com.stanislav.event_stream;
 
 public interface EventStreamService {
 
-    void subscribe(String board, String ticker) throws InterruptedException;
+    EventStreamListener subscribe(String board, String ticker);
 
-    void unsubscribe(String board, String ticker);
+    void unsubscribe(EventStreamListener listener);
+
+    void unsubscribe(EventStreamListener listener, boolean isForced);
 
     EventStreamListener getEventStream(String ticker);
 }

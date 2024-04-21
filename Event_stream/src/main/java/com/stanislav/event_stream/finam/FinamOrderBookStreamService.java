@@ -1,5 +1,6 @@
 package com.stanislav.event_stream.finam;
 
+import com.stanislav.event_stream.EventStreamListener;
 import com.stanislav.event_stream.EventStreamService;
 import com.stanislav.event_stream.grpc_impl.Authenticator;
 import com.stanislav.event_stream.grpc_impl.gRpcClient;
@@ -14,35 +15,47 @@ import java.util.concurrent.TimeUnit;
 public class FinamOrderBookStreamService extends gRpcClient implements EventStreamService {
 
     private static final String ORDER_BOOK_REQUEST_ID = "32ef5786-e887";
-    private final Authenticator authenticator;
-
+    private final EventsGrpc.EventsStub stub;
     private final ScheduledExecutorService scheduler;
     private final ConcurrentHashMap<String, OrderBookStreamListener> eventStreamMap;
 
 
     public FinamOrderBookStreamService(String resource, String apiToken, int threadPoolSize) {
         super(resource);
-        this.authenticator = Authenticator.XApiKeyAuthorization(apiToken);
+        this.stub = EventsGrpc.newStub(channel).withCallCredentials(Authenticator.XApiKeyAuthorization(apiToken));
         this.scheduler = Executors.newScheduledThreadPool(threadPoolSize);
         this.eventStreamMap = new ConcurrentHashMap<>();
     }
 
 
     @Override
-    public void subscribe(String ticker, String board) throws InterruptedException {
-        EventsGrpc.EventsStub stub = EventsGrpc.newStub(channel).withCallCredentials(authenticator);
-        var request = buildSubscriptionRequest(ticker, board);
-
-        OrderBookStreamListener listener = new OrderBookStreamListener(request,stub);
+    public EventStreamListener subscribe(String ticker, String board) {
+        var subscribe = buildSubscribeRequest(ticker, board);
+        var unsubscribe = buildUnsubscribeRequest(ticker, board);
+        OrderBookStreamListener listener = new OrderBookStreamListener(subscribe, unsubscribe, stub);
         var eventStream =
                 scheduler.scheduleAtFixedRate(listener.initStreamThread(), 1, 1, TimeUnit.SECONDS);
+
         listener.setScheduledFuture(eventStream);
         eventStreamMap.put(ticker, listener);
+        return listener;
     }
 
     @Override
-    public void unsubscribe(String board, String ticker) {
+    public void unsubscribe(EventStreamListener listener) {
+        unsubscribe(listener, false);
+    }
 
+    @Override
+    public void unsubscribe(EventStreamListener listener, boolean isForced) {
+        listener.stopStream();
+        if (isForced) {
+            if (!listener.getScheduledFuture().isDone() && !listener.getScheduledFuture().isCancelled()) {
+
+                listener.getScheduledFuture().cancel(true);
+                listener.stopStream();
+            }
+        }
     }
 
     @Override
@@ -50,7 +63,8 @@ public class FinamOrderBookStreamService extends gRpcClient implements EventStre
         return eventStreamMap.get(ticker);
     }
 
-    private Events.SubscriptionRequest buildSubscriptionRequest(String ticker, String board) {
+
+    private Events.SubscriptionRequest buildSubscribeRequest(String ticker, String board) {
         var orderBookSubscribeRequest = Events.OrderBookSubscribeRequest.newBuilder()
                 .setRequestId(ORDER_BOOK_REQUEST_ID)
                 .setSecurityCode(ticker)
@@ -59,5 +73,16 @@ public class FinamOrderBookStreamService extends gRpcClient implements EventStre
 
         return Events.SubscriptionRequest.newBuilder()
                 .setOrderBookSubscribeRequest(orderBookSubscribeRequest).build();
+    }
+
+    private Events.SubscriptionRequest buildUnsubscribeRequest(String ticker, String board) {
+        var orderBookUnsubscribeRequest = Events.OrderBookUnsubscribeRequest.newBuilder()
+                .setRequestId(ORDER_BOOK_REQUEST_ID)
+                .setSecurityCode(ticker)
+                .setSecurityBoard(board)
+                .build();
+
+        return Events.SubscriptionRequest.newBuilder()
+                .setOrderBookUnsubscribeRequest(orderBookUnsubscribeRequest).build();
     }
 }
