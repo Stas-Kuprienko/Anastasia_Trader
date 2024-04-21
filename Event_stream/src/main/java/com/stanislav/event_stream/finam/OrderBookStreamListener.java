@@ -1,40 +1,44 @@
 package com.stanislav.event_stream.finam;
 
+import com.stanislav.event_stream.EventStreamListener;
 import grpc.tradeapi.v1.EventsGrpc;
-import io.grpc.stub.StreamObserver;
 import proto.tradeapi.v1.Events;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 
-public class OrderBookStreamListener {
+public class OrderBookStreamListener implements EventStreamListener {
 
     private final Events.SubscriptionRequest subscriptionRequest;
     private final EventsGrpc.EventsStub stub;
     private final OrderBookObserver observer;
-    private final Collector collector;
+    private final FinamOrderBookCollector collector;
     private ScheduledFuture<?> scheduledFuture;
+
 
     public OrderBookStreamListener(Events.SubscriptionRequest subscriptionRequest, EventsGrpc.EventsStub stub) {
         this.subscriptionRequest = subscriptionRequest;
         this.stub = stub;
-        this.collector = new Collector();
+        this.collector = new FinamOrderBookCollector();
         this.observer = new OrderBookObserver(collector);
     }
 
-    public Collector getCollector() {
+
+    @Override
+    public FinamOrderBookCollector getCollector() {
         return collector;
     }
 
-    public StreamObserveThread initStreamObserveThread() {
+    @Override
+    public StreamObserveThread initStreamThread() {
         return new StreamObserveThread();
     }
 
+    @Override
     public ScheduledFuture<?> getScheduledFuture() {
         return scheduledFuture;
     }
 
+    @Override
     public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
         this.scheduledFuture = scheduledFuture;
     }

@@ -2,14 +2,13 @@ package com.stanislav.event_stream.finam;
 
 import com.stanislav.event_stream.EventStreamException;
 import io.grpc.stub.StreamObserver;
-import lombok.extern.log4j.Log4j;
 import proto.tradeapi.v1.Events;
 
 class OrderBookObserver implements StreamObserver<Events.Event> {
 
-    private final Collector collector;
+    private final FinamOrderBookCollector collector;
 
-    public OrderBookObserver(Collector collector) {
+    public OrderBookObserver(FinamOrderBookCollector collector) {
         this.collector = collector;
     }
 

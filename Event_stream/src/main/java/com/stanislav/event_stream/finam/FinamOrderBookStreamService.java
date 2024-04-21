@@ -1,15 +1,17 @@
 package com.stanislav.event_stream.finam;
 
-import com.stanislav.event_stream.OrderBookStreamService;
+import com.stanislav.event_stream.EventStreamService;
 import com.stanislav.event_stream.grpc_impl.Authenticator;
 import com.stanislav.event_stream.grpc_impl.gRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.Events;
 
-import javax.annotation.PreDestroy;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class FinamOrderBookStreamService extends gRpcClient implements OrderBookStreamService {
+public class FinamOrderBookStreamService extends gRpcClient implements EventStreamService {
 
     private static final String ORDER_BOOK_REQUEST_ID = "32ef5786-e887";
     private final Authenticator authenticator;
@@ -31,10 +33,9 @@ public class FinamOrderBookStreamService extends gRpcClient implements OrderBook
         EventsGrpc.EventsStub stub = EventsGrpc.newStub(channel).withCallCredentials(authenticator);
         var request = buildSubscriptionRequest(ticker, board);
 
-        //TODO need to fix !!!!!!!!
         OrderBookStreamListener listener = new OrderBookStreamListener(request,stub);
         var eventStream =
-                scheduler.scheduleAtFixedRate(listener.initStreamObserveThread(), 1, 1, TimeUnit.SECONDS);
+                scheduler.scheduleAtFixedRate(listener.initStreamThread(), 1, 1, TimeUnit.SECONDS);
         listener.setScheduledFuture(eventStream);
         eventStreamMap.put(ticker, listener);
     }
@@ -44,13 +45,9 @@ public class FinamOrderBookStreamService extends gRpcClient implements OrderBook
 
     }
 
+    @Override
     public OrderBookStreamListener getEventStream(String ticker) {
         return eventStreamMap.get(ticker);
-    }
-
-    @PreDestroy
-    public void shutdown() {
-        scheduler.shutdown();
     }
 
     private Events.SubscriptionRequest buildSubscriptionRequest(String ticker, String board) {
