@@ -1,13 +1,12 @@
 package com.stanislav.entities.candles;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Objects;
 
 public record Decimal(long num, int scale) {
 
     public BigDecimal toBigDecimal() {
-        return new BigDecimal(BigInteger.valueOf(num), scale);
+        return BigDecimal.valueOf(num, scale);
     }
 
     @Override
