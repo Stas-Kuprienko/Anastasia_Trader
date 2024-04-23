@@ -18,7 +18,7 @@ public final class Account implements Serializable {
     private String clientId;
 
     @ManyToOne
-    @JoinColumn(name = "login", nullable = false)
+    @JoinColumn(name = "user", nullable = false)
     @JsonIgnore
     private User user;
 

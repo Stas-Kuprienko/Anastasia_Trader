@@ -1,5 +1,7 @@
 package com.stanislav.entities.candles;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import java.util.Arrays;
 
 public record DayCandles(DayCandle[] candles) implements Candles {
@@ -11,14 +13,17 @@ public record DayCandles(DayCandle[] candles) implements Candles {
                 '}';
     }
 
-    public record DayCandle (String date, Decimal open,
-                          Decimal close, Decimal high,
-                          Decimal low, int volume) implements Candles.Candle {
+    public record DayCandle (@JsonAlias("date") String dateTime,
+                             Decimal open,
+                             Decimal close,
+                             Decimal high,
+                             Decimal low,
+                             int volume) implements Candles.Candle {
 
         @Override
         public String toString() {
             return "Candle{" +
-                    "date='" + date + '\'' +
+                    "date='" + dateTime + '\'' +
                     ", open=" + open +
                     ", close=" + close +
                     ", high=" + high +

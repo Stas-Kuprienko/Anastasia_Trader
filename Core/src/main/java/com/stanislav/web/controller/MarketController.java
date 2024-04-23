@@ -1,11 +1,14 @@
 package com.stanislav.web.controller;
 
 import com.stanislav.database.AccountPersistence;
+import com.stanislav.database.UserPersistence;
+import com.stanislav.domain.smart.analytics.technical.SimpleMovingAverageAide;
 import com.stanislav.domain.trading.MarketData;
 import com.stanislav.entities.candles.DayCandles;
 import com.stanislav.entities.candles.IntraDayCandles;
 import com.stanislav.entities.markets.Stock;
 import com.stanislav.entities.user.Account;
+import com.stanislav.entities.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,9 @@ public final class MarketController {
 
     @Autowired
     private AccountPersistence accountPersistence;
+
+    @Autowired
+    private UserPersistence userPersistence;
 
 
     @GetMapping("/stock/{ticker}")
@@ -49,9 +55,12 @@ public final class MarketController {
                                     @RequestParam("from") LocalDate from,
                                     @RequestParam("to") LocalDate to,
                                     @RequestParam(value = "count", required = false) Integer count) {
-
         Account account = accountPersistence.getById(id);
-        return marketData.getDayCandles(account, ticker, timeFrame, from, to, count);
+        DayCandles candles = marketData.getDayCandles(account, ticker, timeFrame, from, to, count);
+        System.out.println(candles.toString());
+        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(candles, 5);
+        System.out.println(sma.getSmaValues());
+        return candles;
     }
 
     @GetMapping("/intra-day-candles/{ticker}")
@@ -68,4 +77,5 @@ public final class MarketController {
         LocalDateTime timeTo = formatter.parse(to, LocalDateTime::from);
         return marketData.getIntraDayCandles(account, ticker, timeFrame, timeFrom, timeTo, count);
     }
+
 }

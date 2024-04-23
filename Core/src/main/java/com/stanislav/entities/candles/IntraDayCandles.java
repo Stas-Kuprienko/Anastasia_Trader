@@ -1,6 +1,7 @@
 package com.stanislav.entities.candles;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import java.util.Arrays;
 
 public record IntraDayCandles(Candle[] candles) implements Candles {
@@ -12,14 +13,17 @@ public record IntraDayCandles(Candle[] candles) implements Candles {
                 '}';
     }
 
-    public record Candle (String timestamp, Decimal open,
-                          Decimal close, Decimal high,
-                          Decimal low, int volume) {
+    public record Candle (@JsonAlias("timestamp") String dateTime,
+                          Decimal open,
+                          Decimal close,
+                          Decimal high,
+                          Decimal low,
+                          int volume) implements Candles.Candle {
 
         @Override
         public String toString() {
             return "Candle{" +
-                    "timestamp='" + timestamp + '\'' +
+                    "timestamp='" + dateTime + '\'' +
                     ", open=" + open +
                     ", close=" + close +
                     ", high=" + high +

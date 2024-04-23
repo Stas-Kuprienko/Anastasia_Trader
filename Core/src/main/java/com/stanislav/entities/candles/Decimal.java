@@ -3,10 +3,36 @@ package com.stanislav.entities.candles;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public record Decimal(long num, int scale) {
+public class Decimal {
+
+    private final long num;
+    private final byte scale;
+
+    public Decimal(long num, int scale) {
+        this.num = num;
+        this.scale = (byte) scale;
+    }
+
+    public Decimal(double num) {
+        //TODO !!!!
+        this.num = 0;
+        this.scale = 0;
+    }
 
     public BigDecimal toBigDecimal() {
         return BigDecimal.valueOf(num, scale);
+    }
+
+    public double toDouble() {
+        return Double.parseDouble(toString());
+    }
+
+    public long num() {
+        return num;
+    }
+
+    public byte scale() {
+        return scale;
     }
 
     @Override
@@ -24,9 +50,16 @@ public record Decimal(long num, int scale) {
 
     @Override
     public String toString() {
-        return "Decimal{" +
-                "num=" + num +
-                ", scale=" + scale +
-                '}';
+        if (scale == 0) {
+            return String.valueOf(num);
+        }
+        String value = String.valueOf(num);
+        int point = value.length() - scale;
+        if (point <= 0) {
+            point *= -1;
+            value = "0".repeat(point + 1) + value;
+            point = value.length() - scale;
+        }
+        return value.substring(0, point) + '.' + value.substring(point);
     }
 }

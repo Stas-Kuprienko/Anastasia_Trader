@@ -1,51 +1,77 @@
 package com.stanislav.domain.smart.analytics.technical;
 
 import com.stanislav.entities.candles.Candles;
+import com.stanislav.entities.candles.Decimal;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleMovingAverageAide {
 
-    private final Candles.Candle[] candles;
-
-    private final ArrayList<BigDecimal> values;
+    private final ArrayList<Candles.Candle> candlesList;
+    private final int period;
+    private final ArrayList<SMAValue> smaValues;
 
 
     public SimpleMovingAverageAide(Candles candles, int period) {
-        this.candles = candles.candles();
-        values = new ArrayList<>();
-        calculate(period);
+        this.candlesList = new ArrayList<>(List.of(candles.candles()));
+        this.period = period;
+        smaValues = new ArrayList<>();
+        calculate();
     }
 
 
-    public void calculate(int period) {
-        if (period < 2 || candles.length <= period) {
+    public void calculate() {
+        if (period < 2 || candlesList.size() <= period) {
             throw new IllegalArgumentException("period value is incorrect - " + period);
         }
-        BigDecimal sum = BigDecimal.valueOf(0);
-        BigDecimal periodDecimal = BigDecimal.valueOf(period);
+        double sum = 0;
         int i = 0;
+        //count first period sum of values
         for (; i < period; i++) {
-            sum = sum.add(candles[i].close().toBigDecimal());
+            //TODO !!!!!!!!!!!!
+            sum += candlesList.get(i).close().toDouble();
         }
-        for (; i < candles.length; i++) {
-            //TODO dates !!!!!!!!!!!!
-            SMAValue value = new SMAValue("", sum.divide(periodDecimal, RoundingMode.UNNECESSARY));
-            values.add(value.value);
-            sum = sum.subtract(candles[i - period].close().toBigDecimal());
-            sum = sum.add(candles[i].close().toBigDecimal());
+        int scale = candlesList.get(i).close().scale();
+
+        //to avoid counting all sum every time, keep var of sum
+        // just subtract first period value and add next value every iteration
+        for (; i < candlesList.size(); i++) {
+            Decimal newValue = new Decimal(sum / period);
+            smaValues.add(new SMAValue(candlesList.get(i).dateTime(), newValue));
+            sum -= candlesList.get(i - period).close().num();
+            sum += candlesList.get(i).close().num();
         }
     }
 
-    public Candles.Candle[] getCandles() {
-        return candles;
+    public Decimal update(Candles.Candle candle) {
+        if (smaValues.isEmpty()) {
+            throw new IllegalStateException("SMA value list is empty");
+        }
+        long num = candle.close().num();
+
+        //take the last average value from the list and multiply by the period
+        // to get the sum of the last period of values
+        long lastAverageValue = (smaValues.get(smaValues.size() - 1).value.num()) * period;
+
+        //take the first candle of the last period of values to subtract from the last sum
+        // so as not to count everything over again
+        long firstCandleOfLastPeriodSum = candlesList.get((candlesList.size() - 1) - period).close().num();
+        long newValue = lastAverageValue - firstCandleOfLastPeriodSum;
+        newValue += num;
+        Decimal result = new Decimal(newValue / period, candle.close().scale());
+        smaValues.add(new SMAValue(candle.dateTime(), result));
+        candlesList.add(candle);
+        return result;
     }
 
-    public ArrayList<BigDecimal> getValues() {
-        return values;
+    public ArrayList<Candles.Candle> getCandles() {
+        return candlesList;
     }
 
-    public record SMAValue(String date, BigDecimal value) {}
+    public ArrayList<SMAValue> getSmaValues() {
+        return smaValues;
+    }
+
+    public record SMAValue(String date, Decimal value) {}
 }
