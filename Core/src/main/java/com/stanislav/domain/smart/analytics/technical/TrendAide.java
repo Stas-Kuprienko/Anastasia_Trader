@@ -27,11 +27,11 @@ public class TrendAide {
 
 
     public void addMaximum(BigDecimal value) {
-        maximums.add(new Decimal(value.longValue(), value.scale()));
+        maximums.add(new Decimal(value.intValue(), value.scale()));
     }
 
     public void addMinimum(BigDecimal value) {
-        minimums.add(new Decimal(value.longValue(), value.scale()));
+        minimums.add(new Decimal(value.intValue(), value.scale()));
     }
 
     public ArrayList<Decimal> getMaximums() {

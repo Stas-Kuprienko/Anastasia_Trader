@@ -6,14 +6,14 @@ import com.stanislav.event_stream.service.EventStream;
 
 import javax.annotation.PreDestroy;
 
-public class GRPCEventStreamKit implements EventStreamKit {
+public class FinamGrpcEventStreamKit implements EventStreamKit {
 
     private final GRpcClient grpcClient;
 
     private final EventStream orderBookStreamService;
 
 
-    public GRPCEventStreamKit(String resource, String token, int threadPoolSize) {
+    public FinamGrpcEventStreamKit(String resource, String token, int threadPoolSize) {
         this.grpcClient = new GRpcClient(resource, token, threadPoolSize);
         this.orderBookStreamService = new FinamOrderBookStream(grpcClient);
     }

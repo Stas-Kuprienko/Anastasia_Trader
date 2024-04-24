@@ -32,11 +32,7 @@ public class Example {
             Thread.sleep(2000);
             FinamOrderBookCollector collector = (FinamOrderBookCollector) listener.getCollector();
             System.out.println(listener.getScheduledFuture().isDone());
-            System.out.println(collector.getAsks());
-            Thread.sleep(2000);
-            System.out.println(listener.getScheduledFuture().isDone());
-            System.out.println(collector.getAsks());
-            Thread.sleep(2000);
+            Thread.sleep(5000);
             streamService.unsubscribe(listener);
             System.out.print("is cancelled - ");
             System.out.println(listener.getScheduledFuture().isCancelled());

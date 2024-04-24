@@ -5,15 +5,16 @@ import java.util.Objects;
 
 public class Decimal {
 
-    private final long num;
+    private final int num;
     private final byte scale;
 
-    public Decimal(long num, int scale) {
+    public Decimal(int num, int scale) {
         this.num = num;
         this.scale = (byte) scale;
     }
 
     public Decimal(double num) {
+        BigDecimal bigDecimal = BigDecimal.valueOf(num);
         //TODO !!!!
         this.num = 0;
         this.scale = 0;

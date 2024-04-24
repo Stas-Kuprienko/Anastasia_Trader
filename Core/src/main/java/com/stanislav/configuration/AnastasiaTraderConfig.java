@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stanislav.database.DatabaseRepository;
 import com.stanislav.database.hibernate.HibernateRepository;
 import com.stanislav.event_stream.EventStreamKit;
-import com.stanislav.event_stream.grpc_impl.GRPCEventStreamKit;
+import com.stanislav.event_stream.grpc_impl.FinamGrpcEventStreamKit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -62,6 +62,6 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
 
     @Bean
     public EventStreamKit eventStreamKit() {
-        return new GRPCEventStreamKit(apiGRPCResource, apiGRPCToken, grpcThreadPoolSize);
+        return new FinamGrpcEventStreamKit(apiGRPCResource, apiGRPCToken, grpcThreadPoolSize);
     }
 }
