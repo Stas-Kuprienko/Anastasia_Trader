@@ -8,13 +8,16 @@ public final class User {
 
     private String login;
 
+    private String chatId;
+
     private String name;
 
     private List<Account> accounts = new ArrayList<>();
 
 
-    public User(String login, String name) {
+    public User(String login, String chatId, String name) {
         this.login = login;
+        this.chatId = chatId;
         this.name = name;
     }
 
@@ -37,6 +40,14 @@ public final class User {
         this.login = login;
     }
 
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
+    }
+
     public List<Account> getAccounts() {
         return accounts;
     }
@@ -54,18 +65,21 @@ public final class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(name, user.name) && Objects.equals(login, user.login);
+        return Objects.equals(login, user.login) &&
+                Objects.equals(chatId, user.chatId) &&
+                Objects.equals(name, user.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, login);
+        return Objects.hash(login, chatId, name);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "login='" + login + '\'' +
+                ", chatId='" + chatId + '\'' +
                 ", name='" + name + '\'' +
                 ", accounts=" + accounts +
                 '}';

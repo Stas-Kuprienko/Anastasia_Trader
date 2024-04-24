@@ -59,7 +59,7 @@ public class SimpleMovingAverageAide {
         long firstCandleOfLastPeriodSum = candlesList.get((candlesList.size() - 1) - period).close().num();
         long newValue = lastAverageValue - firstCandleOfLastPeriodSum;
         newValue += num;
-        Decimal result = new Decimal(newValue / period, candle.close().scale());
+        Decimal result = new Decimal((int) (newValue / period), candle.close().scale());
         smaValues.add(new SMAValue(candle.dateTime(), result));
         candlesList.add(candle);
         return result;

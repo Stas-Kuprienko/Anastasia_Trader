@@ -6,5 +6,5 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:application.properties")
-@ComponentScan("org.stanislav.telegram_bot")
+@ComponentScan("com.stanislav")
 public class AnastasiaBotConfig {}

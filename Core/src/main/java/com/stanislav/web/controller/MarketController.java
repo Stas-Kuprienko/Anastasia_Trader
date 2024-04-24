@@ -8,7 +8,6 @@ import com.stanislav.entities.candles.DayCandles;
 import com.stanislav.entities.candles.IntraDayCandles;
 import com.stanislav.entities.markets.Stock;
 import com.stanislav.entities.user.Account;
-import com.stanislav.entities.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
