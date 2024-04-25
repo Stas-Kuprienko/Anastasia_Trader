@@ -23,14 +23,26 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @PropertySource("classpath:application.properties")
 public class AnastasiaTraderConfig implements WebMvcConfigurer {
 
-    @Value("${grpc.api.resource}")
-    private String apiGRPCResource;
+    private final String apiGRPCResource;
 
-    @Value("${grpc.api.token}")
-    private String apiGRPCToken;
+    private final String apiGRPCToken;
 
-    @Value("${grpc.thread_pool_size}")
-    private int grpcThreadPoolSize;
+    private final int grpcThreadPoolSize;
+
+
+    public AnastasiaTraderConfig(@Value("${grpc.api.resource}") String apiGRPCResource,
+                                 @Value("${grpc.api.token}") String apiGRPCToken,
+                                 @Value("${grpc.thread_pool_size}") String grpcThreadPoolSize) {
+        this.apiGRPCResource = apiGRPCResource;
+        this.apiGRPCToken = apiGRPCToken;
+        this.grpcThreadPoolSize = Integer.parseInt(grpcThreadPoolSize);
+    }
+
+
+    @Override
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        configurer.enable();
+    }
 
     @Bean
     public ViewResolver getInternalResourceViewResolver(){
@@ -38,11 +50,6 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
         viewResolver.setPrefix("/WEB-INF/views/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
-    }
-
-    @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
     }
 
     @Bean

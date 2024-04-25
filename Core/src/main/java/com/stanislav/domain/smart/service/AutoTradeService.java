@@ -16,7 +16,7 @@ public class AutoTradeService {
         this.orderBookStreamService = eventStreamKit.getOrderBookStreamService();
     }
 
-    public void getPriceStream(Account account, String ticker, String board) {
+    public void getPriceStream(String ticker, String board) {
         EventStreamListener listener = orderBookStreamService.getEventStream(ticker);
         if (!hasRelevantListener(listener)) {
             listener = orderBookStreamService.subscribe(ticker, board);
