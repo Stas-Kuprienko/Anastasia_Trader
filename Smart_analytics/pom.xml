@@ -8,7 +8,7 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>event_stream</artifactId>
+    <artifactId>smart_analytics</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 

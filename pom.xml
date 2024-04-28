@@ -11,7 +11,7 @@
 
     <modules>
         <module>Core</module>
-        <module>Event_stream</module>
+        <module>Smart_analytics</module>
         <module>Telegram_bot</module>
     </modules>
 

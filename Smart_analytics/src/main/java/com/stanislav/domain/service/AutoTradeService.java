@@ -1,9 +1,8 @@
-package com.stanislav.domain.smart.service;
+package com.stanislav.domain.service;
 
-import com.stanislav.entities.user.Account;
 import com.stanislav.event_stream.EventStreamKit;
-import com.stanislav.event_stream.service.EventStreamListener;
 import com.stanislav.event_stream.service.EventStream;
+import com.stanislav.event_stream.service.EventStreamListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
