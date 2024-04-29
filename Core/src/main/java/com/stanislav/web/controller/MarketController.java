@@ -2,7 +2,6 @@ package com.stanislav.web.controller;
 
 import com.stanislav.database.AccountPersistence;
 import com.stanislav.database.UserPersistence;
-import com.stanislav.domain.smart.analytics.technical.SimpleMovingAverageAide;
 import com.stanislav.domain.trading.MarketData;
 import com.stanislav.entities.candles.DayCandles;
 import com.stanislav.entities.candles.IntraDayCandles;
@@ -57,8 +56,6 @@ public final class MarketController {
         Account account = accountPersistence.getById(id);
         DayCandles candles = marketData.getDayCandles(account, ticker, timeFrame, from, to, count);
         System.out.println(candles.toString());
-        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(candles, 5);
-        System.out.println(sma.getSmaValues());
         return candles;
     }
 

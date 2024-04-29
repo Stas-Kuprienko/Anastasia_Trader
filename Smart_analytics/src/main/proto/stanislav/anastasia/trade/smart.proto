@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package stanislav.anastasia.trade;
+
+import "google/protobuf/empty.proto";
+
+message SubscribeTradeRequest {
+
+  Account account = 1;
+  string security = 2;
+  double price = 3;
+  int32 quantity = 4;
+  Strategy strategy = 5;
+  TimeFrame timeFrame = 6;
+
+}
+
+message UnsubscribeRequest {
+
+  Account account = 1;
+  string security = 2;
+
+}
+
+message SubscribeTradeResponse {
+
+  OrderNotification notification = 1;
+
+}
+
+message UnsubscribeResponse {
+
+  bool isUnsubscribe = 1;
+
+}
+
+message Account {
+
+  string clientId = 1;
+  string token = 2;
+
+}
+
+enum Strategy {
+
+  MOVING_AVERAGE = 0;
+  UPTREND_BREAKDOWN = 1;
+  DOWNTREND_BREAKDOWN = 2;
+
+}
+
+enum TimeFrame {
+
+  M5 = 0;
+  M15 = 1;
+  M30 = 2;
+  H1 = 3;
+  H4 = 4;
+  D1 = 5;
+
+}
+
+enum Direction {
+
+  BUY = 0;
+  SELL = 1;
+
+}
+
+message OrderNotification {
+
+  Account account = 1;
+  string security = 2;
+  double price = 3;
+  int32 quantity = 4;
+  Direction direction = 5;
+  string dateTime = 6;
+
+}
+
+service SmartAutoTrade {
+
+  rpc subscribe(SubscribeTradeRequest) returns (stream SubscribeTradeResponse);
+  rpc unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+
+}

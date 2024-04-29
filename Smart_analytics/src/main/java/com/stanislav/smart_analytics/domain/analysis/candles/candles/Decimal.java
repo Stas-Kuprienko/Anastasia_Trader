@@ -1,4 +1,4 @@
-package com.stanislav.smart_analytics.analysis.candles.candles;
+package com.stanislav.smart_analytics.domain.analysis.candles.candles;
 
 import java.math.BigDecimal;
 import java.util.Objects;

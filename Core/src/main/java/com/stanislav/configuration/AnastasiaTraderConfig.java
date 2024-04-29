@@ -3,9 +3,6 @@ package com.stanislav.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stanislav.database.DatabaseRepository;
 import com.stanislav.database.hibernate.HibernateRepository;
-import com.stanislav.event_stream.EventStreamKit;
-import com.stanislav.event_stream.grpc_impl.FinamGrpcEventStreamKit;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,21 +19,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @ComponentScan("com.stanislav")
 @PropertySource("classpath:application.properties")
 public class AnastasiaTraderConfig implements WebMvcConfigurer {
-
-    private final String apiGRPCResource;
-
-    private final String apiGRPCToken;
-
-    private final int grpcThreadPoolSize;
-
-
-    public AnastasiaTraderConfig(@Value("${grpc.api.resource}") String apiGRPCResource,
-                                 @Value("${grpc.api.token}") String apiGRPCToken,
-                                 @Value("${grpc.thread_pool_size}") String grpcThreadPoolSize) {
-        this.apiGRPCResource = apiGRPCResource;
-        this.apiGRPCToken = apiGRPCToken;
-        this.grpcThreadPoolSize = Integer.parseInt(grpcThreadPoolSize);
-    }
 
 
     @Override
@@ -67,8 +49,4 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
         return new HibernateRepository("hibernate.cfg.xml");
     }
 
-    @Bean
-    public EventStreamKit eventStreamKit() {
-        return new FinamGrpcEventStreamKit(apiGRPCResource, apiGRPCToken, grpcThreadPoolSize);
-    }
 }

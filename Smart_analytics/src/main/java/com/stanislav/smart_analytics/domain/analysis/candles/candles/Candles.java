@@ -1,4 +1,4 @@
-package com.stanislav.smart_analytics.analysis.candles.candles;
+package com.stanislav.smart_analytics.domain.analysis.candles.candles;
 
 public interface Candles {
 
