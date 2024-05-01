@@ -1,13 +1,12 @@
 package com.stanislav.smart_analytics.service.grpc_impl;
 
-import com.stanislav.smart_analytics.service.SmartAutoTradeServer;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 
-public class GRpcServer implements SmartAutoTradeServer {
+public class GRpcServer implements AutoCloseable {
 
     private final Server server;
     private final String token;
@@ -24,8 +23,9 @@ public class GRpcServer implements SmartAutoTradeServer {
         }
     }
 
+    @Override
     @PreDestroy
-    public void destroy() {
+    public void close() {
         server.shutdownNow();
     }
 }

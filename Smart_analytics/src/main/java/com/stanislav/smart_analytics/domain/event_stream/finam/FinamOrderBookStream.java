@@ -1,8 +1,8 @@
 package com.stanislav.smart_analytics.domain.event_stream.finam;
 
-import com.stanislav.smart_analytics.domain.event_stream.service.EventStreamListener;
-import com.stanislav.smart_analytics.domain.event_stream.service.EventStream;
-import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.GRpcClient;
+import com.stanislav.smart_analytics.domain.event_stream.EventStreamListener;
+import com.stanislav.smart_analytics.domain.event_stream.EventStream;
+import com.stanislav.smart_analytics.service.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.Events;
 

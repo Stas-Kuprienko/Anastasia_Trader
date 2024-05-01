@@ -1,24 +1,10 @@
 package com.stanislav.smart_analytics.domain.entities.candles;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 
-public class Decimal {
-
-    private final long num;
-    private final byte scale;
-
-    public Decimal(long num, int scale) {
-        this.num = num;
-        this.scale = (byte) scale;
-    }
-
-    public Decimal(double num) {
-        BigDecimal bigDecimal = BigDecimal.valueOf(num);
-        //TODO !!!!
-        this.num = 0;
-        this.scale = 0;
-    }
+public record Decimal(long num, int scale) {
 
     public BigDecimal toBigDecimal() {
         return BigDecimal.valueOf(num, scale);
@@ -26,14 +12,6 @@ public class Decimal {
 
     public double toDouble() {
         return Double.parseDouble(toString());
-    }
-
-    public long num() {
-        return num;
-    }
-
-    public byte scale() {
-        return scale;
     }
 
     @Override
@@ -46,21 +24,11 @@ public class Decimal {
 
     @Override
     public int hashCode() {
-        return Objects.hash(num, scale);
+        return Objects.hash(toDouble());
     }
 
     @Override
     public String toString() {
-        if (scale == 0) {
-            return String.valueOf(num);
-        }
-        String value = String.valueOf(num);
-        int point = value.length() - scale;
-        if (point <= 0) {
-            point *= -1;
-            value = "0".repeat(point + 1) + value;
-            point = value.length() - scale;
-        }
-        return value.substring(0, point) + '.' + value.substring(point);
+        return new BigDecimal(BigInteger.valueOf(num), scale).toString();
     }
 }

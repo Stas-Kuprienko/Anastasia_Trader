@@ -5,7 +5,7 @@ import com.stanislav.smart_analytics.domain.entities.Board;
 import com.stanislav.smart_analytics.domain.entities.TimeFrame;
 import com.stanislav.smart_analytics.domain.entities.candles.DayCandles;
 import com.stanislav.smart_analytics.domain.entities.candles.IntraDayCandles;
-import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.GRpcClient;
+import com.stanislav.smart_analytics.service.grpc_impl.GRpcClient;
 import com.stanislav.smart_analytics.domain.market.MarketDataProvider;
 import grpc.tradeapi.v1.CandlesGrpc;
 import proto.tradeapi.v1.Candles;

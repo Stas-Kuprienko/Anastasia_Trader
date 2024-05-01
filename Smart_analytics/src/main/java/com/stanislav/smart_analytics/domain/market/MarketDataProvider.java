@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 public interface MarketDataProvider {
 
+    //TODO !!!!!!!!! from, to, count
+
     DayCandles getDayCandles(String ticker, Board board, TimeFrame.Day timeFrame,
                              LocalDate from, LocalDate to, Integer count);
 

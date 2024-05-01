@@ -1,7 +1,6 @@
 package com.stanislav.smart_analytics.domain.analysis.technical;
 
 import com.stanislav.smart_analytics.domain.entities.candles.Candles;
-import com.stanislav.smart_analytics.domain.entities.candles.Decimal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,39 +26,38 @@ public class SimpleMovingAverageAide {
         }
         double sum = 0;
         int i = 0;
+
         //count first period sum of values
         for (; i < period; i++) {
-            //TODO !!!!!!!!!!!!
             sum += candlesList.get(i).close().toDouble();
         }
-        int scale = candlesList.get(i).close().scale();
 
         //to avoid counting all sum every time, keep var of sum
         // just subtract first period value and add next value every iteration
         for (; i < candlesList.size(); i++) {
-            Decimal newValue = new Decimal(sum / period);
+            double newValue = sum / period;
             smaValues.add(new SMAValue(candlesList.get(i).dateTime(), newValue));
-            sum -= candlesList.get(i - period).close().num();
-            sum += candlesList.get(i).close().num();
+            sum -= candlesList.get(i - period).close().toDouble();
+            sum += candlesList.get(i).close().toDouble();
         }
     }
 
-    public Decimal update(Candles.Candle candle) {
+    public double update(Candles.Candle candle) {
         if (smaValues.isEmpty()) {
             throw new IllegalStateException("SMA value list is empty");
         }
-        long num = candle.close().num();
+        double num = candle.close().toDouble();
 
         //take the last average value from the list and multiply by the period
         // to get the sum of the last period of values
-        long lastAverageValue = (smaValues.get(smaValues.size() - 1).value.num()) * period;
+        double lastAverageValue = (smaValues.get(smaValues.size() - 1).value) * period;
 
         //take the first candle of the last period of values to subtract from the last sum
         // so as not to count everything over again
-        long firstCandleOfLastPeriodSum = candlesList.get((candlesList.size() - 1) - period).close().num();
-        long newValue = lastAverageValue - firstCandleOfLastPeriodSum;
+        double firstCandleOfLastPeriodSum = candlesList.get((candlesList.size() - 1) - period).close().toDouble();
+        double newValue = lastAverageValue - firstCandleOfLastPeriodSum;
         newValue += num;
-        Decimal result = new Decimal((int) (newValue / period), candle.close().scale());
+        double result = newValue / period;
         smaValues.add(new SMAValue(candle.dateTime(), result));
         candlesList.add(candle);
         return result;
@@ -73,5 +71,5 @@ public class SimpleMovingAverageAide {
         return smaValues;
     }
 
-    public record SMAValue(String date, Decimal value) {}
+    public record SMAValue(String date, double value) {}
 }

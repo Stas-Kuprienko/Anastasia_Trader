@@ -1,11 +1,10 @@
 package com.stanislav.smart_analytics.configuration;
 
 import com.stanislav.smart_analytics.domain.event_stream.EventStreamKit;
-import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.FinamGrpcEventStreamKit;
-import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.GRpcClient;
+import com.stanislav.smart_analytics.domain.event_stream.finam.FinamGrpcEventStreamKit;
+import com.stanislav.smart_analytics.service.grpc_impl.GRpcClient;
 import com.stanislav.smart_analytics.domain.market.MarketDataProvider;
 import com.stanislav.smart_analytics.domain.market.finam.FinamGRpcMarketDataProvider;
-import com.stanislav.smart_analytics.service.SmartAutoTradeServer;
 import com.stanislav.smart_analytics.service.grpc_impl.GRpcServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,12 +39,12 @@ public class SmartAnalyticsConfig {
 
 
     @Bean
-    public SmartAutoTradeServer smartAutoTradeAPI() {
+    public GRpcServer grpcServer() {
         return new GRpcServer(serverToken, port);
     }
 
     @Bean
-    public GRpcClient gRpcClient() {
+    public GRpcClient grpcClient() {
         return new GRpcClient(apiResource, apiToken, threadPoolSize);
     }
 

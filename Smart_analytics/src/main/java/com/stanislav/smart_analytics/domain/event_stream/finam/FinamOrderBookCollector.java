@@ -1,8 +1,8 @@
 package com.stanislav.smart_analytics.domain.event_stream.finam;
 
 import com.stanislav.smart_analytics.domain.event_stream.EventStreamException;
-import com.stanislav.smart_analytics.domain.event_stream.service.EventStreamListener;
-import com.stanislav.smart_analytics.domain.event_stream.service.OrderBookRow;
+import com.stanislav.smart_analytics.domain.event_stream.EventStreamListener;
+import com.stanislav.smart_analytics.domain.event_stream.OrderBookRow;
 import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentLinkedDeque;

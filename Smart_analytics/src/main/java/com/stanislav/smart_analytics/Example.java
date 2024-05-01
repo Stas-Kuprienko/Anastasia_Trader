@@ -1,11 +1,13 @@
-package com.stanislav.smart_analytics.domain.event_stream;
+package com.stanislav.smart_analytics;
 
+import com.stanislav.smart_analytics.domain.analysis.technical.SimpleMovingAverageAide;
 import com.stanislav.smart_analytics.domain.entities.Board;
 import com.stanislav.smart_analytics.domain.entities.TimeFrame;
+import com.stanislav.smart_analytics.domain.entities.candles.Candles;
+import com.stanislav.smart_analytics.domain.event_stream.EventStreamListener;
 import com.stanislav.smart_analytics.domain.event_stream.finam.FinamOrderBookStream;
 import com.stanislav.smart_analytics.domain.event_stream.finam.FinamOrderBookCollector;
-import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.GRpcClient;
-import com.stanislav.smart_analytics.domain.event_stream.service.EventStreamListener;
+import com.stanislav.smart_analytics.service.grpc_impl.GRpcClient;
 import com.stanislav.smart_analytics.domain.market.MarketDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,8 +63,10 @@ public class Example {
 
     @GetMapping("/go")
     public void test() {
-        System.out.println(marketDataProvider
+        Candles candles = (marketDataProvider
                 .getDayCandles("SBER", Board.TQBR, TimeFrame.Day.D1,
-                        LocalDate.parse("2024-03-03"), LocalDate.parse("2024-04-03"), 10));
+                        LocalDate.parse("2024-02-02"), LocalDate.parse("2024-04-03"), 25));
+        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(candles, 5);
+        System.out.println(sma.getSmaValues());
     }
 }

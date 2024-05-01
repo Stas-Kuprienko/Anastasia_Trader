@@ -1,5 +1,6 @@
-package com.stanislav.smart_analytics.domain.event_stream.grpc_impl;
+package com.stanislav.smart_analytics.service.grpc_impl;
 
+import com.stanislav.smart_analytics.service.grpc_impl.security.Authenticator;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
