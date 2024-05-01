@@ -1,8 +1,9 @@
-package com.stanislav.smart_analytics.event_stream.grpc_impl;
+package com.stanislav.smart_analytics.domain.event_stream.grpc_impl;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
+import javax.annotation.PreDestroy;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -32,6 +33,7 @@ public class GRpcClient implements AutoCloseable {
     }
 
     @Override
+    @PreDestroy
     public void close() {
         channel.shutdownNow();
         scheduler.shutdown();

@@ -1,14 +1,14 @@
-package com.stanislav.smart_analytics.domain.analysis.candles.candles;
+package com.stanislav.smart_analytics.domain.entities.candles;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Decimal {
 
-    private final int num;
+    private final long num;
     private final byte scale;
 
-    public Decimal(int num, int scale) {
+    public Decimal(long num, int scale) {
         this.num = num;
         this.scale = (byte) scale;
     }

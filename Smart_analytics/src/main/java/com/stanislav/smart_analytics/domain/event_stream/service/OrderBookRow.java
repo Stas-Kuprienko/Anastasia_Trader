@@ -1,4 +1,4 @@
-package com.stanislav.smart_analytics.event_stream.service;
+package com.stanislav.smart_analytics.domain.event_stream.service;
 
 public interface OrderBookRow {
 

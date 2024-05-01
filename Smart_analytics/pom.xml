@@ -50,11 +50,18 @@
 			<artifactId>protobuf-java</artifactId>
 			<version>3.25.2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>${javax.annotation.version}</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>6.1.6</version>
 		</dependency>
 
 	</dependencies>

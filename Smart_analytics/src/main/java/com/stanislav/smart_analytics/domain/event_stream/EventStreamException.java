@@ -1,4 +1,4 @@
-package com.stanislav.smart_analytics.event_stream;
+package com.stanislav.smart_analytics.domain.event_stream;
 
 public class EventStreamException extends Exception {
 

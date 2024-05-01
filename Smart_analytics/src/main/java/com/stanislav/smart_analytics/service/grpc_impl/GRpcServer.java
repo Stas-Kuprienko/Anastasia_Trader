@@ -1,18 +1,18 @@
 package com.stanislav.smart_analytics.service.grpc_impl;
 
-import com.stanislav.smart_analytics.service.SmartAutoTradeAPI;
+import com.stanislav.smart_analytics.service.SmartAutoTradeServer;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 
-public class GRpcAPI implements SmartAutoTradeAPI {
+public class GRpcServer implements SmartAutoTradeServer {
 
     private final Server server;
     private final String token;
 
-    public GRpcAPI(String token, int port) {
+    public GRpcServer(String token, int port) {
         this.server = ServerBuilder.forPort(port)
                 .addService(new SmartAutoTradeGRpcService())
                 .build();
@@ -23,8 +23,6 @@ public class GRpcAPI implements SmartAutoTradeAPI {
             throw new RuntimeException(e);
         }
     }
-
-
 
     @PreDestroy
     public void destroy() {

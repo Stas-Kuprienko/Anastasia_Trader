@@ -1,4 +1,4 @@
-package com.stanislav.smart_analytics.event_stream.grpc_impl;
+package com.stanislav.smart_analytics.domain.event_stream.grpc_impl;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;

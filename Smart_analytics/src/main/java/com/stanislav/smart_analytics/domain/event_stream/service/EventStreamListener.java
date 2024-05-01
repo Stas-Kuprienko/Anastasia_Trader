@@ -1,6 +1,6 @@
-package com.stanislav.smart_analytics.event_stream.service;
+package com.stanislav.smart_analytics.domain.event_stream.service;
 
-import com.stanislav.smart_analytics.event_stream.EventStreamException;
+import com.stanislav.smart_analytics.domain.event_stream.EventStreamException;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledFuture;

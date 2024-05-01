@@ -1,17 +1,28 @@
-package com.stanislav.smart_analytics.event_stream;
+package com.stanislav.smart_analytics.domain.event_stream;
 
-import com.stanislav.smart_analytics.event_stream.finam.FinamOrderBookStream;
-import com.stanislav.smart_analytics.event_stream.finam.FinamOrderBookCollector;
-import com.stanislav.smart_analytics.event_stream.grpc_impl.GRpcClient;
-import com.stanislav.smart_analytics.event_stream.service.EventStreamListener;
+import com.stanislav.smart_analytics.domain.entities.Board;
+import com.stanislav.smart_analytics.domain.entities.TimeFrame;
+import com.stanislav.smart_analytics.domain.event_stream.finam.FinamOrderBookStream;
+import com.stanislav.smart_analytics.domain.event_stream.finam.FinamOrderBookCollector;
+import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.GRpcClient;
+import com.stanislav.smart_analytics.domain.event_stream.service.EventStreamListener;
+import com.stanislav.smart_analytics.domain.market.MarketDataProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.Properties;
 
-//@Controller
-//@RequestMapping("/test")
+@Controller
+@RequestMapping("/test")
 public class Example {
+
+    @Autowired
+    private MarketDataProvider marketDataProvider;
 
 //    @GetMapping("/start")
     public void start() {
@@ -46,5 +57,12 @@ public class Example {
         }
 
         System.out.println(listener.getScheduledFuture().isDone());
+    }
+
+    @GetMapping("/go")
+    public void test() {
+        System.out.println(marketDataProvider
+                .getDayCandles("SBER", Board.TQBR, TimeFrame.Day.D1,
+                        LocalDate.parse("2024-03-03"), LocalDate.parse("2024-04-03"), 10));
     }
 }

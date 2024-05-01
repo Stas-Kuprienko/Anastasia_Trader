@@ -1,9 +1,13 @@
 package com.stanislav.smart_analytics.configuration;
 
-import com.stanislav.smart_analytics.event_stream.EventStreamKit;
-import com.stanislav.smart_analytics.event_stream.grpc_impl.FinamGrpcEventStreamKit;
-import com.stanislav.smart_analytics.service.SmartAutoTradeAPI;
-import com.stanislav.smart_analytics.service.grpc_impl.GRpcAPI;
+import com.stanislav.smart_analytics.domain.event_stream.EventStreamKit;
+import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.FinamGrpcEventStreamKit;
+import com.stanislav.smart_analytics.domain.event_stream.grpc_impl.GRpcClient;
+import com.stanislav.smart_analytics.domain.market.MarketDataProvider;
+import com.stanislav.smart_analytics.domain.market.finam.FinamGRpcMarketDataProvider;
+import com.stanislav.smart_analytics.service.SmartAutoTradeServer;
+import com.stanislav.smart_analytics.service.grpc_impl.GRpcServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,19 +19,19 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:application.properties")
 public class SmartAnalyticsConfig {
 
-    private final String token;
+    private final String serverToken;
     private final int port;
     private final String apiResource;
     private final String apiToken;
     private final int threadPoolSize;
 
 
-    public SmartAnalyticsConfig(@Value("grpc.service.token") String token,
-                                @Value("grpc.service.port") String port,
-                                @Value("grpc.api.resource") String apiResource,
-                                @Value("grpc.api.token") String apiToken,
-                                @Value("service.thread_pool_size") String threadPoolSize) {
-        this.token = token;
+    public SmartAnalyticsConfig(@Value("${grpc.service.token}") String serverToken,
+                                @Value("${grpc.service.port}") String port,
+                                @Value("${grpc.api.resource}") String apiResource,
+                                @Value("${grpc.api.token}") String apiToken,
+                                @Value("${service.thread_pool_size}") String threadPoolSize) {
+        this.serverToken = serverToken;
         this.port = Integer.parseInt(port);
         this.apiResource = apiResource;
         this.apiToken = apiToken;
@@ -36,12 +40,22 @@ public class SmartAnalyticsConfig {
 
 
     @Bean
-    public SmartAutoTradeAPI smartAutoTradeAPI() {
-        return new GRpcAPI(token, port);
+    public SmartAutoTradeServer smartAutoTradeAPI() {
+        return new GRpcServer(serverToken, port);
     }
 
     @Bean
-    public EventStreamKit eventStreamKit() {
-        return new FinamGrpcEventStreamKit(apiResource, apiToken, threadPoolSize);
+    public GRpcClient gRpcClient() {
+        return new GRpcClient(apiResource, apiToken, threadPoolSize);
+    }
+
+    @Bean
+    public EventStreamKit eventStreamKit(@Autowired GRpcClient gRpcClient) {
+        return new FinamGrpcEventStreamKit(gRpcClient);
+    }
+
+    @Bean
+    public MarketDataProvider marketDataProvider(@Autowired GRpcClient gRpcClient) {
+        return new FinamGRpcMarketDataProvider(gRpcClient);
     }
 }
