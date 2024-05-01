@@ -1,4 +1,4 @@
-package com.stanislav.smart_analytics.domain.entities.candles;
+package com.stanislav.smart_analytics.domain.entities;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

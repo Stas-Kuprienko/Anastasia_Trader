@@ -5,26 +5,26 @@ import com.stanislav.smart_analytics.domain.entities.Decimal;
 
 import java.util.Arrays;
 
-public record DayCandlesImpl(DayCandle[] candles) implements DayCandles {
+public record IntraDayCandlesImpl(Candle[] candles) implements IntraDayCandles {
 
     @Override
     public String toString() {
-        return "DayCandles{" +
+        return "IntraDayCandles{" +
                 "candles=" + Arrays.toString(candles) +
                 '}';
     }
 
-    public record DayCandle (@JsonAlias("date") String dateTime,
-                             Decimal open,
-                             Decimal close,
-                             Decimal high,
-                             Decimal low,
-                             long volume) implements Candles.Candle {
+    public record Candle (@JsonAlias("timestamp") String dateTime,
+                          Decimal open,
+                          Decimal close,
+                          Decimal high,
+                          Decimal low,
+                          long volume) implements Candles.Candle {
 
         @Override
         public String toString() {
             return "Candle{" +
-                    "date='" + dateTime + '\'' +
+                    "timestamp='" + dateTime + '\'' +
                     ", open=" + open +
                     ", close=" + close +
                     ", high=" + high +

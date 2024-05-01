@@ -1,7 +1,7 @@
 package com.stanislav.smart_analytics.domain.analysis.technical;
 
 import com.stanislav.smart_analytics.domain.entities.candles.Candles;
-import com.stanislav.smart_analytics.domain.entities.candles.Decimal;
+import com.stanislav.smart_analytics.domain.entities.Decimal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

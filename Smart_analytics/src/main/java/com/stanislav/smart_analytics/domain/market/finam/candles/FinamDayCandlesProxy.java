@@ -1,8 +1,9 @@
-package com.stanislav.smart_analytics.domain.market.finam;
+package com.stanislav.smart_analytics.domain.market.finam.candles;
 
 import com.google.type.Date;
 import com.stanislav.smart_analytics.domain.entities.candles.DayCandles;
-import com.stanislav.smart_analytics.domain.entities.candles.Decimal;
+import com.stanislav.smart_analytics.domain.entities.Decimal;
+import proto.tradeapi.v1.Candles;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -16,19 +17,7 @@ public record FinamDayCandlesProxy(FinamDayCandleProxy[] candles) implements Day
                 '}';
     }
 
-    public record FinamDayCandleProxy(proto.tradeapi.v1.Candles.DayCandle dayCandle) implements Candle {
-
-        @Override
-        public String toString() {
-            return "Candle{" +
-                    "date='" + dateTime() + '\'' +
-                    ", open=" + open() +
-                    ", close=" + close() +
-                    ", high=" + high() +
-                    ", low=" + low() +
-                    ", volume=" + volume() +
-                    '}';
-        }
+    public record FinamDayCandleProxy(Candles.DayCandle dayCandle) implements Candle {
 
         @Override
         public String dateTime() {
@@ -59,6 +48,18 @@ public record FinamDayCandlesProxy(FinamDayCandleProxy[] candles) implements Day
         @Override
         public long volume() {
             return dayCandle.getVolume();
+        }
+
+        @Override
+        public String toString() {
+            return "Candle{" +
+                    "date='" + dateTime() + '\'' +
+                    ", open=" + open() +
+                    ", close=" + close() +
+                    ", high=" + high() +
+                    ", low=" + low() +
+                    ", volume=" + volume() +
+                    '}';
         }
     }
 }

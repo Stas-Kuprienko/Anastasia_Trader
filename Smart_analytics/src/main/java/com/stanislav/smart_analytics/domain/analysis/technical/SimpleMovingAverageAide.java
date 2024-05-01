@@ -27,13 +27,13 @@ public class SimpleMovingAverageAide {
         double sum = 0;
         int i = 0;
 
-        //count first period sum of values
+        // count first period sum of values
         for (; i < period; i++) {
             sum += candlesList.get(i).close().toDouble();
         }
 
-        //to avoid counting all sum every time, keep var of sum
-        // just subtract first period value and add next value every iteration
+        // to avoid counting all sum every time, keep var of sum
+        //just subtract first period value and add next value every iteration
         for (; i < candlesList.size(); i++) {
             double newValue = sum / period;
             smaValues.add(new SMAValue(candlesList.get(i).dateTime(), newValue));
@@ -46,21 +46,28 @@ public class SimpleMovingAverageAide {
         if (smaValues.isEmpty()) {
             throw new IllegalStateException("SMA value list is empty");
         }
-        double num = candle.close().toDouble();
+        double price = candle.close().toDouble();
 
-        //take the last average value from the list and multiply by the period
-        // to get the sum of the last period of values
-        double lastAverageValue = (smaValues.get(smaValues.size() - 1).value) * period;
+        // take the last average value from the list and multiply by the period
+        //to get the sum of the last period of values
+        double lastPeriodSumValue = (smaValues.get(smaValues.size() - 1).value) * period;
 
-        //take the first candle of the last period of values to subtract from the last sum
-        // so as not to count everything over again
+        // take the first intraDayCandle of the last period of values to subtract from the last sum
+        //so as not to count everything over again
         double firstCandleOfLastPeriodSum = candlesList.get((candlesList.size() - 1) - period).close().toDouble();
-        double newValue = lastAverageValue - firstCandleOfLastPeriodSum;
-        newValue += num;
+        double newValue = lastPeriodSumValue - firstCandleOfLastPeriodSum;
+        newValue += price;
         double result = newValue / period;
         smaValues.add(new SMAValue(candle.dateTime(), result));
         candlesList.add(candle);
         return result;
+    }
+
+    public double last() {
+        if (!smaValues.isEmpty()) {
+            return smaValues.get(smaValues.size() - 1).value;
+        }
+        return 0;
     }
 
     public ArrayList<Candles.Candle> getCandles() {
@@ -72,4 +79,12 @@ public class SimpleMovingAverageAide {
     }
 
     public record SMAValue(String date, double value) {}
+
+    @Override
+    public String toString() {
+        return "SimpleMovingAverageAide{" +
+                "period=" + period +
+                ", smaValues=" + smaValues +
+                '}';
+    }
 }

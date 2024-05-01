@@ -36,7 +36,7 @@ public final class TimeFrame {
         return timeFrame;
     }
 
-    public static Candles.IntradayCandleTimeFrame toProtoValue(TimeFrame.IntraDay timeFrame) {
+    public static Candles.IntradayCandleTimeFrame toProto(TimeFrame.IntraDay timeFrame) {
         Candles.IntradayCandleTimeFrame proto;
         switch (timeFrame) {
             case M1 -> proto = Candles.IntradayCandleTimeFrame.INTRADAYCANDLE_TIMEFRAME_M1;
@@ -48,7 +48,7 @@ public final class TimeFrame {
         return proto;
     }
 
-    public static Candles.DayCandleTimeFrame toProtoValue(TimeFrame.Day timeFrame) {
+    public static Candles.DayCandleTimeFrame toProto(TimeFrame.Day timeFrame) {
         Candles.DayCandleTimeFrame proto;
         switch (timeFrame) {
             case D1 -> proto = Candles.DayCandleTimeFrame.DAYCANDLE_TIMEFRAME_D1;

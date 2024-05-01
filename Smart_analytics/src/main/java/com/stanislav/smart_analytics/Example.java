@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
-@Controller
-@RequestMapping("/test")
+//@Controller
+//@RequestMapping("/test")
 public class Example {
 
-    @Autowired
+//    @Autowired
     private MarketDataProvider marketDataProvider;
 
 //    @GetMapping("/start")
@@ -61,12 +62,20 @@ public class Example {
         System.out.println(listener.getScheduledFuture().isDone());
     }
 
-    @GetMapping("/go")
+//    @GetMapping("/go")
     public void test() {
         Candles candles = (marketDataProvider
                 .getDayCandles("SBER", Board.TQBR, TimeFrame.Day.D1,
-                        LocalDate.parse("2024-02-02"), LocalDate.parse("2024-04-03"), 25));
+                        LocalDate.now(), 30));
         SimpleMovingAverageAide sma = new SimpleMovingAverageAide(candles, 5);
-        System.out.println(sma.getSmaValues());
+        System.out.println(sma);
+    }
+
+//    @GetMapping("/goo")
+    public void intraTest() {
+        Candles candles = marketDataProvider.getIntraDayCandles("SBER", Board.TQBR, TimeFrame.IntraDay.H1,
+                LocalDateTime.now().minusHours(4), 30);
+        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(candles, 5);
+        System.out.println(sma);
     }
 }
