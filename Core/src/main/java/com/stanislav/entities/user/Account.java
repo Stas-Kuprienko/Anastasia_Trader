@@ -1,7 +1,7 @@
 package com.stanislav.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.stanislav.entities.candles.Decimal;
+import com.stanislav.entities.Decimal;
 import jakarta.persistence.*;
 import org.springframework.lang.NonNull;
 

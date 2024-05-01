@@ -1,4 +1,8 @@
-package com.stanislav.smart.domain.entities;
+/*
+ * Stanislav Kuprienko *** Omsk, Russia
+ */
+
+package com.stanislav.entities;
 
 import java.math.BigDecimal;
 import java.util.Objects;

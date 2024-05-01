@@ -3,8 +3,6 @@ package com.stanislav.domain.trading.finam;
 import com.stanislav.domain.trading.MarketData;
 import com.stanislav.domain.trading.finam.securities_dto.FinamSecuritiesResponse;
 import com.stanislav.entities.Board;
-import com.stanislav.entities.candles.DayCandles;
-import com.stanislav.entities.candles.IntraDayCandles;
 import com.stanislav.entities.markets.Stock;
 import com.stanislav.entities.user.Account;
 import com.stanislav.web.utils.ApiDataParser;
@@ -14,12 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,60 +78,10 @@ public class FinamMarketData implements MarketData {
         }
     }
 
-    @Override
-    public DayCandles getDayCandles(@NonNull Account account, @NonNull String ticker, @NonNull String timeFrame,
-                                    @NonNull LocalDate from, @NonNull LocalDate to, Integer interval) {
-        GetQueryBuilder query = new GetQueryBuilder(DAY_CANDLES.value);
-        query.add(SECURITY_BOARD.value, Board.TQBR)
-                .add(SECURITY_CODE.value, ticker)
-                .add(TIME_FRAME.value, timeFrame)
-                .add(INTERVAL_FROM.value, from)
-                .add(INTERVAL_TO.value, to)
-                .add(INTERVAL_COUNT.value, interval);
-        try {
-            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, account.getToken());
-            String[] layers = {"data"};
-            return dataParser.parseObject(response, DayCandles.class, layers);
-        } catch (HttpStatusCodeException e) {
-            e.printStackTrace();
-            //TODO
-            return new DayCandles(new DayCandles.DayCandle[0]);
-        }
-    }
-
-    @Override
-    public IntraDayCandles getIntraDayCandles(@NonNull Account account, @NonNull String ticker, @NonNull String timeFrame,
-                                              @NonNull LocalDateTime from, @NonNull LocalDateTime to, Integer interval) {
-        GetQueryBuilder query = new GetQueryBuilder(INTRA_DAY.value);
-        //TODO parameters validation
-        query.add(SECURITY_BOARD.value, Board.TQBR)
-                .add(SECURITY_CODE.value, ticker)
-                .add(TIME_FRAME.value, timeFrame)
-                .add(INTERVAL_FROM.value, from)
-                .add(INTERVAL_TO.value, to)
-                .add(INTERVAL_COUNT.value, interval);
-        try {
-            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, account.getToken());
-            String[] layers = {"data"};
-            return dataParser.parseObject(response, IntraDayCandles.class, layers);
-        } catch (HttpStatusCodeException e) {
-            e.printStackTrace();
-            //TODO
-            return new IntraDayCandles(new IntraDayCandles.Candle[0]);
-        }
-    }
-
 
     enum Args {
         BOARD("Board"),
-        SEC_CODE("Seccode"),
-        SECURITY_BOARD("SecurityBoard"),
-        SECURITY_CODE("SecurityCode"),
-        TIME_FRAME("TimeFrame"),
-        INTERVAL_FROM("Interval.From"),
-        INTERVAL_TO("Interval.To"),
-        INTERVAL_COUNT("Interval.Count");
-
+        SEC_CODE("Seccode");
 
         final String value;
         Args(String value) {
@@ -146,9 +91,7 @@ public class FinamMarketData implements MarketData {
 
     enum Resource {
 
-        SECURITIES("securities"),
-        DAY_CANDLES("day-candles"),
-        INTRA_DAY("intraday-candles");
+        SECURITIES("securities");
 
         final String value;
         Resource(String value) {
