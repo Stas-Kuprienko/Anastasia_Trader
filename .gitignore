@@ -41,4 +41,4 @@ build/
 /Core/src/main/resources/application.properties
 /Telegram_bot/src/main/resources/application.properties
 /Core/src/main/java/com/stanislav/Example.java
-/Smart_analytics/src/main/resources/application.properties
+/Smart_service/src/main/resources/application.properties

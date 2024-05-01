@@ -11,7 +11,7 @@
 
     <modules>
         <module>Core</module>
-        <module>Smart_analytics</module>
+        <module>Smart_service</module>
         <module>Telegram_bot</module>
     </modules>
 
