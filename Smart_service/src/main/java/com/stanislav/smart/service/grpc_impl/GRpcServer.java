@@ -1,5 +1,6 @@
 package com.stanislav.smart.service.grpc_impl;
 
+import com.stanislav.smart.service.grpc_impl.security.ServerSecurityInterceptor;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
@@ -9,13 +10,13 @@ import java.io.IOException;
 public class GRpcServer implements AutoCloseable {
 
     private final Server server;
-    private final String token;
 
-    public GRpcServer(String token, int port) {
+    public GRpcServer(String secretKey, int port) {
+
         this.server = ServerBuilder.forPort(port)
+                .intercept(new ServerSecurityInterceptor(secretKey))
                 .addService(new SmartAutoTradeGRpcService())
                 .build();
-        this.token = token;
         try {
             server.start();
         } catch (IOException e) {

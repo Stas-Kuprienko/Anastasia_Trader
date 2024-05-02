@@ -9,8 +9,10 @@ public class SmartAutoTradeGRpcService extends SmartAutoTradeGrpc.SmartAutoTrade
 
     @Override
     public void subscribe(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
+
         //TODO
     }
+
 
     @Override
     public void unsubscribe(Smart.UnsubscribeRequest request, StreamObserver<Smart.UnsubscribeResponse> responseObserver) {

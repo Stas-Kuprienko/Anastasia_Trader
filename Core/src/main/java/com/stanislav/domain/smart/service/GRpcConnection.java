@@ -21,10 +21,8 @@ public class GRpcConnection {
         return channel;
     }
 
-    public Authentication bearerAuthorization(String token) {
-        return new Authentication(
-                Authorization.AUTHORIZATION.value,
-                Authorization.BEARER.value + token);
+    public Authentication xApiKeyAuthorization(String token) {
+        return new Authentication(Authorization.API_KEY.value, token);
     }
 
     @PreDestroy
@@ -57,7 +55,8 @@ public class GRpcConnection {
     public enum Authorization {
 
         AUTHORIZATION("Authorization"),
-        BEARER("Bearer ");
+        BEARER("Bearer "),
+        API_KEY("X-Api-Key");
 
         public final String value;
         Authorization(String value) {

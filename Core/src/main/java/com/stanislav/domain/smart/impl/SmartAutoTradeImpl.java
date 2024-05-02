@@ -15,7 +15,7 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
 
     public SmartAutoTradeImpl(String token, GRpcConnection connection) {
         this.stub = SmartAutoTradeGrpc.newStub(connection.getChannel()).
-                withCallCredentials(connection.bearerAuthorization(token));
+                withCallCredentials(connection.xApiKeyAuthorization(token));
     }
 
     @Override
