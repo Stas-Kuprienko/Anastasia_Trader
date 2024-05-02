@@ -14,23 +14,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@ComponentScan("com.stanislav.smart_analytics")
+@ComponentScan("com.stanislav.smart")
 @PropertySource("classpath:application.properties")
 public class SmartServiceConfig {
 
-    private final String serverToken;
+    private final String appId;
+    private final String secretKey;
     private final int port;
     private final String apiResource;
     private final String apiToken;
     private final int threadPoolSize;
 
 
-    public SmartServiceConfig(@Value("${grpc.service.token}") String serverToken,
+    public SmartServiceConfig(@Value("${grpc.service.appId}") String appId,
+                              @Value("${grpc.service.secretKey}") String secretKey,
                               @Value("${grpc.service.port}") String port,
                               @Value("${grpc.api.resource}") String apiResource,
                               @Value("${grpc.api.token}") String apiToken,
                               @Value("${service.thread_pool_size}") String threadPoolSize) {
-        this.serverToken = serverToken;
+        this.appId = appId;
+        this.secretKey = secretKey;
         this.port = Integer.parseInt(port);
         this.apiResource = apiResource;
         this.apiToken = apiToken;
@@ -40,7 +43,7 @@ public class SmartServiceConfig {
 
     @Bean
     public GRpcServer grpcServer() {
-        return new GRpcServer(serverToken, port);
+        return new GRpcServer(appId, secretKey, port);
     }
 
     @Bean

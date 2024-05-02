@@ -9,19 +9,24 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class ServerSecurityInterceptor implements ServerInterceptor {
 
     private static final String AUTHORIZATION_KEY = "X-Api-Key";
 
+    private final String appId;
     private final JwtParser jwtParser;
 
-    public ServerSecurityInterceptor(String secretKey) {
-        SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(), Jwts.SIG.HS256.getId());
-        this.jwtParser = Jwts.parser().verifyWith(keySpec).build();
+    public ServerSecurityInterceptor(String appId, String key) {
+        this.appId = appId;
+        SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
+        this.jwtParser = Jwts.parser().verifyWith(secretKey).build();
     }
 
     @Override
@@ -32,9 +37,13 @@ public class ServerSecurityInterceptor implements ServerInterceptor {
             status = Status.UNAUTHENTICATED.withDescription("token is not found");
         } else {
             try {
-                jwtParser.parse(value);
-                Context context = Context.current();
-                return Contexts.interceptCall(context, call, headers, next);
+                String id = jwtParser.parseSignedClaims(value).getPayload().getId();
+                if (signed(id)) {
+                    Context context = Context.current();
+                    return Contexts.interceptCall(context, call, headers, next);
+                } else {
+                    throw new IllegalArgumentException();
+                }
             } catch (ExpiredJwtException | IllegalArgumentException
                      | SecurityException | MalformedJwtException e) {
                 status = Status.UNAUTHENTICATED.withDescription("token is not valid");
@@ -42,5 +51,9 @@ public class ServerSecurityInterceptor implements ServerInterceptor {
         }
         call.close(status, headers);
         return new ServerCall.Listener<>() {};
+    }
+
+    private boolean signed(String id) {
+        return id.equals(appId);
     }
 }

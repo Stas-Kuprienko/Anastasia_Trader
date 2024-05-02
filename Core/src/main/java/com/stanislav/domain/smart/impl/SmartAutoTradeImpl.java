@@ -1,6 +1,7 @@
 package com.stanislav.domain.smart.impl;
 
 import com.stanislav.domain.smart.SmartAutoTradeService;
+import com.stanislav.domain.smart.service.Authentication;
 import com.stanislav.domain.smart.service.GRpcConnection;
 import com.stanislav.domain.smart.strategy.TradeStrategy;
 import com.stanislav.entities.user.Account;
@@ -13,9 +14,10 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     private final SmartAutoTradeGrpc.SmartAutoTradeStub stub;
 
 
-    public SmartAutoTradeImpl(String token, GRpcConnection connection) {
+    public SmartAutoTradeImpl(String appId, String secretKey, GRpcConnection connection) {
+        String token = Authentication.generateToken(appId, secretKey);
         this.stub = SmartAutoTradeGrpc.newStub(connection.getChannel()).
-                withCallCredentials(connection.xApiKeyAuthorization(token));
+                withCallCredentials(Authentication.xApiKeyAuthorization(token));
     }
 
     @Override
@@ -47,6 +49,10 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
         @Override
         public void onNext(Smart.SubscribeTradeResponse response) {
             Smart.OrderNotification notification = response.getNotification();
+
+            //TODO test
+            System.out.println(this.getClass().getSimpleName() + " onNext");
+            System.out.println(notification);
         }
 
         @Override
@@ -56,7 +62,7 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
 
         @Override
         public void onCompleted() {
-
+            System.out.println("completed");
         }
     }
 }

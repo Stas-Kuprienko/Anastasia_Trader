@@ -5,6 +5,7 @@
     <predefined_log_file id="Tomcat Catalina Log" />
     <predefined_log_file id="Tomcat Manager Log" />
     <predefined_log_file id="Tomcat Host Manager Log" />
+    <option name="adminPort" value="8006" />
     <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\Anastasia_Trader\Core" />
     <option name="contextPath" value="/anastasia" />
     <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Core\src\main\webapp" />
@@ -12,6 +13,7 @@
       <map />
     </option>
     <option name="extraClassPath" value="" />
+    <option name="port" value="8081" />
     <option name="tomcatInfo">
       <TomcatInfo>
         <option name="name" value="Apache Tomcat" />

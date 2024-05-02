@@ -11,10 +11,9 @@ public class GRpcServer implements AutoCloseable {
 
     private final Server server;
 
-    public GRpcServer(String secretKey, int port) {
-
+    public GRpcServer(String appId, String secretKey, int port) {
         this.server = ServerBuilder.forPort(port)
-                .intercept(new ServerSecurityInterceptor(secretKey))
+                .intercept(new ServerSecurityInterceptor(appId, secretKey))
                 .addService(new SmartAutoTradeGRpcService())
                 .build();
         try {
