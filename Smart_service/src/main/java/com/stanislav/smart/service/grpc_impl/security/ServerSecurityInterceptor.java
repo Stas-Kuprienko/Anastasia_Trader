@@ -14,7 +14,6 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 public class ServerSecurityInterceptor implements ServerInterceptor {
 

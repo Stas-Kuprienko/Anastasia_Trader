@@ -1,18 +1,22 @@
 package com.stanislav.smart.domain.analysis.technical;
 
+import com.stanislav.smart.domain.analysis.AnalysisAide;
+import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.entities.candles.Candles;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleMovingAverageAide {
+public class SimpleMovingAverageAide implements AnalysisAide {
 
+    private final TimeFrame.Scope timeFrame;
     private final int period;
     private final ArrayList<Candles.Candle> candlesList;
     private final ArrayList<SMAValue> smaValues;
 
 
-    public SimpleMovingAverageAide(Candles candles, int period) {
+    public SimpleMovingAverageAide(TimeFrame.Scope timeFrame, Candles candles, int period) {
+        this.timeFrame = timeFrame;
         this.candlesList = new ArrayList<>(List.of(candles.candles()));
         this.period = period;
         smaValues = new ArrayList<>();
@@ -68,6 +72,14 @@ public class SimpleMovingAverageAide {
             return smaValues.get(smaValues.size() - 1).value;
         }
         return 0;
+    }
+
+    public TimeFrame.Scope getTimeFrame() {
+        return timeFrame;
+    }
+
+    public int getPeriod() {
+        return period;
     }
 
     public ArrayList<Candles.Candle> getCandles() {

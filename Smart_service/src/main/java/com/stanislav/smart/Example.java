@@ -63,7 +63,7 @@ public class Example {
         Candles candles = (marketDataProvider
                 .getDayCandles("SBER", Board.TQBR, TimeFrame.Day.D1,
                         LocalDate.now(), 30));
-        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(candles, 5);
+        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(TimeFrame.Day.D1, candles, 5);
         System.out.println(sma);
     }
 
@@ -71,7 +71,7 @@ public class Example {
     public void intraTest() {
         Candles candles = marketDataProvider.getIntraDayCandles("SBER", Board.TQBR, TimeFrame.IntraDay.H1,
                 LocalDateTime.now().minusHours(4), 30);
-        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(candles, 5);
+        SimpleMovingAverageAide sma = new SimpleMovingAverageAide(TimeFrame.IntraDay.H1, candles, 5);
         System.out.println(sma);
     }
 }

@@ -1,11 +1,12 @@
 package com.stanislav.smart.domain.analysis.technical;
 
+import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.candles.Candles;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-public class SupportResistanceLinesAide {
+public class SupportResistanceLinesAide implements AnalysisAide {
 
     private final Candles candles;
     private final HashMap<BigDecimal, Line> lines;

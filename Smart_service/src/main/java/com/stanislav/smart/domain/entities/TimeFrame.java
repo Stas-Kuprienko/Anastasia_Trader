@@ -6,11 +6,11 @@ public final class TimeFrame {
 
     private TimeFrame() {}
 
-    public enum IntraDay {
+    public enum IntraDay implements Scope {
         M1, M5, M15, H1
     }
 
-    public enum Day {
+    public enum Day implements Scope {
         D1, W1
     }
 
@@ -57,4 +57,6 @@ public final class TimeFrame {
         }
         return proto;
     }
+
+    public sealed interface Scope permits Day, IntraDay {}
 }

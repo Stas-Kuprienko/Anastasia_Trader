@@ -1,12 +1,13 @@
 package com.stanislav.smart.domain.analysis.technical;
 
+import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.candles.Candles;
 import com.stanislav.smart.domain.entities.Decimal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-public class TrendAide {
+public class TrendAide implements AnalysisAide {
 
     private final ArrayList<Decimal> maximums;
     private final ArrayList<Decimal> minimums;
