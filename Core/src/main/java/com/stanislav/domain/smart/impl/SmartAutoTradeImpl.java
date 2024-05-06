@@ -24,17 +24,22 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     public void subscribe(Account account, String security, double price, int quantity, TradeStrategy strategy) {
 
         Smart.Account requestAccount = Smart.Account.newBuilder()
+                .setUserId(0)
                 .setClientId(account.getClientId())
-                .setToken(account.getToken())
                 .build();
 
+        Smart.Strategy str = Smart.Strategy.newBuilder()
+                .setSimpleMovingAverageCrossing(
+                        Smart.SimpleMovingAverageCrossing.newBuilder()
+                                .setTimeFrame(Smart.TimeFrame.H1)
+                                .setPeriod(5).build()
+                ).build();
         Smart.SubscribeTradeRequest request = Smart.SubscribeTradeRequest.newBuilder()
                 .setAccount(requestAccount)
                 .setSecurity(security)
                 .setPrice(price)
                 .setQuantity(quantity)
-                .setTimeFrame(Smart.TimeFrame.H1)
-                .setStrategy(Smart.Strategy.MOVING_AVERAGE)
+                .setStrategy(str)
                 .build();
         //TODO !!!!!!!!!!!!!!!!!!!!!!!
         SmartTradeResponse response = new SmartTradeResponse();

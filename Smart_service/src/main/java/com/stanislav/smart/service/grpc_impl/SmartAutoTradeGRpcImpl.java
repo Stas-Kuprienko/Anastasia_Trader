@@ -23,7 +23,7 @@ public class SmartAutoTradeGRpcImpl extends SmartAutoTradeGrpc.SmartAutoTradeImp
     public void subscribe(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
         Smart.Account account = request.getAccount();
         accounts.put(account.getUserId(), new AccountNode(account, responseObserver));
-        int strategyId = request.getStrategyValue();
+        String strategy = request.getStrategy().getPayloadCase().name();
 
 
         //TODO just for example

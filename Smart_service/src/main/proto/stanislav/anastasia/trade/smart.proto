@@ -2,7 +2,13 @@ syntax = "proto3";
 
 package stanislav.anastasia.trade;
 
-import "google/protobuf/empty.proto";
+
+service SmartAutoTrade {
+
+  rpc subscribe(SubscribeTradeRequest) returns (stream SubscribeTradeResponse);
+  rpc unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+
+}
 
 message SubscribeTradeRequest {
 
@@ -11,7 +17,6 @@ message SubscribeTradeRequest {
   double price = 3;
   int32 quantity = 4;
   Strategy strategy = 5;
-  TimeFrame timeFrame = 6;
 
 }
 
@@ -41,11 +46,15 @@ message Account {
 
 }
 
-enum Strategy {
+message Strategy {
 
-  MOVING_AVERAGE = 0;
-  UPTREND_BREAKDOWN = 1;
-  DOWNTREND_BREAKDOWN = 2;
+  oneof payload {
+
+    SimpleMovingAverageCrossing simpleMovingAverageCrossing = 1;
+    SupportResistanceLevels supportResistanceLevels = 2;
+
+
+  }
 
 }
 
@@ -79,9 +88,16 @@ message OrderNotification {
 
 }
 
-service SmartAutoTrade {
+message SimpleMovingAverageCrossing {
 
-  rpc subscribe(SubscribeTradeRequest) returns (stream SubscribeTradeResponse);
-  rpc unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+  TimeFrame timeFrame = 1;
+  int32 period = 2;
+
+}
+
+message SupportResistanceLevels {
+
+  TimeFrame timeFrame = 1;
+  repeated double extremum = 2;
 
 }
