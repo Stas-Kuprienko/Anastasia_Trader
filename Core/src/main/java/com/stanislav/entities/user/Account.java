@@ -26,6 +26,9 @@ public final class Account implements Serializable {
     private String broker;
 
     @Column
+    private RiskProfile riskProfile;
+
+    @Column
     private String token;
 
     @Column
