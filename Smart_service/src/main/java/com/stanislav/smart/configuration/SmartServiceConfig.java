@@ -1,7 +1,7 @@
 package com.stanislav.smart.configuration;
 
-import com.stanislav.smart.domain.event_stream.EventStreamKit;
-import com.stanislav.smart.domain.event_stream.finam.FinamGrpcEventStreamKit;
+import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
+import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.domain.market.MarketDataProvider;
 import com.stanislav.smart.domain.market.finam.FinamGRpcMarketDataProvider;

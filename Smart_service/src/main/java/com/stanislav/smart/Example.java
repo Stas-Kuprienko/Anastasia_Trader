@@ -4,9 +4,9 @@ import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
 import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.entities.candles.Candles;
-import com.stanislav.smart.domain.event_stream.EventStreamListener;
-import com.stanislav.smart.domain.event_stream.finam.FinamOrderBookStream;
-import com.stanislav.smart.domain.event_stream.finam.FinamOrderBookCollector;
+import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
+import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookStream;
+import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookCollector;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.domain.market.MarketDataProvider;
 

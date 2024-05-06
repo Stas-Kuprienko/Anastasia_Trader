@@ -1,6 +1,6 @@
-package com.stanislav.smart.domain.event_stream.finam;
+package com.stanislav.smart.domain.market.event_stream.finam;
 
-import com.stanislav.smart.domain.event_stream.EventStreamListener;
+import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 import grpc.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.Events;
 

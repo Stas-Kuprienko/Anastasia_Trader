@@ -1,4 +1,4 @@
-package com.stanislav.smart.domain.event_stream;
+package com.stanislav.smart.domain.market.event_stream;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledFuture;

@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.smart.domain.strategies;
+package com.stanislav.smart.domain.automation.strategies;
 
 import com.stanislav.smart.domain.analysis.AideSupplier;
 import org.springframework.beans.factory.annotation.Autowired;
