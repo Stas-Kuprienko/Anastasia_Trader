@@ -1,18 +1,18 @@
 package com.stanislav.smart.configuration;
 
+import com.stanislav.smart.domain.automation.strategies.StrategyManager;
+import com.stanislav.smart.domain.market.MarketDataProvider;
 import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
-import com.stanislav.smart.service.ThreadScheduleDispatcher;
-import com.stanislav.smart.service.grpc_impl.GRpcClient;
-import com.stanislav.smart.domain.market.MarketDataProvider;
 import com.stanislav.smart.domain.market.finam.FinamGRpcMarketDataProvider;
+import com.stanislav.smart.service.SmartService;
+import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.service.grpc_impl.GRpcServer;
+import com.stanislav.smart.service.grpc_impl.SmartServiceGrpcImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.*;
 
 @Configuration
 @ComponentScan("com.stanislav.smart")
@@ -42,13 +42,13 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public ThreadScheduleDispatcher threadScheduleDispatcher() {
-        return new ThreadScheduleDispatcher(threadPoolSize);
+    public SmartService smartService(@Autowired StrategyManager strategyManager) {
+        return new SmartServiceGrpcImpl(threadPoolSize, strategyManager);
     }
 
     @Bean
-    public GRpcServer grpcServer() {
-        return new GRpcServer(appId, secretKey, port);
+    public GRpcServer grpcServer(@Autowired SmartService smartService) {
+        return new GRpcServer(appId, secretKey, port, smartService);
     }
 
     @Bean
@@ -57,13 +57,18 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public EventStreamKit eventStreamKit(@Autowired ThreadScheduleDispatcher dispatcher,
+    public EventStreamKit eventStreamKit(@Autowired SmartService smartService,
                                          @Autowired GRpcClient gRpcClient) {
-        return new FinamGrpcEventStreamKit(dispatcher, gRpcClient);
+        return new FinamGrpcEventStreamKit(smartService, gRpcClient);
     }
 
     @Bean
     public MarketDataProvider marketDataProvider(@Autowired GRpcClient gRpcClient) {
         return new FinamGRpcMarketDataProvider(gRpcClient);
+    }
+
+    @Bean
+    public ApplicationContext context() {
+        return new AnnotationConfigApplicationContext();
     }
 }

@@ -15,7 +15,7 @@ public class TrendAide implements AnalysisAide {
     private final Candles candles;
 
 
-    public TrendAide(Candles candles) {
+    TrendAide(Candles candles) {
         maximums = new ArrayList<>();
         minimums = new ArrayList<>();
         this.candles = candles;

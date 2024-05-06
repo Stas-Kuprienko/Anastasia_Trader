@@ -29,8 +29,7 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
 
 
     @Override
-    public DayCandles getDayCandles(String ticker, Board board,
-                                    TimeFrame.Day timeFrame, LocalDate to, Integer count) {
+    public DayCandles getStockDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
         Date dateTo = Date.newBuilder()
                 .setDay(to.getDayOfMonth())
                 .setMonth(to.getMonthValue())
@@ -40,12 +39,11 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
                 .setTo(dateTo)
                 .setCount(count).build();
 
-        return buildDayCandlesProxy(getDayCandlesResult(ticker, board, timeFrame, interval));
+        return buildDayCandlesProxy(getDayCandlesResult(ticker, Board.TQBR, timeFrame, interval));
     }
 
     @Override
-    public DayCandles getDayCandles(String ticker, Board board,
-                                    TimeFrame.Day timeFrame, LocalDate from, LocalDate to) {
+    public DayCandles getStockDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate from, LocalDate to) {
         Date dateFrom = Date.newBuilder()
                 .setDay(from.getDayOfMonth())
                 .setMonth(from.getMonthValue())
@@ -60,12 +58,12 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
                 .setFrom(dateFrom)
                 .setTo(dateTo).build();
 
-        return buildDayCandlesProxy(getDayCandlesResult(ticker, board, timeFrame, interval));
+        return buildDayCandlesProxy(getDayCandlesResult(ticker, Board.TQBR, timeFrame, interval));
     }
 
     @Override
-    public IntraDayCandles getIntraDayCandles(String ticker, Board board,
-                                              TimeFrame.IntraDay timeFrame, LocalDateTime to, Integer count) {
+    public IntraDayCandles getStockIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                   LocalDateTime to, Integer count) {
         //TODO need to mind the time format!
         Timestamp timeTo = Timestamp.newBuilder()
                 .setSeconds(to.toEpochSecond(ZoneOffset.UTC))
@@ -75,12 +73,12 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
                 .setTo(timeTo)
                 .setCount(count).build();
 
-        return buildIntraDayCandlesProxy(getIntradayCandlesResult(ticker, board, timeFrame, interval));
+        return buildIntraDayCandlesProxy(getIntradayCandlesResult(ticker, Board.TQBR, timeFrame, interval));
     }
 
     @Override
-    public IntraDayCandles getIntraDayCandles(String ticker, Board board,
-                                              TimeFrame.IntraDay timeFrame, LocalDateTime from, LocalDateTime to) {
+    public IntraDayCandles getStockIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                   LocalDateTime from, LocalDateTime to) {
         //TODO need to mind the time format!
         Timestamp timeFrom = Timestamp.newBuilder()
                 .setSeconds(from.toEpochSecond(ZoneOffset.UTC))
@@ -94,7 +92,29 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
                 .setFrom(timeFrom)
                 .setTo(timeTo).build();
 
-        return buildIntraDayCandlesProxy(getIntradayCandlesResult(ticker, board, timeFrame, interval));
+        return buildIntraDayCandlesProxy(getIntradayCandlesResult(ticker, Board.TQBR, timeFrame, interval));
+    }
+
+    @Override
+    public DayCandles getFuturesDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
+        return null;
+    }
+
+    @Override
+    public DayCandles getFuturesDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate from, LocalDate to) {
+        return null;
+    }
+
+    @Override
+    public IntraDayCandles getFuturesIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                     LocalDateTime to, Integer count) {
+        return null;
+    }
+
+    @Override
+    public IntraDayCandles getFuturesIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                     LocalDateTime from, LocalDateTime to) {
+        return null;
     }
 
 

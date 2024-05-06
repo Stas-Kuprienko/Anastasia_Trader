@@ -19,6 +19,11 @@ public class GrpcFollowerDrone implements Drone {
     }
 
     @Override
+    public void launch() {
+
+    }
+
+    @Override
     public void following() {
         double lastAskPrice = collector.lastAskPrice();
         strategy.analysing(lastAskPrice);
@@ -28,5 +33,10 @@ public class GrpcFollowerDrone implements Drone {
     @Override
     public void run() {
         following();
+    }
+
+    @Override
+    public void stop() {
+
     }
 }

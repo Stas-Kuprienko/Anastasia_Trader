@@ -15,7 +15,7 @@ public class SimpleMovingAverageAide implements AnalysisAide {
     private final ArrayList<SMAValue> smaValues;
 
 
-    public SimpleMovingAverageAide(TimeFrame.Scope timeFrame, Candles candles, int period) {
+    SimpleMovingAverageAide(TimeFrame.Scope timeFrame, Candles candles, int period) {
         this.timeFrame = timeFrame;
         this.candlesList = new ArrayList<>(List.of(candles.candles()));
         this.period = period;

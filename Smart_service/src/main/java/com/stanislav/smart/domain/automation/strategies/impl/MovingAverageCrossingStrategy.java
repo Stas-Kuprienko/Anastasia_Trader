@@ -10,6 +10,7 @@ import com.stanislav.smart.domain.entities.Direction;
 
 public class MovingAverageCrossingStrategy implements TradingStrategy {
 
+    private static final int id = 0;
     private final SimpleMovingAverageAide smaAide;
     private Direction direction;
     private byte topicality;
@@ -19,6 +20,10 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
         this.smaAide = smaAide;
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
 
     @Override
     public void analysing(double lastPrice) {
@@ -32,7 +37,7 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
         }
         topicality = (byte) ((difference * 100) / lastPrice);
     }
-
+//TODO !!!!!!!!!!!!
     private void follow(double lastPrice) {
         double lastAveragePrice = smaAide.last();
         double difference;

@@ -11,12 +11,14 @@ public class SupportResistanceLevelsAide implements AnalysisAide {
 
     private final String ticker;
     private final Candles candles;
+    private final TimeFrame.Scope timeFrame;
     private final HashMap<PriceRange, Level> levels;
 
 
-    public SupportResistanceLevelsAide(String ticker, Candles candles) {
+    SupportResistanceLevelsAide(String ticker, Candles candles, TimeFrame.Scope timeFrame) {
         this.ticker = ticker;
         this.candles = candles;
+        this.timeFrame = timeFrame;
         this.levels = new HashMap<>();
         calculate();
     }
