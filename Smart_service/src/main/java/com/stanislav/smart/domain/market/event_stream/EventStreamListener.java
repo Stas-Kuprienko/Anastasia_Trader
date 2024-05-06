@@ -1,6 +1,5 @@
 package com.stanislav.smart.domain.market.event_stream;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledFuture;
 
 public interface EventStreamListener {
@@ -19,16 +18,14 @@ public interface EventStreamListener {
 
     interface EventCollector {}
 
-    interface OrderBookCollector <E, R> extends EventCollector {
+    interface OrderBookCollector extends EventCollector {
 
         OrderBookRow currentAsk();
 
         OrderBookRow currentBid();
 
-        void addOrderBookEvent(E event) throws EventStreamException;
+        double lastAskPrice();
 
-        ConcurrentLinkedDeque<R> getAsks();
-
-        ConcurrentLinkedDeque<R> getBids();
+        double lastBidPrice();
     }
 }

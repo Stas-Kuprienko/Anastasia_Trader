@@ -15,9 +15,9 @@ public class SmartAutoTradeGRpcService extends SmartAutoTradeGrpc.SmartAutoTrade
         //TODO just for example
         System.out.println(this.getClass().getSimpleName() + " subscribe");
         System.out.println(request.getAllFields());
-        Smart.Account account = Smart.Account.newBuilder().setClientId("client1").build();
+        Smart.Account account = Smart.Account.newBuilder().setUserId(1).setClientId("client1").build();
         Smart.OrderNotification notification = Smart.OrderNotification.newBuilder()
-                .setAccount(account).setDateTime(LocalDateTime.now().toString()).build();
+                .setAccount(0, account).setDateTime(LocalDateTime.now().toString()).build();
         Smart.SubscribeTradeResponse subscribeTradeResponse = Smart.SubscribeTradeResponse.newBuilder()
                 .setNotification(notification).build();
         responseObserver.onNext(subscribeTradeResponse);

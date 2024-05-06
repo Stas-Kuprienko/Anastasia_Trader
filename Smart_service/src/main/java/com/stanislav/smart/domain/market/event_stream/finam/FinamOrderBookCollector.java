@@ -7,8 +7,7 @@ import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class FinamOrderBookCollector implements
-        EventStreamListener.EventCollector, EventStreamListener.OrderBookCollector<Events.Event, Events.OrderBookRow> {
+public class FinamOrderBookCollector implements EventStreamListener.OrderBookCollector {
 
     private static final byte DEFAULT_CAPACITY = 10;
     private final int capacity;
@@ -40,6 +39,15 @@ public class FinamOrderBookCollector implements
     }
 
     @Override
+    public double lastAskPrice() {
+        return asks.getLast().getPrice();
+    }
+
+    @Override
+    public double lastBidPrice() {
+        return bids.getLast().getPrice();
+    }
+
     public void addOrderBookEvent(Events.Event event) throws EventStreamException {
         if (event.hasOrderBook()) {
             checkSize(asks);
@@ -56,12 +64,10 @@ public class FinamOrderBookCollector implements
         }
     }
 
-    @Override
     public ConcurrentLinkedDeque<Events.OrderBookRow> getAsks() {
         return asks;
     }
 
-    @Override
     public ConcurrentLinkedDeque<Events.OrderBookRow> getBids() {
         return bids;
     }

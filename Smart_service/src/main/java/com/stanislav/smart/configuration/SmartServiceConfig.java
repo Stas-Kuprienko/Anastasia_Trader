@@ -2,6 +2,7 @@ package com.stanislav.smart.configuration;
 
 import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
+import com.stanislav.smart.service.ThreadScheduleDispatcher;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.domain.market.MarketDataProvider;
 import com.stanislav.smart.domain.market.finam.FinamGRpcMarketDataProvider;
@@ -40,6 +41,10 @@ public class SmartServiceConfig {
         this.threadPoolSize = Integer.parseInt(threadPoolSize);
     }
 
+    @Bean
+    public ThreadScheduleDispatcher threadScheduleDispatcher() {
+        return new ThreadScheduleDispatcher(threadPoolSize);
+    }
 
     @Bean
     public GRpcServer grpcServer() {
@@ -48,12 +53,13 @@ public class SmartServiceConfig {
 
     @Bean
     public GRpcClient grpcClient() {
-        return new GRpcClient(apiResource, apiToken, threadPoolSize);
+        return new GRpcClient(apiResource, apiToken);
     }
 
     @Bean
-    public EventStreamKit eventStreamKit(@Autowired GRpcClient gRpcClient) {
-        return new FinamGrpcEventStreamKit(gRpcClient);
+    public EventStreamKit eventStreamKit(@Autowired ThreadScheduleDispatcher dispatcher,
+                                         @Autowired GRpcClient gRpcClient) {
+        return new FinamGrpcEventStreamKit(dispatcher, gRpcClient);
     }
 
     @Bean

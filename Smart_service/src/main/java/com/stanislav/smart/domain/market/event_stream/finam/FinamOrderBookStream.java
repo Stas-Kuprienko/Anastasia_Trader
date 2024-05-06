@@ -2,6 +2,7 @@ package com.stanislav.smart.domain.market.event_stream.finam;
 
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 import com.stanislav.smart.domain.market.event_stream.EventStream;
+import com.stanislav.smart.service.ThreadScheduleDispatcher;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.Events;
@@ -19,8 +20,8 @@ public class FinamOrderBookStream implements EventStream {
     private final ConcurrentHashMap<String, OrderBookStreamListener> eventStreamMap;
 
 
-    public FinamOrderBookStream(GRpcClient rpcClient) {
-        this.scheduler = rpcClient.getScheduler();
+    public FinamOrderBookStream(ThreadScheduleDispatcher threadScheduleDispatcher, GRpcClient rpcClient) {
+        this.scheduler = threadScheduleDispatcher.getScheduledExecutor();
         this.stub = EventsGrpc.newStub(rpcClient.getChannel()).withCallCredentials(rpcClient.getAuthenticator());
         this.eventStreamMap = new ConcurrentHashMap<>();
     }

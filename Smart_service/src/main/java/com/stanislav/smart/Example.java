@@ -7,8 +7,10 @@ import com.stanislav.smart.domain.entities.candles.Candles;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookStream;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookCollector;
+import com.stanislav.smart.service.ThreadScheduleDispatcher;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.domain.market.MarketDataProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +24,9 @@ public class Example {
 
 //    @Autowired
     private MarketDataProvider marketDataProvider;
+
+//    @Autowired
+    private ThreadScheduleDispatcher dispatcher;
 
 //    @GetMapping("/start")
     public void start() {
@@ -38,8 +43,8 @@ public class Example {
         String ticker = "SiM4";
 
         EventStreamListener listener;
-        try (GRpcClient client = new GRpcClient(resource, token, 1)) {
-            FinamOrderBookStream streamService = new FinamOrderBookStream(client);
+        try (GRpcClient client = new GRpcClient(resource, token)) {
+            FinamOrderBookStream streamService = new FinamOrderBookStream(dispatcher, client);
             streamService.subscribe(ticker, "FUT");
             listener = streamService.getEventStream(ticker);
             Thread.sleep(2000);
