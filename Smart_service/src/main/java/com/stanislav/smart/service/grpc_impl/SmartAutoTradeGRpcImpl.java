@@ -1,23 +1,27 @@
 package com.stanislav.smart.service.grpc_impl;
 
+import com.stanislav.smart.domain.automation.grpc_impl.StrategiesGrpcDispatcher;
 import com.stanislav.smart.service.SmartService;
 import io.grpc.stub.StreamObserver;
-import org.springframework.beans.factory.annotation.Autowired;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
+
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SmartAutoTradeGRpcImpl extends SmartAutoTradeGrpc.SmartAutoTradeImplBase {
 
     private final SmartService smartService;
+    private final StrategiesGrpcDispatcher strategiesDispatcher;
     private final ConcurrentHashMap<Integer, AccountNode> accounts;
 
-    @Autowired
-    public SmartAutoTradeGRpcImpl(SmartService smartService) {
+
+    public SmartAutoTradeGRpcImpl(SmartService smartService, StrategiesGrpcDispatcher strategiesDispatcher) {
         this.smartService = smartService;
+        this.strategiesDispatcher = strategiesDispatcher;
         this.accounts = new ConcurrentHashMap<>();
     }
+
 
     @Override
     public void subscribe(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {

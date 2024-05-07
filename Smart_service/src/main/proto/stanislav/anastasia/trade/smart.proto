@@ -13,7 +13,7 @@ service SmartAutoTrade {
 message SubscribeTradeRequest {
 
   Account account = 1;
-  string security = 2;
+  Security security = 2;
   double price = 3;
   int32 quantity = 4;
   Strategy strategy = 5;
@@ -23,7 +23,7 @@ message SubscribeTradeRequest {
 message UnsubscribeRequest {
 
   Account account = 1;
-  string security = 2;
+  Security security = 2;
 
 }
 
@@ -36,6 +36,13 @@ message SubscribeTradeResponse {
 message UnsubscribeResponse {
 
   bool isUnsubscribe = 1;
+
+}
+
+message Security {
+
+  string ticker = 1;
+  string board = 2;
 
 }
 
@@ -62,10 +69,10 @@ enum TimeFrame {
 
   M5 = 0;
   M15 = 1;
-  M30 = 2;
-  H1 = 3;
-  H4 = 4;
-  D1 = 5;
+  H1 = 2;
+  H4 = 3;
+  D1 = 4;
+  W1 = 5;
 
 }
 
@@ -80,7 +87,7 @@ message OrderNotification {
 
   repeated Account account = 1;
   Strategy strategy = 2;
-  string security = 3;
+  Security security = 3;
   double price = 4;
   int32 quantity = 5;
   Direction direction = 6;

@@ -1,14 +1,13 @@
 package com.stanislav.smart.configuration;
 
-import com.stanislav.smart.domain.automation.strategies.StrategyManager;
 import com.stanislav.smart.domain.market.MarketDataProvider;
 import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
 import com.stanislav.smart.domain.market.finam.FinamGRpcMarketDataProvider;
 import com.stanislav.smart.service.SmartService;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
-import com.stanislav.smart.service.grpc_impl.GRpcServer;
-import com.stanislav.smart.service.grpc_impl.SmartServiceGrpcImpl;
+import com.stanislav.smart.service.grpc_impl.MySmartService;
+import com.stanislav.smart.service.ScheduleDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -42,13 +41,8 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public SmartService smartService(@Autowired StrategyManager strategyManager) {
-        return new SmartServiceGrpcImpl(threadPoolSize, strategyManager);
-    }
-
-    @Bean
-    public GRpcServer grpcServer(@Autowired SmartService smartService) {
-        return new GRpcServer(appId, secretKey, port, smartService);
+    public ScheduleDispatcher scheduleDispatcher() {
+        return new ScheduleDispatcher(threadPoolSize);
     }
 
     @Bean
@@ -57,9 +51,15 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public EventStreamKit eventStreamKit(@Autowired SmartService smartService,
+    public EventStreamKit eventStreamKit(@Autowired ScheduleDispatcher scheduleDispatcher,
                                          @Autowired GRpcClient gRpcClient) {
-        return new FinamGrpcEventStreamKit(smartService, gRpcClient);
+        return new FinamGrpcEventStreamKit(scheduleDispatcher, gRpcClient);
+    }
+
+    @Bean
+    public SmartService smartService(@Autowired EventStreamKit eventStreamKit,
+                                     @Autowired ScheduleDispatcher scheduleDispatcher) {
+        return new MySmartService(scheduleDispatcher.getScheduledExecutor(), eventStreamKit.getOrderBookStreamService());
     }
 
     @Bean

@@ -2,18 +2,18 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.smart.domain.automation.strategies.impl;
+package com.stanislav.smart.domain.automation.impl;
 
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
-import com.stanislav.smart.domain.automation.strategies.TradingStrategy;
+import com.stanislav.smart.domain.automation.TradingStrategy;
 import com.stanislav.smart.domain.entities.Direction;
+import com.stanislav.smart.domain.market.event_stream.OrderBookRow;
 
 public class MovingAverageCrossingStrategy implements TradingStrategy {
 
     private static final int id = 0;
     private final SimpleMovingAverageAide smaAide;
     private Direction direction;
-    private byte topicality;
 
 
     public MovingAverageCrossingStrategy(SimpleMovingAverageAide smaAide) {
@@ -26,7 +26,7 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
     }
 
     @Override
-    public void analysing(double lastPrice) {
+    public byte analysing(double lastPrice) {
         double lastAveragePrice = smaAide.last();
         double difference = lastAveragePrice - lastPrice;
         if (difference > 0) {
@@ -35,10 +35,14 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
             direction = Direction.Sell;
             difference *= (-1);
         }
-        topicality = (byte) ((difference * 100) / lastPrice);
+        return (byte) ((difference * 100) / lastPrice);
     }
+
 //TODO !!!!!!!!!!!!
-    private void follow(double lastPrice) {
+
+    @Override
+    public boolean follow(OrderBookRow orderBookRow) {
+        double lastPrice = orderBookRow.getPrice();
         double lastAveragePrice = smaAide.last();
         double difference;
         if (direction.equals(Direction.Buy)) {
@@ -48,8 +52,15 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
         } else {
             throw new IllegalStateException("direction=" + direction);
         }
-        if (difference < 0) {
-
+        if (difference <= 0) {
+            return deciding();
         }
+        return false;
+    }
+
+
+    private boolean deciding() {
+
+        return false;
     }
 }

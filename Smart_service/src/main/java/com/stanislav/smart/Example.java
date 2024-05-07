@@ -2,14 +2,15 @@ package com.stanislav.smart;
 
 import com.stanislav.smart.domain.analysis.technical.AnalysisAideSupplier;
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
+import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.entities.candles.Candles;
 import com.stanislav.smart.domain.market.MarketDataProvider;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookCollector;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookStream;
-import com.stanislav.smart.service.SmartService;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
+import com.stanislav.smart.service.ScheduleDispatcher;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +26,10 @@ public class Example {
     private MarketDataProvider marketDataProvider;
 
 //    @Autowired
-    private SmartService smartService;
+    private ScheduleDispatcher scheduleDispatcher;
 
-    private final AnalysisAideSupplier analysisAideSupplier = new AnalysisAideSupplier();
+//    @Autowired
+    private AnalysisAideSupplier analysisAideSupplier;
 
 //    @GetMapping("/start")
     public void start() {
@@ -45,7 +47,7 @@ public class Example {
 
         EventStreamListener listener;
         try (GRpcClient client = new GRpcClient(resource, token)) {
-            FinamOrderBookStream streamService = new FinamOrderBookStream(smartService.getScheduledExecutor(), client);
+            FinamOrderBookStream streamService = new FinamOrderBookStream(scheduleDispatcher.getScheduledExecutor(), client);
             streamService.subscribe(ticker, "FUT");
             listener = streamService.getEventStream(ticker);
             Thread.sleep(2000);
@@ -69,7 +71,7 @@ public class Example {
         Candles candles = (marketDataProvider
                 .getStockDayCandles("SBER", TimeFrame.Day.D1,
                         LocalDate.now(), 30));
-        SimpleMovingAverageAide sma = analysisAideSupplier.simpleMovingAverage("SBER", candles, TimeFrame.Day.D1, 5);
+        SimpleMovingAverageAide sma = analysisAideSupplier.simpleMovingAverage("SBER", Board.TQBR, TimeFrame.Day.D1, 5);
         System.out.println(sma);
     }
 
@@ -77,7 +79,7 @@ public class Example {
     public void intraTest() {
         Candles candles = marketDataProvider.getStockIntraDayCandles("SBER", TimeFrame.IntraDay.H1,
                 LocalDateTime.now().minusHours(4), 30);
-        SimpleMovingAverageAide sma = analysisAideSupplier.simpleMovingAverage("SBER", candles, TimeFrame.IntraDay.H1, 5);
+        SimpleMovingAverageAide sma = analysisAideSupplier.simpleMovingAverage("SBER", Board.TQBR, TimeFrame.IntraDay.H1, 5);
         System.out.println(sma);
     }
 }

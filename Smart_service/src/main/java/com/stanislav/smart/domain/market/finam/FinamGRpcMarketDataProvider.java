@@ -29,6 +29,87 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
 
 
     @Override
+    public com.stanislav.smart.domain.entities.candles.Candles getLastNumberOfCandles(String ticker, Board board, TimeFrame.Scope timeFrame, Integer count) {
+        com.stanislav.smart.domain.entities.candles.Candles candles;
+
+        if (TimeFrame.Day.class.equals(timeFrame.getClass())) {
+            candles = getDayCandles(ticker, board, timeFrame, LocalDate.now(), count);
+
+        } else if (TimeFrame.IntraDay.class.equals(timeFrame.getClass())) {
+            candles = getIntraDayCandles(ticker, board, timeFrame, LocalDateTime.now(), count);
+
+        } else {
+            throw new IllegalArgumentException("time=" + timeFrame);
+        }
+        return candles;
+    }
+
+    @Override
+    public DayCandles getDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDate to, Integer count) {
+        DayCandles candles;
+        try {
+            switch (board) {
+                case TQBR -> candles = getStockDayCandles(ticker, (TimeFrame.Day) timeFrame, to, count);
+                case FUT -> candles = getFuturesDayCandles(ticker, (TimeFrame.Day) timeFrame, to, count);
+                default -> throw new IllegalArgumentException("board=" + board);
+            }
+        } catch (ClassCastException e) {
+            //TODO logger
+            throw new IllegalArgumentException("time_frame=" + timeFrame);
+        }
+        return candles;
+    }
+
+    @Override
+    public DayCandles getDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDate from, LocalDate to) {
+        DayCandles candles;
+        try {
+            switch (board) {
+                case TQBR -> candles = getStockDayCandles(ticker, (TimeFrame.Day) timeFrame, from, to);
+                case FUT -> candles = getFuturesDayCandles(ticker, (TimeFrame.Day) timeFrame, from, to);
+                default -> throw new IllegalArgumentException("board=" + board);
+            }
+        } catch (ClassCastException e) {
+            //TODO logger
+            throw new IllegalArgumentException("time_frame=" + timeFrame);
+        }
+        return candles;
+    }
+
+    @Override
+    public IntraDayCandles getIntraDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDateTime to, Integer count) {
+        IntraDayCandles candles;
+        try {
+            switch (board) {
+                case TQBR -> candles = getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
+                case FUT -> candles = getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
+                default -> throw new IllegalArgumentException("board=" + board);
+            }
+        } catch (ClassCastException e) {
+            //TODO logger
+            throw new IllegalArgumentException("time_frame=" + timeFrame);
+        }
+        return candles;
+    }
+
+    @Override
+    public IntraDayCandles getIntraDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDateTime from, LocalDateTime to) {
+        IntraDayCandles candles;
+        try {
+            switch (board) {
+                case TQBR -> candles = getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, from, to);
+                case FUT -> candles = getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, from, to);
+                default -> throw new IllegalArgumentException("board=" + board);
+            }
+        } catch (ClassCastException e) {
+            //TODO logger
+            throw new IllegalArgumentException("time_frame=" + timeFrame);
+        }
+        return candles;
+    }
+
+
+    @Override
     public DayCandles getStockDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
         Date dateTo = Date.newBuilder()
                 .setDay(to.getDayOfMonth())
@@ -97,6 +178,8 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
 
     @Override
     public DayCandles getFuturesDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
+        //TODO
+        getDayCandlesResult(ticker, Board.FUT, timeFrame, null);
         return null;
     }
 
