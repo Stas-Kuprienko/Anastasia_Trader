@@ -7,7 +7,6 @@ import com.stanislav.domain.smart.SmartAutoTradeService;
 import com.stanislav.domain.smart.impl.SmartAutoTradeImpl;
 import com.stanislav.domain.smart.service.GRpcConnection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

@@ -1,12 +1,12 @@
-package com.stanislav.smart.service.grpc_impl;
+package com.stanislav.smart.domain.controller.impl;
 
 import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.TradingStrategy;
 import com.stanislav.smart.domain.automation.grpc_impl.GrpcFollowerDrone;
+import com.stanislav.smart.domain.controller.SmartService;
 import com.stanislav.smart.domain.entities.Security;
 import com.stanislav.smart.domain.market.event_stream.EventStream;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
-import com.stanislav.smart.service.SmartService;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;

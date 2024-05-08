@@ -4,6 +4,7 @@ import com.stanislav.domain.smart.SmartAutoTradeService;
 import com.stanislav.domain.smart.service.Authentication;
 import com.stanislav.domain.smart.service.GRpcConnection;
 import com.stanislav.domain.smart.strategy.TradeStrategy;
+import com.stanislav.entities.Board;
 import com.stanislav.entities.user.Account;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
@@ -21,12 +22,7 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     }
 
     @Override
-    public void subscribe(Account account, String security, double price, int quantity, TradeStrategy strategy) {
-
-        Smart.Account requestAccount = Smart.Account.newBuilder()
-                .setUserId(0)
-                .setClientId(account.getClientId())
-                .build();
+    public void subscribe(String ticker, Board board, TradeStrategy strategy) {
 
         Smart.Strategy str = Smart.Strategy.newBuilder()
                 .setSimpleMovingAverageCrossing(
@@ -34,11 +30,13 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
                                 .setTimeFrame(Smart.TimeFrame.H1)
                                 .setPeriod(5).build()
                 ).build();
+
+        Smart.Security security = Smart.Security.newBuilder()
+                .setTicker(ticker)
+                .setBoard(board.toString()).build();
+
         Smart.SubscribeTradeRequest request = Smart.SubscribeTradeRequest.newBuilder()
-                .setAccount(requestAccount)
                 .setSecurity(security)
-                .setPrice(price)
-                .setQuantity(quantity)
                 .setStrategy(str)
                 .build();
         //TODO !!!!!!!!!!!!!!!!!!!!!!!

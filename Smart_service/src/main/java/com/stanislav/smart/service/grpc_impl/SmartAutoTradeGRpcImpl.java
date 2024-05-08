@@ -1,6 +1,6 @@
 package com.stanislav.smart.service.grpc_impl;
 
-import com.stanislav.smart.service.SmartService;
+import com.stanislav.smart.domain.controller.SmartService;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
