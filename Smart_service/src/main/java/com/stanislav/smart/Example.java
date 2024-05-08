@@ -10,13 +10,13 @@ import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookCollector;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamOrderBookStream;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
-import com.stanislav.smart.service.ScheduleDispatcher;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 
 //@Controller
 //@RequestMapping("/test")
@@ -26,7 +26,7 @@ public class Example {
     private MarketDataProvider marketDataProvider;
 
 //    @Autowired
-    private ScheduleDispatcher scheduleDispatcher;
+    private ScheduledExecutorService scheduledExecutorService;
 
 //    @Autowired
     private AnalysisAideSupplier analysisAideSupplier;
@@ -47,7 +47,7 @@ public class Example {
 
         EventStreamListener listener;
         try (GRpcClient client = new GRpcClient(resource, token)) {
-            FinamOrderBookStream streamService = new FinamOrderBookStream(scheduleDispatcher.getScheduledExecutor(), client);
+            FinamOrderBookStream streamService = new FinamOrderBookStream(scheduledExecutorService, client);
             streamService.subscribe(ticker, "FUT");
             listener = streamService.getEventStream(ticker);
             Thread.sleep(2000);

@@ -30,8 +30,8 @@ public class StrategiesGrpcDispatcher {
         }
         Smart.SimpleMovingAverageCrossing strategyRequest = request.getStrategy().getSimpleMovingAverageCrossing();
         SimpleMovingAverageAide sma = analysisAideSupplier.simpleMovingAverage(
-                request.getSecurity(),
-                Board.TQBR, //TODO
+                request.getSecurity().getTicker(),
+                Board.valueOf(request.getSecurity().getBoard()),
                 timeFrameParser(strategyRequest.getTimeFrame()),
                 strategyRequest.getPeriod());
         return new MovingAverageCrossingStrategy(sma);
