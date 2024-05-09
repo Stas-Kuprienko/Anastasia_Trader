@@ -5,12 +5,9 @@ import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.entities.candles.Candles;
 import com.stanislav.smart.domain.market.MarketDataProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
 public class AnalysisAideSupplier {
 
     private static final int MOVING_AVERAGE_COUNT = 60;
@@ -18,7 +15,6 @@ public class AnalysisAideSupplier {
     private final MarketDataProvider marketDataProvider;
     private final ConcurrentHashMap<String, AnalysisAide> analyticsMap;
 
-    @Autowired
     public AnalysisAideSupplier(MarketDataProvider marketDataProvider) {
         this.marketDataProvider = marketDataProvider;
         this.analyticsMap = new ConcurrentHashMap<>();

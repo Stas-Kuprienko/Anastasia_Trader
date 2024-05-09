@@ -7,17 +7,20 @@ package com.stanislav.smart.domain.automation.impl;
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
 import com.stanislav.smart.domain.automation.TradingStrategy;
 import com.stanislav.smart.domain.entities.Direction;
-import com.stanislav.smart.domain.market.event_stream.OrderBookRow;
+import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 
 public class MovingAverageCrossingStrategy implements TradingStrategy {
 
     private static final int id = 0;
     private final SimpleMovingAverageAide smaAide;
+    private final EventStreamListener.OrderBookCollector collector;
+
     private Direction direction;
 
 
-    public MovingAverageCrossingStrategy(SimpleMovingAverageAide smaAide) {
+    public MovingAverageCrossingStrategy(SimpleMovingAverageAide smaAide, EventStreamListener.EventCollector collector) {
         this.smaAide = smaAide;
+        this.collector = (EventStreamListener.OrderBookCollector) collector;
     }
 
     @Override
@@ -26,8 +29,9 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
     }
 
     @Override
-    public byte analysing(double lastPrice) {
+    public byte analysing() {
         double lastAveragePrice = smaAide.last();
+        double lastPrice = collector.lastAskPrice();
         double difference = lastAveragePrice - lastPrice;
         if (difference > 0) {
             direction = Direction.Buy;
@@ -41,8 +45,8 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
 //TODO !!!!!!!!!!!!
 
     @Override
-    public boolean follow(OrderBookRow orderBookRow) {
-        double lastPrice = orderBookRow.getPrice();
+    public boolean observe() {
+        double lastPrice = collector.currentAsk().getPrice();
         double lastAveragePrice = smaAide.last();
         double difference;
         if (direction.equals(Direction.Buy)) {

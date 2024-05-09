@@ -3,6 +3,7 @@ package com.stanislav.smart;
 import com.stanislav.smart.domain.analysis.technical.AnalysisAideSupplier;
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
 import com.stanislav.smart.domain.entities.Board;
+import com.stanislav.smart.domain.entities.Security;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.entities.candles.Candles;
 import com.stanislav.smart.domain.market.MarketDataProvider;
@@ -48,8 +49,8 @@ public class Example {
         EventStreamListener listener;
         try (GRpcClient client = new GRpcClient(resource, token)) {
             FinamOrderBookStream streamService = new FinamOrderBookStream(scheduledExecutorService, client);
-            streamService.subscribe(ticker, "FUT");
-            listener = streamService.getEventStream(ticker);
+            streamService.subscribe(new Security(ticker, Board.FUT));
+            listener = streamService.getEventStream(new Security(ticker,Board.FUT));
             Thread.sleep(2000);
             FinamOrderBookCollector collector = (FinamOrderBookCollector) listener.getCollector();
             System.out.println(listener.getScheduledFuture().isDone());
