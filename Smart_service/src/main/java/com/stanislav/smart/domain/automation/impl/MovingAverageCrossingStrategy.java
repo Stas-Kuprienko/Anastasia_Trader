@@ -7,6 +7,7 @@ package com.stanislav.smart.domain.automation.impl;
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
 import com.stanislav.smart.domain.automation.TradingStrategy;
 import com.stanislav.smart.domain.entities.Direction;
+import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 
 public class MovingAverageCrossingStrategy implements TradingStrategy {
@@ -26,6 +27,11 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public TimeFrame.Scope timeFrame() {
+        return smaAide.getTimeFrame();
     }
 
     @Override
@@ -62,9 +68,14 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
         return false;
     }
 
+    @Override
+    public void manageDeal() {
+        //TODO
+    }
+
 
     private boolean deciding() {
-
+        //TODO
         return false;
     }
 }

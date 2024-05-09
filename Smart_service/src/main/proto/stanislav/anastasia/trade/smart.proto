@@ -26,7 +26,10 @@ message UnsubscribeRequest {
 
 message SubscribeTradeResponse {
 
-  OrderNotification notification = 1;
+  oneof payload {
+    OrderNotification notification = 1;
+    Exception exception = 2;
+  }
 
 }
 
@@ -94,5 +97,11 @@ message SupportResistanceLevels {
 
   TimeFrame timeFrame = 1;
   repeated double extremum = 2;
+
+}
+
+message Exception {
+
+  string message = 1;
 
 }

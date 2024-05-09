@@ -8,11 +8,17 @@
 
 package com.stanislav.smart.domain.automation;
 
+import com.stanislav.smart.domain.entities.TimeFrame;
+
 public interface TradingStrategy {
 
     int getId();
 
+    TimeFrame.Scope timeFrame();
+
     byte analysing();
 
     boolean observe();
+
+    void manageDeal();
 }

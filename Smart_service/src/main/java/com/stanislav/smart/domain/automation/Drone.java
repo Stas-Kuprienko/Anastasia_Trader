@@ -2,6 +2,8 @@ package com.stanislav.smart.domain.automation;
 
 import com.stanislav.smart.domain.entities.Security;
 
+import java.util.concurrent.ScheduledFuture;
+
 public interface Drone extends Runnable {
 
     Security getSecurity();
@@ -10,5 +12,9 @@ public interface Drone extends Runnable {
 
     void launch();
 
-    void stop();
+    ScheduledFuture<?> getScheduledFuture();
+
+    void setScheduledFuture(ScheduledFuture<?> scheduledFuture);
+
+    boolean stop();
 }
