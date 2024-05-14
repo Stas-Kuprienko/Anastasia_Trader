@@ -1,6 +1,6 @@
 package com.stanislav.domain.trading.finam.order_dto;
 
-import com.stanislav.entities.orders.Direction;
+import com.stanislav.entities.Direction;
 import org.springframework.lang.NonNull;
 
 public enum FinamBuySell {

@@ -1,5 +1,6 @@
 package com.stanislav.entities.orders;
 
+import com.stanislav.entities.Direction;
 import lombok.Builder;
 
 import java.math.BigDecimal;

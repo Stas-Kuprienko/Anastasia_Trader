@@ -87,7 +87,7 @@ public class FinamTradingService implements TradingService {
 
         String response = restConsumer.doPostJson(Resource.ORDERS.value, finamOrder, account.getToken());
         int id = (int) dataParser.getJsonMap(response, "data").get("transactionId");
-        order.setId(id);
+        order.setOrderId(id);
         orderPersistence.save(order);
     }
 

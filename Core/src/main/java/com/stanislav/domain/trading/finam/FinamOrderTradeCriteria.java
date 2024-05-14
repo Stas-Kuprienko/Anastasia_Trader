@@ -4,7 +4,7 @@ import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.finam.order_dto.FinamOrderValidBefore;
 import com.stanislav.domain.trading.finam.order_dto.FinamOrderCondition;
 import com.stanislav.domain.trading.finam.order_dto.FinamOrderRequest;
-import com.stanislav.entities.orders.Direction;
+import com.stanislav.entities.Direction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -14,7 +14,9 @@ import java.util.Objects;
 public final class Account implements Serializable {
 
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
     private String clientId;
 
     @ManyToOne
@@ -22,29 +24,35 @@ public final class Account implements Serializable {
     @JsonIgnore
     private User user;
 
-    @Column
     private String broker;
 
-    @Column
-    private RiskProfile riskProfile;
-
-    @Column
     private String token;
 
-    @Column
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private RiskProfile riskProfile;
+
     private BigDecimal balance;
 
 
-    public Account(@NonNull String clientId, @NonNull User user, @NonNull String broker, @NonNull String token) {
+    public Account(long id, String clientId, User user, String broker, String token, RiskProfile riskProfile, BigDecimal balance) {
+        this.id = id;
         this.clientId = clientId;
         this.user = user;
         this.broker = broker;
         this.token = token;
-        this.balance = BigDecimal.valueOf(0);
+        this.riskProfile = riskProfile;
+        this.balance = balance;
     }
 
     public Account() {}
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getClientId() {
         return clientId;
@@ -60,6 +68,14 @@ public final class Account implements Serializable {
 
     public String getToken() {
         return token;
+    }
+
+    public RiskProfile getRiskProfile() {
+        return riskProfile;
+    }
+
+    public void setRiskProfile(RiskProfile riskProfile) {
+        this.riskProfile = riskProfile;
     }
 
     public BigDecimal getBalance() {
@@ -81,23 +97,23 @@ public final class Account implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return Objects.equals(clientId, account.clientId) && Objects.equals(user, account.user) && Objects.equals(broker, account.broker);
+        if (!(o instanceof Account account)) return false;
+        return id == account.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientId, user, broker);
+        return Objects.hashCode(id);
     }
 
     @Override
     public String toString() {
         return "Account{" +
                 "id='" + clientId + '\'' +
-                ", user=" + user.getLogin() +
+                ", user=" + user.getLogin() + '\'' +
                 ", broker='" + broker + '\'' +
-                ", balance=" + balance +
+                ", balance=" + balance+ '\'' +
+                ", riskProfile='" + riskProfile +
                 '}';
     }
 }

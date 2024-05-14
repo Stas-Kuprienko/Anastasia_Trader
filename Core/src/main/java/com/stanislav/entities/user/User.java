@@ -12,13 +12,13 @@ import java.util.Objects;
 public final class User implements Serializable {
 
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     private String login;
 
-    @Column
-    private String password;
+    private String password; // TODO with byte array
 
-    @Column
     private String name;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -34,12 +34,12 @@ public final class User implements Serializable {
     public User() {}
 
 
-    public String getName() {
-        return name;
+    public int getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getLogin() {
@@ -56,6 +56,14 @@ public final class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Account> getAccounts() {

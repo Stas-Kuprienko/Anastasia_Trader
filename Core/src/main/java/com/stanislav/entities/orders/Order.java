@@ -2,6 +2,7 @@ package com.stanislav.entities.orders;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stanislav.entities.Board;
+import com.stanislav.entities.Direction;
 import jakarta.persistence.*;
 import com.stanislav.entities.user.Account;
 
@@ -14,36 +15,34 @@ import java.util.Objects;
 public final class Order implements Serializable {
 
     @Id
-    @Column
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private int orderId;
 
     @ManyToOne
-    @JoinColumn(name = "clientId", nullable = false)
+    @JoinColumn(name = "client_id", nullable = false)
     @JsonIgnore
     private Account account;
 
-    @Column
     private String ticker;
 
     private Board board;
 
-    @Column
     private BigDecimal price;
 
-    @Column
     private int quantity;
 
-    @Column
     @Enumerated(EnumType.STRING)
     private Direction direction;
 
-    @Column
     private String status;
 
 
-    public Order(int id, Account account, String ticker, Board board,
+    public Order(long id, int orderId, Account account, String ticker, Board board,
                  BigDecimal price, int quantity, Direction direction, String status) {
         this.id = id;
+        this.orderId = orderId;
         this.account = account;
         this.ticker = ticker;
         this.board = board;
@@ -60,12 +59,20 @@ public final class Order implements Serializable {
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public Account getAccount() {
@@ -129,7 +136,7 @@ public final class Order implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && quantity == order.quantity &&
+        return orderId == order.orderId && quantity == order.quantity &&
                 Objects.equals(account, order.account) &&
                 Objects.equals(ticker, order.ticker) &&
                 Objects.equals(board, order.board) &&
@@ -139,13 +146,13 @@ public final class Order implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, account.hashCode(), ticker, board, price, quantity, direction);
+        return Objects.hash(orderId, account.hashCode(), ticker, board, price, quantity, direction);
     }
 
     @Override
     public String toString() {
         return "Order{" +
-                "id=" + id +
+                "id=" + orderId +
                 ", account='" + account.getClientId() + '\'' +
                 ", ticker='" + ticker + '\'' +
                 ", price=" + price +
@@ -160,7 +167,7 @@ public final class Order implements Serializable {
         private OrderBuilder() {}
 
         public OrderBuilder id(int id) {
-            Order.this.setId(id);
+            Order.this.setOrderId(id);
             return this;
         }
 

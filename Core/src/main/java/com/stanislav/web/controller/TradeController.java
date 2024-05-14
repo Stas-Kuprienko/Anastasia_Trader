@@ -5,7 +5,7 @@ import com.stanislav.database.UserPersistence;
 import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.TradingService;
 import com.stanislav.domain.trading.finam.FinamOrderTradeCriteria;
-import com.stanislav.entities.orders.Direction;
+import com.stanislav.entities.Direction;
 import com.stanislav.entities.orders.Order;
 import com.stanislav.entities.user.Account;
 import com.stanislav.entities.user.User;

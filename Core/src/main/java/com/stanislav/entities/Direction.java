@@ -1,4 +1,4 @@
-package com.stanislav.entities.orders;
+package com.stanislav.entities;
 
 public enum Direction {
     Buy, Sell;
