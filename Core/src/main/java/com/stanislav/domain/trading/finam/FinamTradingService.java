@@ -68,9 +68,10 @@ public class FinamTradingService implements TradingService {
     }
 
     @Override
-    public void makeOrder(Account account, Order order, TradeCriteria tradeCriteria) {
+    public void makeOrder(Order order, TradeCriteria tradeCriteria) {
         FinamOrderTradeCriteria finamOrderCriteria = (FinamOrderTradeCriteria) tradeCriteria;
         FinamBuySell buySell = FinamBuySell.convert(order.getDirection());
+        Account account = order.getAccount();
         FinamOrderRequest finamOrder = FinamOrderRequest.builder()
                 .clientId(account.getClientId())
                 .securityBoard(order.getBoard().toString())

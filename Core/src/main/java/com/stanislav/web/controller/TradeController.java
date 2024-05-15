@@ -58,7 +58,7 @@ public final class TradeController {
                 .build();
 
         TradeCriteria tradeCriteria = FinamOrderTradeCriteria.simpleOrderAtMarketPrice(Direction.Buy);
-        tradingService.makeOrder(account, order, tradeCriteria);
+        tradingService.makeOrder(order, tradeCriteria);
         return order;
     }
 
