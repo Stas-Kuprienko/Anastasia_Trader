@@ -1,4 +1,4 @@
-package com.stanislav.database;
+package com.stanislav.datasource;
 
 import com.stanislav.entities.user.Account;
 import com.stanislav.entities.user.User;

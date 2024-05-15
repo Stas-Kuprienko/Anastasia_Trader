@@ -1,7 +1,7 @@
 package com.stanislav.web.controller;
 
-import com.stanislav.database.AccountPersistence;
-import com.stanislav.database.UserPersistence;
+import com.stanislav.datasource.AccountPersistence;
+import com.stanislav.datasource.UserPersistence;
 import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.TradingService;
 import com.stanislav.domain.trading.finam.FinamOrderTradeCriteria;

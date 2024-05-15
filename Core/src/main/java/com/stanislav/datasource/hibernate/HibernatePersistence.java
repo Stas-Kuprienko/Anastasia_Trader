@@ -1,4 +1,4 @@
-package com.stanislav.database.hibernate;
+package com.stanislav.datasource.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

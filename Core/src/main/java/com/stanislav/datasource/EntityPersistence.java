@@ -1,4 +1,4 @@
-package com.stanislav.database;
+package com.stanislav.datasource;
 
 import java.util.List;
 import java.util.function.Consumer;

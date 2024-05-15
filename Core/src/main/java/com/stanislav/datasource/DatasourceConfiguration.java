@@ -1,8 +1,8 @@
-package com.stanislav.database;
+package com.stanislav.datasource;
 
 import jakarta.persistence.EntityManagerFactory;
 
-public interface DatabaseRepository {
+public interface DatasourceConfiguration {
 
     EntityManagerFactory entityManagerFactory();
 }

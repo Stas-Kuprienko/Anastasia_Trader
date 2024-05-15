@@ -1,11 +1,10 @@
-package com.stanislav.database.hibernate;
+package com.stanislav.datasource.hibernate;
 
-import com.stanislav.database.DatabaseRepository;
+import com.stanislav.datasource.DatasourceConfiguration;
 import org.hibernate.SessionFactory;
-import com.stanislav.database.UserPersistence;
+import com.stanislav.datasource.UserPersistence;
 import com.stanislav.entities.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +13,8 @@ import java.util.function.Consumer;
 @Service("userPersistence")
 public class UserPersistenceHibernate extends HibernatePersistence<User> implements UserPersistence {
 
-    public UserPersistenceHibernate(@Autowired DatabaseRepository databaseRepository) {
-        super((SessionFactory) databaseRepository.entityManagerFactory());
+    public UserPersistenceHibernate(@Autowired DatasourceConfiguration datasourceConfiguration) {
+        super((SessionFactory) datasourceConfiguration.entityManagerFactory());
     }
 
 

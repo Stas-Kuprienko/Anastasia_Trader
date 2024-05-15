@@ -1,8 +1,8 @@
 package com.stanislav.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stanislav.database.DatabaseRepository;
-import com.stanislav.database.hibernate.HibernateRepository;
+import com.stanislav.datasource.DatasourceConfiguration;
+import com.stanislav.datasource.hibernate.DatasourceConfigurationHibernate;
 import com.stanislav.domain.smart.SmartAutoTradeService;
 import com.stanislav.domain.smart.impl.SmartAutoTradeImpl;
 import com.stanislav.domain.smart.service.GRpcConnection;
@@ -61,8 +61,8 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DatabaseRepository databaseRepository() {
-        return new HibernateRepository("hibernate.cfg.xml");
+    public DatasourceConfiguration datasourceConfiguration() {
+        return new DatasourceConfigurationHibernate("hibernate.cfg.xml");
     }
 
     @Bean

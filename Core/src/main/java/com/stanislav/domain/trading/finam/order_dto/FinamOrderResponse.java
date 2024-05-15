@@ -1,6 +1,6 @@
 package com.stanislav.domain.trading.finam.order_dto;
 
-import com.stanislav.database.AccountPersistence;
+import com.stanislav.datasource.AccountPersistence;
 import com.stanislav.entities.Market;
 import com.stanislav.entities.Direction;
 import com.stanislav.entities.orders.Order;

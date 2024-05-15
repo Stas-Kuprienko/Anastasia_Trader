@@ -1,11 +1,10 @@
-package com.stanislav.database.hibernate;
+package com.stanislav.datasource.hibernate;
 
-import com.stanislav.database.DatabaseRepository;
+import com.stanislav.datasource.DatasourceConfiguration;
 import com.stanislav.entities.orders.Order;
 import org.hibernate.SessionFactory;
-import com.stanislav.database.OrderPersistence;
+import com.stanislav.datasource.OrderPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +13,8 @@ import java.util.function.Consumer;
 @Service("orderPersistence")
 public class OrderPersistenceHibernate extends HibernatePersistence<Order> implements OrderPersistence {
 
-    public OrderPersistenceHibernate(@Autowired DatabaseRepository databaseRepository) {
-        super((SessionFactory) databaseRepository.entityManagerFactory());
+    public OrderPersistenceHibernate(@Autowired DatasourceConfiguration datasourceConfiguration) {
+        super((SessionFactory) datasourceConfiguration.entityManagerFactory());
     }
 
 

@@ -1,7 +1,7 @@
 package com.stanislav.domain.trading.finam;
 
-import com.stanislav.database.AccountPersistence;
-import com.stanislav.database.OrderPersistence;
+import com.stanislav.datasource.AccountPersistence;
+import com.stanislav.datasource.OrderPersistence;
 import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.TradingService;
 import com.stanislav.domain.trading.finam.order_dto.*;
