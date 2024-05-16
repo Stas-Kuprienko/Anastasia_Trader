@@ -5,32 +5,33 @@ import com.stanislav.entities.Board;
 import com.stanislav.entities.Currency;
 import com.stanislav.entities.Market;
 
-@Builder
-public final class Stock {
+import java.util.Objects;
+
+public final class Stock implements Securities {
 
     private String ticker;
     private int lotSize;
     private int priceStep;
     private Currency currency;
-    private Market market;
-    private Board board;
-    private String issuer;
+    private PriceAtTheTime price;
+    private final Market market = Market.Stock;
+    private final Board board = Board.TQBR;
 
 
-    public Stock(String ticker, int lotSize, int priceStep, Currency currency, Market market, Board board, String issuer) {
+    @Builder
+    public Stock(String ticker, int lotSize, int priceStep, Currency currency, PriceAtTheTime price) {
         this.ticker = ticker;
         this.lotSize = lotSize;
         this.priceStep = priceStep;
         this.currency = currency;
-        this.market = market;
-        this.board = board;
-        this.issuer = issuer;
+        this.price = price;
     }
 
     public Stock() {}
 
+
     public static Stock emptyStock() {
-        return new Stock("incorrect", 0, 0, null, null, null, null);
+        return new Stock("incorrect", 0, 0, null, null);
     }
 
     public String getTicker() {
@@ -69,23 +70,38 @@ public final class Stock {
         return market;
     }
 
-    public void setMarket(Market market) {
-        this.market = market;
-    }
-
     public Board getBoard() {
         return board;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    public PriceAtTheTime getPrice() {
+        return price;
     }
 
-    public String getIssuer() {
-        return issuer;
+    public void setPrice(PriceAtTheTime price) {
+        this.price = price;
     }
 
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Stock stock)) return false;
+        return Objects.equals(ticker, stock.ticker);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(ticker);
+    }
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "price=" + price +
+                ", currency=" + currency +
+                ", priceStep=" + priceStep +
+                ", lotSize=" + lotSize +
+                ", ticker='" + ticker + '\'' +
+                '}';
     }
 }

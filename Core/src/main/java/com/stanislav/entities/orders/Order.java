@@ -3,9 +3,8 @@ package com.stanislav.entities.orders;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stanislav.entities.Board;
 import com.stanislav.entities.Direction;
-import jakarta.persistence.*;
 import com.stanislav.entities.user.Account;
-
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -134,19 +133,13 @@ public final class Order implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return orderId == order.orderId && quantity == order.quantity &&
-                Objects.equals(account, order.account) &&
-                Objects.equals(ticker, order.ticker) &&
-                Objects.equals(board, order.board) &&
-                Objects.equals(price, order.price) &&
-                direction == order.direction;
+        if (!(o instanceof Order order)) return false;
+        return id == order.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderId, account.hashCode(), ticker, board, price, quantity, direction);
+        return Objects.hashCode(id);
     }
 
     @Override

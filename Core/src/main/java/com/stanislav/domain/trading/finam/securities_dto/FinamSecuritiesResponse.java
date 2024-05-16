@@ -1,6 +1,5 @@
 package com.stanislav.domain.trading.finam.securities_dto;
 
-import com.stanislav.entities.Board;
 import com.stanislav.entities.Currency;
 import com.stanislav.entities.Market;
 import com.stanislav.entities.markets.Stock;
@@ -57,9 +56,6 @@ public final class FinamSecuritiesResponse {
                 .lotSize(lotSize)
                 .priceStep(minStep)
                 .currency(Currency.valueOf(currency))
-                .market(market)
-                .board(Board.valueOf(board))
-                .issuer(shortName)
                 .build();
     }
 
