@@ -4,6 +4,7 @@ import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.TradingStrategy;
 import com.stanislav.smart.domain.entities.Security;
 import io.grpc.stub.StreamObserver;
+import stanislav.anastasia.trade.Objects;
 import stanislav.anastasia.trade.Smart;
 import java.time.Duration;
 import java.util.concurrent.ScheduledFuture;
@@ -34,12 +35,12 @@ public class GrpcFollowerDrone implements Drone {
     @Override
     public void launch() {
         byte topicality;
-        boolean isOrder;
+        boolean dealing;
         Duration duration = defineInterval(strategy.timeFrame());
         do {
             topicality = strategy.analysing();
             if (topicality >= 1) {
-                if (!duration.isZero()) {
+                if (duration.toMillis() > 0) {
                     try {
                         synchronized (this) {
                             this.wait(duration.toMillis());
@@ -52,27 +53,28 @@ public class GrpcFollowerDrone implements Drone {
                 isActive = true;
             } else {
                 do {
-                    isOrder = strategy.observe();
-                    if (isOrder) {
-                        Smart.OrderNotification notification = Smart.OrderNotification.newBuilder()
-                                .setStrategy(request.getStrategy())
+                    dealing = strategy.observe();
+                    if (dealing) {
+                        Objects.OrderNotification notification = Objects.OrderNotification.newBuilder()
+                                .setAccount(Objects.Account.newBuilder().setId(0).build())
                                 .setSecurity(request.getSecurity())
-                                .setPrice(0).build();
+                                .setPrice(0).build(); //TODO set price !!!
                         Smart.SubscribeTradeResponse subscribeTradeResponse = Smart.SubscribeTradeResponse.newBuilder()
                                 .setNotification(notification).build();
                         responseObserver.onNext(subscribeTradeResponse);
                         strategy.manageDeal();
-                    }
-                    try {
-                        synchronized (this) {
-                            this.wait(Duration.ofSeconds(1).toMillis());
+                    } else {
+                        try {
+                            synchronized (this) {
+                                this.wait(Duration.ofSeconds(1).toMillis());
+                            }
+                        } catch (InterruptedException e) {
+                            error(e);
+                            break;
                         }
-                    } catch (InterruptedException e) {
-                        error(e);
-                        break;
+                        topicality = strategy.analysing();
+                        isActive = true;
                     }
-                    topicality = strategy.analysing();
-                    isActive = true;
                 } while (topicality < 1);
             }
         } while (isActive);
@@ -119,7 +121,7 @@ public class GrpcFollowerDrone implements Drone {
         if (timeFrame.getClass().equals(IntraDay.class)) {
             IntraDay intraDay = (IntraDay) timeFrame;
             switch (intraDay) {
-                case M1, M5 -> duration = Duration.ZERO;
+                case M1, M5 -> duration = Duration.ofSeconds(1);
                 case M15 -> duration = Duration.ofMinutes(1);
                 default -> throw new IllegalStateException("Unexpected value: " + timeFrame);
             }

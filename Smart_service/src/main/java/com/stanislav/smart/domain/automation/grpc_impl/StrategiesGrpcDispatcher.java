@@ -12,7 +12,9 @@ import com.stanislav.smart.domain.entities.Security;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.EventStream;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
+import stanislav.anastasia.trade.Objects;
 import stanislav.anastasia.trade.Smart;
+import stanislav.anastasia.trade.Strategies;
 
 public class StrategiesGrpcDispatcher {
 
@@ -26,7 +28,7 @@ public class StrategiesGrpcDispatcher {
 
     
     public TradingStrategy recognizeStrategy(Smart.SubscribeTradeRequest request) {
-        Smart.Strategy protoStrategy = request.getStrategy();
+        Strategies.Strategy protoStrategy = request.getStrategy();
 
         if (protoStrategy.hasSimpleMovingAverageCrossing()) {
             return movingAverageCrossing(request, protoStrategy);
@@ -42,8 +44,8 @@ public class StrategiesGrpcDispatcher {
 
 
     private MovingAverageCrossingStrategy movingAverageCrossing(Smart.SubscribeTradeRequest request,
-                                                                Smart.Strategy protoStrategy) {
-        Smart.SimpleMovingAverageCrossing sma = protoStrategy.getSimpleMovingAverageCrossing();
+                                                                Strategies.Strategy protoStrategy) {
+        Strategies.SimpleMovingAverageCrossing sma = protoStrategy.getSimpleMovingAverageCrossing();
         Security security = new Security(
                 request.getSecurity().getTicker(),Board.valueOf(request.getSecurity().getBoard()));
 
@@ -61,7 +63,7 @@ public class StrategiesGrpcDispatcher {
                 collector);
     }
 
-    private TimeFrame.Scope timeFrameParser(Smart.TimeFrame timeFrameProto) {
+    private TimeFrame.Scope timeFrameParser(Objects.TimeFrame timeFrameProto) {
         TimeFrame.Scope timeFrame;
         switch (timeFrameProto) {
             case D1 -> timeFrame = TimeFrame.Day.D1;

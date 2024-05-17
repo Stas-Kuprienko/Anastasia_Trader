@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package stanislav.anastasia.trade;
 
+import "stanislav/anastasia/trade/objects.proto";
+import "stanislav/anastasia/trade/strategies.proto";
+
 
 service SmartAutoTrade {
 
@@ -36,72 +39,5 @@ message SubscribeTradeResponse {
 message UnsubscribeResponse {
 
   bool isUnsubscribe = 1;
-
-}
-
-message Security {
-
-  string ticker = 1;
-  string board = 2;
-
-}
-
-message Strategy {
-
-  oneof payload {
-
-    SimpleMovingAverageCrossing simpleMovingAverageCrossing = 1;
-    SupportResistanceLevels supportResistanceLevels = 2;
-
-
-  }
-
-}
-
-enum TimeFrame {
-
-  M5 = 0;
-  M15 = 1;
-  H1 = 2;
-  H4 = 3;
-  D1 = 4;
-  W1 = 5;
-
-}
-
-enum Direction {
-
-  BUY = 0;
-  SELL = 1;
-
-}
-
-message OrderNotification {
-
-  Strategy strategy = 1;
-  Security security = 2;
-  double price = 3;
-  Direction direction = 4;
-  string dateTime = 5;
-
-}
-
-message SimpleMovingAverageCrossing {
-
-  TimeFrame timeFrame = 1;
-  int32 period = 2;
-
-}
-
-message SupportResistanceLevels {
-
-  TimeFrame timeFrame = 1;
-  repeated double extremum = 2;
-
-}
-
-message Exception {
-
-  string message = 1;
 
 }

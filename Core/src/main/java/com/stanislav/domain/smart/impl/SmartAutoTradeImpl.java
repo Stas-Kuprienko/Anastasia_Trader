@@ -7,8 +7,10 @@ import com.stanislav.domain.smart.strategy.TradeStrategy;
 import com.stanislav.entities.Board;
 import com.stanislav.entities.user.Account;
 import io.grpc.stub.StreamObserver;
+import stanislav.anastasia.trade.Objects;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
+import stanislav.anastasia.trade.Strategies;
 
 public class SmartAutoTradeImpl implements SmartAutoTradeService {
 
@@ -24,14 +26,14 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     @Override
     public void subscribe(String ticker, Board board, TradeStrategy strategy) {
 
-        Smart.Strategy str = Smart.Strategy.newBuilder()
+        Strategies.Strategy str = Strategies.Strategy.newBuilder()
                 .setSimpleMovingAverageCrossing(
-                        Smart.SimpleMovingAverageCrossing.newBuilder()
-                                .setTimeFrame(Smart.TimeFrame.H1)
+                        Strategies.SimpleMovingAverageCrossing.newBuilder()
+                                .setTimeFrame(Objects.TimeFrame.H1)
                                 .setPeriod(5).build()
                 ).build();
 
-        Smart.Security security = Smart.Security.newBuilder()
+        Objects.Security security = Objects.Security.newBuilder()
                 .setTicker(ticker)
                 .setBoard(board.toString()).build();
 
@@ -51,7 +53,7 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
 
         @Override
         public void onNext(Smart.SubscribeTradeResponse response) {
-            Smart.OrderNotification notification = response.getNotification();
+            Objects.OrderNotification notification = response.getNotification();
 
             //TODO test
             System.out.println(this.getClass().getSimpleName() + " onNext");

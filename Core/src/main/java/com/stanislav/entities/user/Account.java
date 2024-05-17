@@ -1,10 +1,8 @@
 package com.stanislav.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stanislav.entities.Decimal;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.springframework.lang.NonNull;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;

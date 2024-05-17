@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package stanislav.anastasia.trade;
+
+
+enum TimeFrame {
+
+  M5 = 0;
+  M15 = 1;
+  H1 = 2;
+  H4 = 3;
+  D1 = 4;
+  W1 = 5;
+
+}
+
+enum Direction {
+
+  BUY = 0;
+  SELL = 1;
+
+}
+
+message Account {
+
+  int32 id = 1;
+
+}
+
+message Security {
+
+  string ticker = 1;
+  string board = 2;
+
+}
+
+message OrderNotification {
+
+  Account account = 1;
+  Security security = 2;
+  double price = 3;
+  Direction direction = 4;
+  string dateTime = 5;
+
+}
+
+message Exception {
+
+  string message = 1;
+
+}
