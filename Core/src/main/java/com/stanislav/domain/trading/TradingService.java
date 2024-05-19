@@ -12,11 +12,11 @@ public interface TradingService {
 
     void makeOrder(Order order, TradeCriteria tradeCriteria);
 
-    void cancelOrder(Account account, int id);
+    void cancelOrder(Account account, int orderId);
 
-    List<Stop> getStops(Account account);
+    List<Stop> getStops(Account account, boolean matched, boolean canceled, boolean active);
 
     void makeStop(Stop stop);
 
-    void cancelStop(Account account, int id);
+    void cancelStop(Account account, int stopId);
 }

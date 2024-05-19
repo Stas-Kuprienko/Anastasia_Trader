@@ -12,7 +12,6 @@ import com.stanislav.smart.domain.entities.Security;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.EventStream;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
-import stanislav.anastasia.trade.Objects;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.Strategies;
 
@@ -63,7 +62,7 @@ public class StrategiesGrpcDispatcher {
                 collector);
     }
 
-    private TimeFrame.Scope timeFrameParser(Objects.TimeFrame timeFrameProto) {
+    private TimeFrame.Scope timeFrameParser(Strategies.TimeFrame timeFrameProto) {
         TimeFrame.Scope timeFrame;
         switch (timeFrameProto) {
             case D1 -> timeFrame = TimeFrame.Day.D1;

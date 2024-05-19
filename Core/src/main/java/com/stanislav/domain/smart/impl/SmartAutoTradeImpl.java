@@ -5,9 +5,7 @@ import com.stanislav.domain.smart.service.Authentication;
 import com.stanislav.domain.smart.service.GRpcConnection;
 import com.stanislav.domain.smart.strategy.TradeStrategy;
 import com.stanislav.entities.Board;
-import com.stanislav.entities.user.Account;
 import io.grpc.stub.StreamObserver;
-import stanislav.anastasia.trade.Objects;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
 import stanislav.anastasia.trade.Strategies;
@@ -29,11 +27,11 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
         Strategies.Strategy str = Strategies.Strategy.newBuilder()
                 .setSimpleMovingAverageCrossing(
                         Strategies.SimpleMovingAverageCrossing.newBuilder()
-                                .setTimeFrame(Objects.TimeFrame.H1)
+                                .setTimeFrame(Strategies.TimeFrame.H1)
                                 .setPeriod(5).build()
                 ).build();
 
-        Objects.Security security = Objects.Security.newBuilder()
+        Smart.Security security = Smart.Security.newBuilder()
                 .setTicker(ticker)
                 .setBoard(board.toString()).build();
 
@@ -53,7 +51,7 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
 
         @Override
         public void onNext(Smart.SubscribeTradeResponse response) {
-            Objects.OrderNotification notification = response.getNotification();
+            Smart.OrderNotification notification = response.getNotification();
 
             //TODO test
             System.out.println(this.getClass().getSimpleName() + " onNext");

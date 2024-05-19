@@ -2,8 +2,17 @@ syntax = "proto3";
 
 package stanislav.anastasia.trade;
 
-import "stanislav/anastasia/trade/objects.proto";
 
+enum TimeFrame {
+
+  M5 = 0;
+  M15 = 1;
+  H1 = 2;
+  H4 = 3;
+  D1 = 4;
+  W1 = 5;
+
+}
 
 message Strategy {
 

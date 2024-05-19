@@ -61,6 +61,7 @@
 			<groupId>com.stanislav</groupId>
 			<artifactId>anastasia_trader</artifactId>
 			<version>1.0</version>
+			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>

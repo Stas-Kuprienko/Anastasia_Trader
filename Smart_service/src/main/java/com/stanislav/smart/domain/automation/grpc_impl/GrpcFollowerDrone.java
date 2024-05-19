@@ -4,7 +4,6 @@ import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.TradingStrategy;
 import com.stanislav.smart.domain.entities.Security;
 import io.grpc.stub.StreamObserver;
-import stanislav.anastasia.trade.Objects;
 import stanislav.anastasia.trade.Smart;
 import java.time.Duration;
 import java.util.concurrent.ScheduledFuture;
@@ -55,8 +54,8 @@ public class GrpcFollowerDrone implements Drone {
                 do {
                     dealing = strategy.observe();
                     if (dealing) {
-                        Objects.OrderNotification notification = Objects.OrderNotification.newBuilder()
-                                .setAccount(Objects.Account.newBuilder().setId(0).build())
+                        Smart.OrderNotification notification = Smart.OrderNotification.newBuilder()
+                                .setAccount(Smart.Account.newBuilder().setId(0).build())
                                 .setSecurity(request.getSecurity())
                                 .setPrice(0).build(); //TODO set price !!!
                         Smart.SubscribeTradeResponse subscribeTradeResponse = Smart.SubscribeTradeResponse.newBuilder()

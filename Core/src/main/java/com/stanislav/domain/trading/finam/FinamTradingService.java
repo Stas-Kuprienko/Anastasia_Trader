@@ -93,12 +93,12 @@ public class FinamTradingService implements TradingService {
     }
 
     @Override
-    public void cancelOrder(Account account, int id) {
+    public void cancelOrder(Account account, int orderId) {
 
     }
 
     @Override
-    public List<Stop> getStops(Account account) {
+    public List<Stop> getStops(Account account, boolean matched, boolean canceled, boolean active) {
         return null;
     }
 
@@ -108,7 +108,7 @@ public class FinamTradingService implements TradingService {
     }
 
     @Override
-    public void cancelStop(Account account, int id) {
+    public void cancelStop(Account account, int stopId) {
 
     }
 
