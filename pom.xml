@@ -10,7 +10,7 @@
     <version>1.0</version>
 
     <modules>
-        <module>Core</module>
+        <module>Basic_node</module>
         <module>Smart_service</module>
         <module>Telegram_bot</module>
     </modules>
