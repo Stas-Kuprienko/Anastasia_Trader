@@ -1,9 +1,9 @@
 package com.stanislav.entities.orders;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stanislav.entities.Board;
 import com.stanislav.entities.Direction;
 import com.stanislav.entities.user.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -15,17 +15,18 @@ public final class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private int orderId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     @JsonIgnore
     private Account account;
 
     private String ticker;
 
+    @Enumerated(EnumType.STRING)
     private Board board;
 
     private BigDecimal price;

@@ -1,6 +1,6 @@
 package com.stanislav.domain.trading.finam.order_dto;
 
-import com.stanislav.datasource.AccountPersistence;
+import com.stanislav.datasource.AccountDao;
 import com.stanislav.entities.Market;
 import com.stanislav.entities.Direction;
 import com.stanislav.entities.orders.Order;
@@ -8,6 +8,7 @@ import lombok.Builder;
 import com.stanislav.entities.user.Account;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Builder
 public final class FinamOrderResponse {
@@ -58,11 +59,11 @@ public final class FinamOrderResponse {
     public FinamOrderResponse() {}
 
 
-    public Order toOrderClass(AccountPersistence accountPersistence) {
-        Account account = accountPersistence.getById(clientId);
+    public Order toOrderClass(AccountDao accountPersistence) {
         return Order.builder()
                 .id(transactionId)
-                .account(account)
+                //TODO!
+                .account(null)
                 .ticker(securityCode)
                 .price(BigDecimal.valueOf(price))
                 .quantity(quantity)

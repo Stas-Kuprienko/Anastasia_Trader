@@ -1,7 +1,7 @@
 package com.stanislav.web.controller;
 
-import com.stanislav.datasource.AccountPersistence;
-import com.stanislav.datasource.UserPersistence;
+import com.stanislav.datasource.AccountDao;
+import com.stanislav.datasource.UserDao;
 import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.TradingService;
 import com.stanislav.domain.trading.finam.FinamOrderTradeCriteria;
@@ -28,14 +28,14 @@ public final class TradeController {
     private TradingService tradingService;
 
     @Autowired
-    private AccountPersistence accountPersistence;
+    private AccountDao accountPersistence;
 
     @Autowired
-    private UserPersistence userPersistence;
+    private UserDao userPersistence;
 
     @GetMapping(value = "/orders")
     public List<Order> getOrders(@RequestParam boolean includeMatched, @RequestParam boolean includeCanceled, @RequestParam boolean includeActive) {
-        Account account = accountPersistence.getById(id); //temporary. just for testing
+        Account account = accountPersistence.findById(0L).get(); //temporary. just for testing
 
         return tradingService.getOrders(account, includeMatched, includeCanceled, includeActive);
     }
@@ -47,7 +47,7 @@ public final class TradeController {
                           @RequestParam int quantity,
                           @RequestParam String direction) {
         //TODO
-        User user = userPersistence.getById(login);
+        User user = userPersistence.findById(0L).get();
         Account account = user.getAccounts().get(0);
         Order order = Order.builder()
                 .account(account)

@@ -1,7 +1,7 @@
 package com.stanislav.web.controller;
 
-import com.stanislav.datasource.AccountPersistence;
-import com.stanislav.datasource.UserPersistence;
+import com.stanislav.datasource.AccountDao;
+import com.stanislav.datasource.UserDao;
 import com.stanislav.domain.trading.MarketData;
 import com.stanislav.entities.markets.Stock;
 import com.stanislav.entities.user.Account;
@@ -20,23 +20,23 @@ public final class MarketController {
     private MarketData marketData;
 
     @Autowired
-    private AccountPersistence accountPersistence;
+    private AccountDao accountPersistence;
 
     @Autowired
-    private UserPersistence userPersistence;
+    private UserDao userPersistence;
 
 
     @GetMapping("/stock/{ticker}")
     public Stock getStock(@PathVariable("ticker") String ticker, @RequestParam("id") String id) {
 
-        Account account = accountPersistence.getById(id);
+        Account account = accountPersistence.findById(0L).get();
         return marketData.getStock(account, ticker);
     }
 
     @GetMapping("/stocks")
     public List<Stock> getStocks(@RequestParam("id") String id) {
 
-        Account account = accountPersistence.getById(id);
+        Account account = accountPersistence.findById(0L).get();
         return marketData.getStocks(account);
     }
 }

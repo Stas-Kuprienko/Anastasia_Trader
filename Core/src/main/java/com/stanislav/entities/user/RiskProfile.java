@@ -1,7 +1,7 @@
 package com.stanislav.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.Objects;
 
 @Entity
@@ -9,11 +9,12 @@ import java.util.Objects;
 public class RiskProfile {
 
     @Id
-    private long accountId;
+    private Long accountId;
 
-    @OneToOne
     @MapsId
-    @JoinColumn(name = "account")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account", nullable = false)
+    @JsonIgnore
     private Account account;
 
     private byte dealLossPercentage;

@@ -1,7 +1,7 @@
 package com.stanislav.domain.trading.finam;
 
-import com.stanislav.datasource.AccountPersistence;
-import com.stanislav.datasource.OrderPersistence;
+import com.stanislav.datasource.AccountDao;
+import com.stanislav.datasource.OrderDao;
 import com.stanislav.domain.trading.TradeCriteria;
 import com.stanislav.domain.trading.TradingService;
 import com.stanislav.domain.trading.finam.order_dto.*;
@@ -31,14 +31,14 @@ public class FinamTradingService implements TradingService {
     private final ApiDataParser dataParser;
     private final RestConsumer restConsumer;
 
-    private final AccountPersistence accountPersistence;
-    private final OrderPersistence orderPersistence;
+    private final AccountDao accountPersistence;
+    private final OrderDao orderPersistence;
 
 
     public FinamTradingService(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
                                @Autowired RestConsumer restConsumer,
-                               @Autowired AccountPersistence accountPersistence,
-                               @Autowired OrderPersistence orderPersistence,
+                               @Autowired AccountDao accountPersistence,
+                               @Autowired OrderDao orderPersistence,
                                @Value("${broker.finam}") String resource) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;

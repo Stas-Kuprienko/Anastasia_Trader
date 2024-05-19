@@ -1,6 +1,5 @@
 package com.stanislav.entities.user;
 
-import com.stanislav.entities.Decimal;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -13,7 +12,7 @@ public final class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String clientId;
 
@@ -26,7 +25,7 @@ public final class Account implements Serializable {
 
     private String token;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RiskProfile riskProfile;
 
     private BigDecimal balance;
@@ -44,11 +43,12 @@ public final class Account implements Serializable {
 
     public Account() {}
 
-    public long getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -56,16 +56,32 @@ public final class Account implements Serializable {
         return clientId;
     }
 
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getBroker() {
         return broker;
     }
 
+    public void setBroker(String broker) {
+        this.broker = broker;
+    }
+
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public RiskProfile getRiskProfile() {
@@ -84,19 +100,11 @@ public final class Account implements Serializable {
         this.balance = balance;
     }
 
-    public void setBalance(Decimal balance) {
-        this.balance = balance.toBigDecimal();
-    }
-
-    public void setBalance(long balance) {
-        this.balance = BigDecimal.valueOf(balance);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Account account)) return false;
-        return id == account.id;
+        return Objects.equals(id, account.id);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.stanislav.entities.orders;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stanislav.entities.Direction;
 import com.stanislav.entities.user.Account;
 import jakarta.persistence.*;
@@ -12,12 +13,13 @@ public final class Stop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private int stopId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnore
     private Account account;
 
     private String ticker;

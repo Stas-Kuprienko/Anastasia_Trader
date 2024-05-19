@@ -1,12 +1,13 @@
 package com.stanislav.domain.trading.finam.order_dto;
 
-import com.stanislav.datasource.AccountPersistence;
+import com.stanislav.datasource.AccountDao;
 import com.stanislav.entities.Direction;
 import com.stanislav.entities.orders.Order;
 import lombok.Builder;
 import com.stanislav.entities.user.Account;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Builder
 public final class FinamOrderRequest {
@@ -38,14 +39,15 @@ public final class FinamOrderRequest {
     }
 
 
-    public Order toOrderClass(AccountPersistence accountPersistence) {
-        Account account = accountPersistence.getById(clientId);
-        return Order.builder().account(account)
+    public Order toOrderClass(AccountDao accountPersistence) {
+        Optional<Account> account = accountPersistence.findById(0L);
+        //TODO...
+        return account.map(value -> Order.builder().account(value)
                 .ticker(securityCode)
                 .price(BigDecimal.valueOf(price))
                 .quantity(quantity)
                 .direction(Direction.parse(buySell))
-                .build();
+                .build()).orElse(null);
     }
 
     public String getClientId() {

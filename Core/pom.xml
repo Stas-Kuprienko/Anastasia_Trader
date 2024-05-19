@@ -17,8 +17,9 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <spring.version>6.1.6</spring.version>
+        <spring.jpa.version>3.2.6</spring.jpa.version>
         <spring.security.version>6.2.4</spring.security.version>
-        <hibernate.version>6.4.5.Final</hibernate.version>
+        <hibernate.version>6.5.1.Final</hibernate.version>
     </properties>
 
     <dependencies>
@@ -83,11 +84,11 @@
         <!--            <version>3.6.1</version>-->
         <!--        </dependency>-->
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.data</groupId>-->
-        <!--            <artifactId>spring-data-jpa</artifactId>-->
-        <!--            <version>3.2.3</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring.jpa.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.hibernate.orm</groupId>
