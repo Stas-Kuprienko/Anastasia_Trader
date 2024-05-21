@@ -28,23 +28,23 @@ public final class MarketController {
     private MarketData marketData;
 
     @Autowired
-    private AccountDao accountPersistence;
+    private AccountDao accountDao;
 
     @Autowired
-    private UserDao userPersistence;
+    private UserDao userDao;
 
 
     @GetMapping("/stock/{ticker}")
     public Stock getStock(@PathVariable("ticker") String ticker, @RequestParam("id") String id) {
 
-        Account account = accountPersistence.findById(0L).get();
+        Account account = accountDao.findById(0L).get();
         return marketData.getStock(account, ticker);
     }
 
     @GetMapping("/stocks")
     public List<Stock> getStocks(@RequestParam("id") String id) {
 
-        Account account = accountPersistence.findById(0L).get();
+        Account account = accountDao.findById(0L).get();
         return marketData.getStocks(account);
     }
 }

@@ -21,6 +21,13 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
@@ -41,6 +48,7 @@ import java.util.Properties;
 @EnableWebMvc
 @EnableJpaRepositories(basePackages = "com.stanislav.datasource.jpa_repositories")
 @EnableTransactionManagement
+@EnableWebSecurity
 public class AnastasiaTraderConfig implements WebMvcConfigurer {
 
     private final String appId;
@@ -94,6 +102,21 @@ public class AnastasiaTraderConfig implements WebMvcConfigurer {
     @Bean
     public PlatformTransactionManager transactionManager(@Autowired EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(
+                (auth) -> auth.anyRequest()
+                        .authenticated())
+                .httpBasic(Customizer.withDefaults());
+
+        return http.build();
     }
 
     @Bean

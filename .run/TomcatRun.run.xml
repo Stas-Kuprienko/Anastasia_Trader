@@ -6,9 +6,9 @@
     <predefined_log_file id="Tomcat Manager Log" />
     <predefined_log_file id="Tomcat Host Manager Log" />
     <option name="adminPort" value="8006" />
-    <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\Anastasia_Trader\Core" />
+    <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\Anastasia_Trader\web" />
     <option name="contextPath" value="/anastasia" />
-    <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Core\src\main\webapp" />
+    <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Basic_node\web\src\main\webapp" />
     <option name="envOptions">
       <map />
     </option>
@@ -16,15 +16,15 @@
     <option name="port" value="8081" />
     <option name="tomcatInfo">
       <TomcatInfo>
-        <option name="name" value="Apache_Tomcat_11.0.0" />
-        <option name="path" value="$PROJECT_DIR$/Core/local-tomcat/apache-tomcat-11.0.0" />
+        <option name="name" value="local_deploy" />
+        <option name="path" value="$PROJECT_DIR$/Basic_node/local-tomcat/apache-tomcat-11.0.0" />
         <option name="version" value="11.0.0.0" />
       </TomcatInfo>
     </option>
     <option name="vmOptions" value="" />
-    <module name="core" />
+    <module name="web" />
     <method v="2">
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/Core/pom.xml" goal="package" />
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/Basic_node/pom.xml" goal="package" />
     </method>
   </configuration>
 </component>
