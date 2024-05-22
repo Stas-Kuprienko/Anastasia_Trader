@@ -16,8 +16,5 @@ import java.util.List;
 public interface AccountRepository extends AccountDao, JpaRepository<Account, Long> {
 
     @Override
-    default List<Account> findAllByUser(User user) {
-        //TODO !!!!!
-        return null;
-    }
+    List<Account> findAllByUser(User user);
 }
