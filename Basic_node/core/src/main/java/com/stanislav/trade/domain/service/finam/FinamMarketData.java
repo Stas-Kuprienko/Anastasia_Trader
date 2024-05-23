@@ -2,10 +2,10 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.domain.trading.finam;
+package com.stanislav.trade.domain.service.finam;
 
-import com.stanislav.trade.domain.trading.MarketData;
-import com.stanislav.trade.domain.trading.finam.securities_dto.FinamSecuritiesResponse;
+import com.stanislav.trade.domain.service.MarketData;
+import com.stanislav.trade.domain.service.securities_dto.FinamSecuritiesResponse;
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.entities.user.Account;
@@ -22,8 +22,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Collections;
 import java.util.List;
 
-import static com.stanislav.trade.domain.trading.finam.FinamMarketData.Args.*;
-import static com.stanislav.trade.domain.trading.finam.FinamMarketData.Resource.*;
+import static com.stanislav.trade.domain.service.finam.FinamMarketData.Args.*;
+import static com.stanislav.trade.domain.service.finam.FinamMarketData.Resource.*;
 
 @Service("finamMarketData")
 public class FinamMarketData implements MarketData {
@@ -34,7 +34,7 @@ public class FinamMarketData implements MarketData {
 
     public FinamMarketData(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
                            @Autowired RestConsumer restConsumer,
-                           @Value("${broker.finam}") String resource) {
+                           @Value("${api.finam}") String resource) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
         this.restConsumer.setAuthorization(RestConsumer.Authorization.API_KEY);

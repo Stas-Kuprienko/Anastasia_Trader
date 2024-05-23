@@ -10,7 +10,7 @@ package com.stanislav.trade.web.controller;
 
 import com.stanislav.trade.datasource.AccountDao;
 import com.stanislav.trade.datasource.UserDao;
-import com.stanislav.trade.domain.trading.MarketData;
+import com.stanislav.trade.domain.service.MarketData;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.entities.user.Account;
 import org.springframework.beans.factory.annotation.Autowired;

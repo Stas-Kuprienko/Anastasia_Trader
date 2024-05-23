@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.domain.smart.service;
+package com.stanislav.trade.domain.service.grpc;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;

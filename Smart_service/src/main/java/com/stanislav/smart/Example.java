@@ -42,7 +42,7 @@ public class Example {
             throw new RuntimeException(e);
         }
 
-        String resource = appProp.getProperty("api.resource");
+        String resource = appProp.getProperty("api.finam");
         String token = appProp.getProperty("api.token");
         String ticker = "SiM4";
 
