@@ -42,3 +42,4 @@ build/
 /Basic_node/local-tomcat/
 /Basic_node/web/src/main/resources/application.properties
 /Basic_node/web/src/main/java/com/stanislav/trade/web/Example.java
+/Basic_node/core/src/main/resources/application.properties
