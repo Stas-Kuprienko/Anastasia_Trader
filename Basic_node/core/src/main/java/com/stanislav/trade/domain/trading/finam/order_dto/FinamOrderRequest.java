@@ -4,14 +4,7 @@
 
 package com.stanislav.trade.domain.trading.finam.order_dto;
 
-import com.stanislav.trade.datasource.AccountDao;
-import com.stanislav.trade.entities.Direction;
-import com.stanislav.trade.entities.orders.Order;
 import lombok.Builder;
-import com.stanislav.trade.entities.user.Account;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @Builder
 public final class FinamOrderRequest {
@@ -42,17 +35,6 @@ public final class FinamOrderRequest {
         this.validBefore = validBefore;
     }
 
-
-    public Order toOrderClass(AccountDao accountPersistence) {
-        Optional<Account> account = accountPersistence.findById(0L);
-        //TODO...
-        return account.map(value -> Order.builder().account(value)
-                .ticker(securityCode)
-                .price(BigDecimal.valueOf(price))
-                .quantity(quantity)
-                .direction(Direction.parse(buySell))
-                .build()).orElse(null);
-    }
 
     public String getClientId() {
         return clientId;

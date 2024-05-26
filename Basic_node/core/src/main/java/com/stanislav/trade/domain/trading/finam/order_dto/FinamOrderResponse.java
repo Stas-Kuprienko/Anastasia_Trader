@@ -4,9 +4,8 @@
 
 package com.stanislav.trade.domain.trading.finam.order_dto;
 
-import com.stanislav.trade.datasource.AccountDao;
-import com.stanislav.trade.entities.Market;
 import com.stanislav.trade.entities.Direction;
+import com.stanislav.trade.entities.Market;
 import com.stanislav.trade.entities.orders.Order;
 import lombok.Builder;
 
@@ -61,7 +60,7 @@ public final class FinamOrderResponse {
     public FinamOrderResponse() {}
 
 
-    public Order toOrderClass(AccountDao accountPersistence) {
+    public Order toOrderClass() {
         return Order.builder()
                 .id(transactionId)
                 //TODO!

@@ -8,15 +8,12 @@
 
 package com.stanislav.trade.web.controller;
 
-import com.stanislav.trade.datasource.AccountDao;
-import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.domain.trading.TradeCriteria;
 import com.stanislav.trade.domain.trading.TradingService;
 import com.stanislav.trade.domain.trading.finam.FinamOrderTradeCriteria;
 import com.stanislav.trade.entities.Direction;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
-import com.stanislav.trade.entities.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,15 +32,10 @@ public final class TradeController {
     @Qualifier("finamTradingService")
     private TradingService tradingService;
 
-    @Autowired
-    private AccountDao accountPersistence;
-
-    @Autowired
-    private UserDao userPersistence;
 
     @GetMapping(value = "/orders")
     public List<Order> getOrders(@RequestParam boolean includeMatched, @RequestParam boolean includeCanceled, @RequestParam boolean includeActive) {
-        Account account = accountPersistence.findById(0L).get(); //temporary. just for testing
+        Account account = null; //temporary. just for testing
 
         return tradingService.getOrders(account, includeMatched, includeCanceled, includeActive);
     }
@@ -55,8 +47,7 @@ public final class TradeController {
                           @RequestParam int quantity,
                           @RequestParam String direction) {
         //TODO
-        User user = userPersistence.findById(0L).get();
-        Account account = user.getAccounts().get(0);
+        Account account = null;
         Order order = Order.builder()
                 .account(account)
                 .ticker(ticker)

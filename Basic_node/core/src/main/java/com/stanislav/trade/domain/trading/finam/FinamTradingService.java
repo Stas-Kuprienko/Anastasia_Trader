@@ -4,7 +4,6 @@
 
 package com.stanislav.trade.domain.trading.finam;
 
-import com.stanislav.trade.datasource.AccountDao;
 import com.stanislav.trade.datasource.OrderDao;
 import com.stanislav.trade.domain.trading.TradeCriteria;
 import com.stanislav.trade.domain.trading.TradingService;
@@ -36,20 +35,14 @@ public class FinamTradingService implements TradingService {
 
     private final ApiDataParser dataParser;
     private final RestConsumer restConsumer;
-
-    private final AccountDao accountPersistence;
-    private final OrderDao orderPersistence;
+    private OrderDao orderDao;  //TODO !!!
 
 
     public FinamTradingService(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
                                @Autowired RestConsumer restConsumer,
-                               @Autowired AccountDao accountPersistence,
-                               @Autowired OrderDao orderPersistence,
                                @Value("${broker.finam}") String resource) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
-        this.accountPersistence = accountPersistence;
-        this.orderPersistence = orderPersistence;
         this.restConsumer.setAuthorization(RestConsumer.Authorization.API_KEY);
         this.restConsumer.setResource(resource);
     }
@@ -66,7 +59,7 @@ public class FinamTradingService implements TradingService {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, account.getToken());
             String[] layers = {"data", "orders"};
             List<FinamOrderResponse> dtoList = dataParser.parseObjectsList(response, FinamOrderResponse.class, layers);
-            return dtoList.stream().map(o -> o.toOrderClass(accountPersistence)).toList();
+            return dtoList.stream().map(FinamOrderResponse::toOrderClass).toList();
         } catch (HttpClientErrorException e) {
             //TODO
             return Collections.emptyList();
@@ -95,7 +88,7 @@ public class FinamTradingService implements TradingService {
         String response = restConsumer.doPostJson(Resource.ORDERS.value, finamOrder, account.getToken());
         int id = (int) dataParser.getJsonMap(response, "data").get("transactionId");
         order.setOrderId(id);
-        orderPersistence.save(order);
+        orderDao.save(order);
     }
 
     @Override
