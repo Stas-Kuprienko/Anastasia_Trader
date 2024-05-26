@@ -57,8 +57,6 @@ public final class FinamSecuritiesResponse {
     public Stock toStockClass() {
         return Stock.builder()
                 .ticker(code)
-                .lotSize(lotSize)
-                .priceStep(minStep)
                 .currency(Currency.valueOf(currency))
                 .build();
     }

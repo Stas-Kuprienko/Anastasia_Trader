@@ -4,9 +4,9 @@
 
 package com.stanislav.trade.entities.markets;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public interface Securities {
 
-    record PriceAtTheTime(double price, LocalDateTime time) {}
+    record PriceAtTheDate(double price, LocalDate time) {}
 }

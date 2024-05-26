@@ -8,9 +8,8 @@
 
 package com.stanislav.trade.web.controller;
 
-import com.stanislav.trade.domain.service.MarketData;
+import com.stanislav.trade.domain.service.ExchangeData;
 import com.stanislav.trade.entities.markets.Stock;
-import com.stanislav.trade.entities.user.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
@@ -22,21 +21,17 @@ import java.util.List;
 public final class MarketController {
 
     @Autowired
-    @Qualifier("finamMarketData")
-    private MarketData marketData;
+    @Qualifier("finamExchangeData")
+    private ExchangeData exchangeData;
 
 
     @GetMapping("/stock/{ticker}")
     public Stock getStock(@PathVariable("ticker") String ticker, @RequestParam("id") String id) {
-
-        Account account = null;
-        return marketData.getStock(account, ticker);
+        return exchangeData.getStock(ticker);
     }
 
     @GetMapping("/stocks")
     public List<Stock> getStocks(@RequestParam("id") String id) {
-
-        Account account = null;
-        return marketData.getStocks(account);
+        return exchangeData.getStocks();
     }
 }

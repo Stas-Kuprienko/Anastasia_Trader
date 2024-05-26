@@ -19,14 +19,14 @@ public final class Futures implements Securities {
     private String name;
     private int priceStep;
     private Currency currency;
-    private PriceAtTheTime price;
+    private PriceAtTheDate price;
     private LocalDate expiration;
     private final Market market = Market.Forts;
     private final Board board = Board.FUT;
 
 
     @Builder
-    public Futures(String ticker, String name, int priceStep, Currency currency, PriceAtTheTime price) {
+    public Futures(String ticker, String name, int priceStep, Currency currency, PriceAtTheDate price) {
         this.ticker = ticker;
         this.name = name;
         this.priceStep = priceStep;
@@ -99,11 +99,11 @@ public final class Futures implements Securities {
         return expiration;
     }
 
-    public PriceAtTheTime getPrice() {
+    public PriceAtTheDate getPrice() {
         return price;
     }
 
-    public void setPrice(PriceAtTheTime price) {
+    public void setPrice(PriceAtTheDate price) {
         this.price = price;
     }
 

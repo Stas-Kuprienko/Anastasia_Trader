@@ -80,11 +80,11 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
     public IntraDayCandles getIntraDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDateTime to, Integer count) {
         IntraDayCandles candles;
         try {
-            switch (board) {
-                case TQBR -> candles = getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
-                case FUT -> candles = getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
+            candles = switch (board) {
+                case TQBR -> getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
+                case FUT -> getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
                 default -> throw new IllegalArgumentException("board=" + board);
-            }
+            };
         } catch (ClassCastException e) {
             //TODO logger
             throw new IllegalArgumentException("time_frame=" + timeFrame);

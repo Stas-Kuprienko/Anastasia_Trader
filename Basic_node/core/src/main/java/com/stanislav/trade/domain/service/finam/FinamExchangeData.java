@@ -4,9 +4,10 @@
 
 package com.stanislav.trade.domain.service.finam;
 
-import com.stanislav.trade.domain.service.MarketData;
+import com.stanislav.trade.domain.service.ExchangeData;
 import com.stanislav.trade.domain.service.securities_dto.FinamSecuritiesResponse;
 import com.stanislav.trade.entities.Board;
+import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.utils.ApiDataParser;
@@ -22,32 +23,35 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Collections;
 import java.util.List;
 
-import static com.stanislav.trade.domain.service.finam.FinamMarketData.Args.*;
-import static com.stanislav.trade.domain.service.finam.FinamMarketData.Resource.*;
+import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Args.*;
+import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Resource.*;
 
-@Service("finamMarketData")
-public class FinamMarketData implements MarketData {
+@Service("finamExchangeData")
+public class FinamExchangeData implements ExchangeData {
 
+    private final String token;
     private final ApiDataParser dataParser;
     private final RestConsumer restConsumer;
 
 
-    public FinamMarketData(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
-                           @Autowired RestConsumer restConsumer,
-                           @Value("${api.finam}") String resource) {
+    public FinamExchangeData(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
+                             @Autowired RestConsumer restConsumer,
+                             @Value("${api.finam}") String resource,
+                             @Value("${token}") String token) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
         this.restConsumer.setAuthorization(RestConsumer.Authorization.API_KEY);
         this.restConsumer.setResource(resource);
+        this.token = token;
     }
 
 
     @Override
-    public Stock getStock(Account account, String ticker) {
+    public Stock getStock(String ticker) {
         GetQueryBuilder query = new GetQueryBuilder(SECURITIES.value);
         query.add(BOARD.value, Board.TQBR).add(SEC_CODE.value, ticker);
         try {
-            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, account.getToken());
+            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
             String[] layers = {"data", "securities"};
             List<FinamSecuritiesResponse> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponse.class, layers);
             if (dtoList.isEmpty()) {
@@ -63,11 +67,11 @@ public class FinamMarketData implements MarketData {
     }
 
     @Override
-    public List<Stock> getStocks(Account account) {
+    public List<Stock> getStocks() {
         GetQueryBuilder query = new GetQueryBuilder(SECURITIES.value);
         query.add(BOARD.value, Board.TQBR);
         try {
-            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, account.getToken());
+            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
             String[] layers = {"data", "securities"};
             List<FinamSecuritiesResponse> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponse.class, layers);
             if (dtoList.isEmpty()) {
@@ -80,6 +84,26 @@ public class FinamMarketData implements MarketData {
             //TODO
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public List<Stock> getStocks(SortByColumn sortByColumn, SortOrder sortOrder) {
+        return null;
+    }
+
+    @Override
+    public Futures getFutures(String ticker) {
+        return null;
+    }
+
+    @Override
+    public List<Futures> getFuturesList() {
+        return null;
+    }
+
+    @Override
+    public List<Futures> getFuturesList(SortByColumn sortByColumn, SortOrder sortOrder) {
+        return null;
     }
 
 
