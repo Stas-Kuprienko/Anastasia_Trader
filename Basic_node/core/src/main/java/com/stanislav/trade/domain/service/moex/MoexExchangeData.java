@@ -26,9 +26,7 @@ public class MoexExchangeData implements ExchangeData {
 
     //TODO redo with builder
 
-    private static final String DOC_FORMAT = ".json";
-    private static final String STOCKS_URL =
-            history+"/"+engines+'/'+stock+'/'+markets+'/'+shares+'/'+securities+DOC_FORMAT;
+    private final String STOCKS_URL;
 
     private final ApiDataParser dataParser;
     private final RestConsumer restConsumer;
@@ -40,6 +38,13 @@ public class MoexExchangeData implements ExchangeData {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
         this.restConsumer.setResource(resource);
+        this.STOCKS_URL = MoexApiClient.moexApiJsonClient()
+                .history()
+                .engines()
+                .stock()
+                .markets()
+                .shares()
+                .securities().build();
     }
 
 
