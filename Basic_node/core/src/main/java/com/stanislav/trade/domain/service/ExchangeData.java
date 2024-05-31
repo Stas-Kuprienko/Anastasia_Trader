@@ -6,7 +6,6 @@ package com.stanislav.trade.domain.service;
 
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
-import com.stanislav.trade.entities.user.Account;
 
 import java.util.List;
 
@@ -28,11 +27,12 @@ public interface ExchangeData {
 
         NONE,
         TICKER,
-        TRADE_VOLUME
+        TRADE_VOLUME,
+        CHANGE_PERCENT
     }
 
     enum SortOrder {
 
-        ASC, DESC
+        asc, desc
     }
 }

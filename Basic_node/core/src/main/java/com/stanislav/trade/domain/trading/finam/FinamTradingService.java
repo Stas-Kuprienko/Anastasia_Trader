@@ -40,7 +40,7 @@ public class FinamTradingService implements TradingService {
 
     public FinamTradingService(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
                                @Autowired RestConsumer restConsumer,
-                               @Value("${broker.finam}") String resource) {
+                               @Value("${api.finam}") String resource) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
         this.restConsumer.setAuthorization(RestConsumer.Authorization.API_KEY);

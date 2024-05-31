@@ -5,7 +5,6 @@
 package com.stanislav.trade.domain.service.moex;
 
 import com.stanislav.trade.utils.GetQueryBuilder;
-
 import java.util.Map;
 
 public class MoexApiClient {
@@ -15,14 +14,9 @@ public class MoexApiClient {
     private final static String HISTORY = "history";
     private final static String ENGINES = "engines";
     private final static String MARKETS = "markets";
+    private final static String BOARDS = "boards";
     private final static String SECURITIES = "securities";
     private final static String STATISTICS = "statistics";
-    private final static String STOCK = "stock";
-    private final static String CURRENCY = "currency";
-    private final static String FUTURES = "futures";
-    private final static String SHARES = "shares";
-    private final static String FORTS = "forts";
-    private final static String BONDS = "bonds";
 
     private final DocFormat format;
     private final StringBuilder url;
@@ -52,8 +46,31 @@ public class MoexApiClient {
         return this;
     }
 
+    public MoexApiClient engine(Engine engine) {
+        validate(ENGINES, engine.toString());
+        url.append(delimiter).append(engine);
+        return this;
+    }
+
     public MoexApiClient markets() {
         url.append(delimiter).append(MARKETS);
+        return this;
+    }
+
+    public MoexApiClient market(Market market) {
+        validate(MARKETS, market.toString());
+        url.append(delimiter).append(market);
+        return this;
+    }
+
+    public MoexApiClient boards() {
+        url.append(delimiter).append(BOARDS);
+        return this;
+    }
+
+    public MoexApiClient board(Board board) {
+        validate(BOARDS, board.toString());
+        url.append(delimiter).append(board);
         return this;
     }
 
@@ -67,38 +84,8 @@ public class MoexApiClient {
         return this;
     }
 
-    public MoexApiClient stock() {
-        url.append(delimiter).append(STOCK);
-        return this;
-    }
-
-    public MoexApiClient currency() {
-        url.append(delimiter).append(CURRENCY);
-        return this;
-    }
-
-    public MoexApiClient futures() {
-        url.append(delimiter).append(FUTURES);
-        return this;
-    }
-
-    public MoexApiClient shares() {
-        url.append(delimiter).append(SHARES);
-        return this;
-    }
-
-    public MoexApiClient forts() {
-        url.append(delimiter).append(FORTS);
-        return this;
-    }
-
-    public MoexApiClient bonds() {
-        url.append(delimiter).append(BONDS);
-        return this;
-    }
-
     public String build() {
-        String result = url.append(format).toString();
+        String result = url.append(format.value).toString();
         url.setLength(0);
         url.append(source);
         return result;
@@ -114,6 +101,15 @@ public class MoexApiClient {
         return query.build();
     }
 
+    
+    private void validate(String param, String arg) {
+        String[] str = url.toString().split("/");
+        if (!(str[str.length - 1].equals(param))) {
+            String message = url.toString() + '+' + arg;
+            throw new IllegalArgumentException(message);
+        }
+    }
+
 
     public enum DocFormat {
         JSON(".json"),
@@ -124,5 +120,22 @@ public class MoexApiClient {
         DocFormat(String value) {
             this.value = value;
         }
+    }
+
+    public enum Engine {
+
+        stock, currency, futures, commodity
+    }
+
+    public enum Market {
+
+        shares, bonds, index, foreignshares,
+        selt, otc,
+        forts, options,
+        futures
+    }
+
+    public enum Board {
+        tqbr, tqtf
     }
 }

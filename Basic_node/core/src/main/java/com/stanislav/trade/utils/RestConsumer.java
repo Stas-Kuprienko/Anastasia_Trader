@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 @Component(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RestConsumer {
 
+    // TODO troubles with scope!
+
     private final RestTemplate restTemplate;
     private final ApiDataParser dataParser;
 
@@ -28,6 +30,7 @@ public class RestConsumer {
                         @Autowired @Qualifier("jsonParser") ApiDataParser dataParser) {
         this.restTemplate = restTemplate;
         this.dataParser = dataParser;
+        this.resource = "";
     }
 
 
