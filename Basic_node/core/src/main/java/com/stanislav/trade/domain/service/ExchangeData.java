@@ -8,16 +8,17 @@ import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ExchangeData {
 
-    Stock getStock(String ticker);
+    Optional<Stock> getStock(String ticker);
 
     List<Stock> getStocks();
 
     List<Stock> getStocks(SortByColumn sortByColumn, SortOrder sortOrder);
 
-    Futures getFutures(String ticker);
+    Optional<Futures> getFutures(String ticker);
 
     List<Futures> getFuturesList();
 

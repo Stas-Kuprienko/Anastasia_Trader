@@ -10,58 +10,40 @@ import com.stanislav.trade.entities.Market;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public final class Futures implements Securities {
 
-    private static final byte EXPIRATION_DAY_OF_MONTH = 15;
 
     private String ticker;
     private String name;
-    private int priceStep;
+    private String asset;
+    private double minStep;
+    private double stepPrice;
     private Currency currency;
     private PriceAtTheDate price;
     private LocalDate expiration;
-    private final Market market = Market.Forts;
-    private final Board board = Board.FUT;
+    private Market market;
+    private Board board;
 
 
     @Builder
-    public Futures(String ticker, String name, int priceStep, Currency currency, PriceAtTheDate price) {
+    public Futures(String ticker, String name, String asset, double minStep, double stepPrice,
+                   Currency currency, PriceAtTheDate price, LocalDate expiration, Market market, Board board) {
         this.ticker = ticker;
         this.name = name;
-        this.priceStep = priceStep;
+        this.asset = asset;
+        this.minStep = minStep;
+        this.stepPrice = stepPrice;
         this.currency = currency;
-        this.expiration = decodeExpiration(ticker);
         this.price = price;
+        this.expiration = expiration;
+        this.market = market;
+        this.board = board;
     }
 
     public Futures() {}
 
-
-    public static LocalDate decodeExpiration(String ticker) {
-        int tickerLength = ticker.length();
-        if (tickerLength < 3) {
-            throw new IllegalArgumentException(ticker);
-        }
-        try {
-            int futuresYear = Integer.parseInt(ticker.substring(tickerLength - 1));
-            int year = LocalDate.now().getYear();
-            for (;;) {
-                if ((year % 10) < futuresYear) {
-                    year += 1;
-                } else if ((year % 10) > futuresYear) {
-                    year -= 1;
-                } else {
-                    break;
-                }
-            }
-            String futuresMonth = String.valueOf(ticker.charAt(tickerLength - 2));
-            int monthValue = ExpirationMonths.valueOf(futuresMonth.toUpperCase()).ordinal() + 1;
-            return LocalDate.of(year, monthValue, EXPIRATION_DAY_OF_MONTH);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(ticker);
-        }
-    }
 
     public String getTicker() {
         return ticker;
@@ -79,12 +61,28 @@ public final class Futures implements Securities {
         this.name = name;
     }
 
-    public int getPriceStep() {
-        return priceStep;
+    public String getAsset() {
+        return asset;
     }
 
-    public void setPriceStep(int priceStep) {
-        this.priceStep = priceStep;
+    public void setAsset(String asset) {
+        this.asset = asset;
+    }
+
+    public double getMinStep() {
+        return minStep;
+    }
+
+    public void setMinStep(double minStep) {
+        this.minStep = minStep;
+    }
+
+    public double getStepPrice() {
+        return stepPrice;
+    }
+
+    public void setStepPrice(double stepPrice) {
+        this.stepPrice = stepPrice;
     }
 
     public Currency getCurrency() {
@@ -99,6 +97,10 @@ public final class Futures implements Securities {
         return expiration;
     }
 
+    public void setExpiration(LocalDate expiration) {
+        this.expiration = expiration;
+    }
+
     public PriceAtTheDate getPrice() {
         return price;
     }
@@ -111,12 +113,51 @@ public final class Futures implements Securities {
         return market;
     }
 
+    public void setMarket(Market market) {
+        this.market = market;
+    }
+
     public Board getBoard() {
         return board;
     }
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
-    enum ExpirationMonths {
-        F, G, H, J, K, M, N, Q, U, V, X, Z
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Futures futures)) return false;
+        return Double.compare(minStep, futures.minStep) == 0 &&
+                Double.compare(stepPrice, futures.stepPrice) == 0 &&
+                Objects.equals(ticker, futures.ticker) &&
+                Objects.equals(name, futures.name) &&
+                Objects.equals(asset, futures.asset) &&
+                currency == futures.currency &&
+                Objects.equals(expiration, futures.expiration) &&
+                market == futures.market &&
+                board == futures.board;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ticker, name, asset, minStep, stepPrice, currency, expiration, market, board);
+    }
+
+    @Override
+    public String toString() {
+        return "Futures{" +
+                "ticker='" + ticker + '\'' +
+                ", name='" + name + '\'' +
+                ", asset='" + asset + '\'' +
+                ", minStep=" + minStep +
+                ", spetPrice=" + stepPrice +
+                ", currency=" + currency +
+                ", price=" + price +
+                ", expiration=" + expiration +
+                ", market=" + market +
+                ", board=" + board +
+                '}';
     }
 }

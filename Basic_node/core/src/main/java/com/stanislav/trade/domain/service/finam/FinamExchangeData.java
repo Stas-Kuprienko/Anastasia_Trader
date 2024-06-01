@@ -9,7 +9,6 @@ import com.stanislav.trade.domain.service.securities_dto.FinamSecuritiesResponse
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
-import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.utils.ApiDataParser;
 import com.stanislav.trade.utils.GetQueryBuilder;
 import com.stanislav.trade.utils.RestConsumer;
@@ -22,6 +21,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Args.*;
 import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Resource.*;
@@ -47,7 +47,7 @@ public class FinamExchangeData implements ExchangeData {
 
 
     @Override
-    public Stock getStock(String ticker) {
+    public Optional<Stock> getStock(String ticker) {
         GetQueryBuilder query = new GetQueryBuilder(SECURITIES.value);
         query.add(BOARD.value, Board.TQBR).add(SEC_CODE.value, ticker);
         try {
@@ -55,14 +55,14 @@ public class FinamExchangeData implements ExchangeData {
             String[] layers = {"data", "securities"};
             List<FinamSecuritiesResponse> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponse.class, layers);
             if (dtoList.isEmpty()) {
-                return Stock.emptyStock();
+                return Optional.empty();
             } else {
-                return dtoList.get(0).toStockClass();
+                return Optional.of(dtoList.getFirst().toStockClass());
             }
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
             //TODO
-            return Stock.emptyStock();
+            return Optional.empty();
         }
     }
 
@@ -92,7 +92,7 @@ public class FinamExchangeData implements ExchangeData {
     }
 
     @Override
-    public Futures getFutures(String ticker) {
+    public Optional<Futures> getFutures(String ticker) {
         return null;
     }
 

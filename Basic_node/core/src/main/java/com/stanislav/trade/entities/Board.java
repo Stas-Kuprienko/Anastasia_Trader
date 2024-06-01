@@ -5,5 +5,5 @@
 package com.stanislav.trade.entities;
 
 public enum Board {
-    TQBR, SNDX, TQTF, FUT
+    TQBR, SNDX, TQTF, FUT, RFUD
 }

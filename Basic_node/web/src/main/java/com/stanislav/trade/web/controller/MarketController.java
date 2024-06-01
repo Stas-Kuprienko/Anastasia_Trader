@@ -21,13 +21,13 @@ import java.util.List;
 public final class MarketController {
 
     @Autowired
-    @Qualifier("finamExchangeData")
+    @Qualifier("moexExchangeData")
     private ExchangeData exchangeData;
 
 
     @GetMapping("/stock/{ticker}")
     public Stock getStock(@PathVariable("ticker") String ticker, @RequestParam("id") String id) {
-        return exchangeData.getStock(ticker);
+        return exchangeData.getStock(ticker).orElseThrow();
     }
 
     @GetMapping("/stocks")

@@ -16,23 +16,21 @@ public final class Stock implements Securities {
     private String ticker;
     private Currency currency;
     private PriceAtTheDate price;
-    private final Market market = Market.Stock;
-    private final Board board = Board.TQBR;
+    private Market market;
+    private Board board;
 
 
     @Builder
-    public Stock(String ticker, Currency currency, PriceAtTheDate price) {
+    public Stock(String ticker, Currency currency, PriceAtTheDate price, Market market, Board board) {
         this.ticker = ticker;
         this.currency = currency;
         this.price = price;
+        this.market = market;
+        this.board = board;
     }
 
     public Stock() {}
 
-
-    public static Stock emptyStock() {
-        return new Stock("incorrect", null, null);
-    }
 
     public String getTicker() {
         return ticker;
@@ -70,20 +68,25 @@ public final class Stock implements Securities {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Stock stock)) return false;
-        return Objects.equals(ticker, stock.ticker);
+        return Objects.equals(ticker, stock.ticker) &&
+                currency == stock.currency &&
+                market == stock.market &&
+                board == stock.board;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(ticker);
+        return Objects.hash(ticker, currency, market, board);
     }
 
     @Override
     public String toString() {
         return "Stock{" +
-                "ticker='" + ticker +
-                "', " + price +
+                "ticker='" + ticker + '\'' +
                 ", currency=" + currency +
+                ", price=" + price +
+                ", market=" + market +
+                ", board=" + board +
                 '}';
     }
 }
