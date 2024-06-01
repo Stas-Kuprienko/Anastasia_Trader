@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum FuturesConverter {
+public enum FuturesListConverter {
 
     SECID,
     BOARDID,
