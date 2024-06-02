@@ -5,6 +5,7 @@
 package com.stanislav.trade.web.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.stanislav.trade.domain.service.grpc.GRpcConnection;
 import com.stanislav.trade.domain.smart.SmartAutoTradeService;
 import com.stanislav.trade.domain.smart.impl.SmartAutoTradeImpl;
@@ -43,7 +44,7 @@ public class AnastasiaTraderConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        return new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     @Bean

@@ -84,6 +84,11 @@ public class MoexApiClient {
         return this;
     }
 
+    public MoexApiClient parameterFormat() {
+        url.append(delimiter).append("%s");
+        return this;
+    }
+
     public String build() {
         String result = url.append(format.value).toString();
         url.setLength(0);

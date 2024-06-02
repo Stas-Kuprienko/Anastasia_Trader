@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum StockListConverter {
+public enum StocksConverter {
 
     SECID,
     BOARDID,
@@ -38,27 +38,28 @@ public enum StockListConverter {
     CURRENCYID,
     SECTYPE,
     LISTLEVEL,
-    SETTLEDATE,
-    VALTODAY,
-    LASTCHANGEPRCNT;
+    SETTLEDATE;
 
+    public static Stock moexDtoToStock(Object[] dto) {
+        Currency currency = dto[CURRENCYID.ordinal()].equals("SUR") ?
+                Currency.RUR : Currency.valueOf((String) dto[CURRENCYID.ordinal()]);
+        double price = Double.parseDouble(dto[PREVLEGALCLOSEPRICE.ordinal()].toString());
+        LocalDate date = LocalDate.parse(dto[PREVDATE.ordinal()].toString());
+        Securities.PriceAtTheDate priceAtTheDate = new Securities.PriceAtTheDate(price, date);
+        return Stock.builder()
+                .ticker((String) dto[SECID.ordinal()])
+                .name((String) dto[SECNAME.ordinal()])
+                .currency(currency)
+                .price(priceAtTheDate)
+                .market(Market.Stock)
+                .board(Board.valueOf((String) dto[BOARDID.ordinal()]))
+                .build();
+    }
 
     public static List<Stock> moexDtoToStocks(List<Object[]> dto) {
         ArrayList<Stock> stocks = new ArrayList<>();
         for (Object[] o : dto) {
-            Currency currency = o[CURRENCYID.ordinal()].equals("SUR") ?
-                    Currency.RUR : Currency.valueOf((String) o[CURRENCYID.ordinal()]);
-            double price = Double.parseDouble(o[PREVLEGALCLOSEPRICE.ordinal()].toString());
-            LocalDate date = LocalDate.parse(o[PREVDATE.ordinal()].toString());
-            Securities.PriceAtTheDate priceAtTheDate = new Securities.PriceAtTheDate(price, date);
-            Stock s = Stock.builder()
-                    .ticker((String) o[SECID.ordinal()])
-                    .currency(currency)
-                    .price(priceAtTheDate)
-                    .market(Market.Stock)
-                    .board(Board.valueOf((String) o[BOARDID.ordinal()]))
-                    .build();
-            stocks.add(s);
+            stocks.add(moexDtoToStock(o));
         }
         return stocks;
     }

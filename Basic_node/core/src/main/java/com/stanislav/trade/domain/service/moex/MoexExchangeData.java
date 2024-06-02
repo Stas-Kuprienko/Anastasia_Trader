@@ -1,9 +1,9 @@
 package com.stanislav.trade.domain.service.moex;
 
 import com.stanislav.trade.domain.service.ExchangeData;
-import com.stanislav.trade.domain.service.moex.converters.FuturesListConverter;
-import com.stanislav.trade.domain.service.moex.converters.SecuritiesConverter;
-import com.stanislav.trade.domain.service.moex.converters.StockListConverter;
+import com.stanislav.trade.domain.service.moex.converters.FuturesConverter;
+import com.stanislav.trade.domain.service.moex.converters.MarketData;
+import com.stanislav.trade.domain.service.moex.converters.StocksConverter;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.utils.ApiDataParser;
@@ -23,8 +23,10 @@ import static com.stanislav.trade.domain.service.moex.MoexExchangeData.Args.*;
 @Service("moexExchangeData")
 public class MoexExchangeData implements ExchangeData {
 
+    private final String STOCK_URL;
     private final String STOCKS_URL;
     private final String FUTURES_URL;
+    private final String FUTURES_LIST_URL;
 
     private final ApiDataParser dataParser;
     private final RestConsumer restConsumer;
@@ -34,14 +36,22 @@ public class MoexExchangeData implements ExchangeData {
                             @Autowired RestConsumer restConsumer) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
+        this.STOCK_URL = stockUrl();
         this.STOCKS_URL = stocksUrl();
         this.FUTURES_URL = futuresUrl();
+        this.FUTURES_LIST_URL = futuresListUrl();
     }
 
 
     @Override
     public Optional<Stock> getStock(String ticker) {
-        return null;
+        String uri = String.format(STOCK_URL, ticker);
+        List<Object[]> dto = getSecurity(uri);
+        if (dto.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(StocksConverter.moexDtoToStock(dto.getFirst()));
+        }
     }
 
     @Override
@@ -56,40 +66,54 @@ public class MoexExchangeData implements ExchangeData {
         if (dto.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return StockListConverter.moexDtoToStocks(dto);
+            return StocksConverter.moexDtoToStocks(dto);
         }
     }
 
     @Override
     public Optional<Futures> getFutures(String ticker) {
-        return null;
+        String uri = String.format(FUTURES_URL, ticker);
+        List<Object[]> dto = getSecurity(uri);
+        if (dto.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(FuturesConverter.moexDtoToFutures(dto.getFirst()));
+        }
     }
 
     @Override
     public List<Futures> getFuturesList() {
-        return null;
+        return getFuturesList(SortByColumn.NONE, null);
     }
 
     @Override
     public List<Futures> getFuturesList(SortByColumn sortByColumn, SortOrder sortOrder) {
-        GetQueryBuilder query = new GetQueryBuilder(FUTURES_URL);
+        GetQueryBuilder query = new GetQueryBuilder(FUTURES_LIST_URL);
         List<Object[]> dto = getSecurities(query, sortByColumn, sortOrder);
         if (dto.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return FuturesListConverter.moexDtoToFutures(dto);
+            return FuturesConverter.moexDtoToFuturesList(dto);
         }
     }
 
+
+    private List<Object[]> getSecurity(String uri) {
+        GetQueryBuilder query = new GetQueryBuilder(uri);
+        query.add(marketdata.toString(), 1);
+        String response = restConsumer.doRequest(query.build(), HttpMethod.GET);
+        String[] layers = {"securities", "data"};
+        return dataParser.parseObjectsList(response, Object[].class, layers);
+    }
 
     private List<Object[]> getSecurities(GetQueryBuilder query, SortByColumn sortByColumn, SortOrder sortOrder) {
         query.add(marketdata.toString(), 1);
         query.add(leaders.toString(), 1);
         if (!sortByColumn.equals(SortByColumn.NONE)) {
             String sortColumn = switch (sortByColumn) {
-                case TICKER -> SecuritiesConverter.SECID.toString();
-                case TRADE_VOLUME -> SecuritiesConverter.VALTODAY.toString();
-                case CHANGE_PERCENT -> SecuritiesConverter.LASTCHANGEPRCNT.toString();
+                case TICKER -> MarketData.SECID.toString();
+                case TRADE_VOLUME -> MarketData.VALTODAY.toString();
+                case CHANGE_PERCENT -> MarketData.LASTCHANGEPRCNT.toString();
                 case null, default -> throw new IllegalArgumentException(sortByColumn.toString());
             };
             query.add(sort_column.toString(), sortColumn.toLowerCase());
@@ -100,6 +124,19 @@ public class MoexExchangeData implements ExchangeData {
         return dataParser.parseObjectsList(response, Object[].class, layers);
     }
 
+    private String stockUrl() {
+        return MoexApiClient.moexApiJsonClient()
+                .engines()
+                .engine(Engine.stock)
+                .markets()
+                .market(Market.shares)
+                .boards()
+                .board(MoexApiClient.Board.tqbr)
+                .securities()
+                .parameterFormat()
+                .build();
+    }
+
     private String stocksUrl() {
         return MoexApiClient.moexApiJsonClient()
                 .engines()
@@ -108,7 +145,18 @@ public class MoexExchangeData implements ExchangeData {
                 .market(Market.shares)
                 .boards()
                 .board(MoexApiClient.Board.tqbr)
-                .securities().build();
+                .securities()
+                .build();
+    }
+
+    private String futuresListUrl() {
+        return MoexApiClient.moexApiJsonClient()
+                .engines()
+                .engine(Engine.futures)
+                .markets()
+                .market(Market.forts)
+                .securities()
+                .build();
     }
 
     private String futuresUrl() {
@@ -117,7 +165,9 @@ public class MoexExchangeData implements ExchangeData {
                 .engine(Engine.futures)
                 .markets()
                 .market(Market.forts)
-                .securities().build();
+                .securities()
+                .parameterFormat()
+                .build();
     }
 
 
@@ -130,6 +180,3 @@ public class MoexExchangeData implements ExchangeData {
         sort_order
     }
 }
-
-// https://iss.moex.com/iss/engines/stock/markets/shares/boards/tqbr/securities.json?marketdata=1&sort_column=valtoday&sort_order=desc&marketprice_board=1
-// https://iss.moex.com/iss/history/engines/stock/markets/shares/securities.json?boardgroup=tqbr&sort_column=value&sort_order=desc
