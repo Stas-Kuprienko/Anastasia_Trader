@@ -1,8 +1,10 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!DOCTYPE html>
-<html class=" FB_FW_ext KeyGen">
+<html lang="ru">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--metatextblock--><title>/signup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--metatextblock--><title>Регистрация</title>
     <meta property="og:url" content="http://project9588603.tilda.ws/page49487079.html">
     <meta property="og:title" content="/signup">
     <meta property="og:description" content="">
@@ -15,21 +17,21 @@
     <link rel="dns-prefetch" href="https://ws.tildacdn.com/">
     <link rel="dns-prefetch" href="https://static.tildacdn.info/">
     <meta name="robots" content="nofollow">
-    <link rel="shortcut icon" href="https://static.tildacdn.info/img/tildafavicon.ico" type="image/x-icon">
+    <link rel="icon" href="/anastasia/favicon1.svg" sizes="any" type="image/svg+xml">
     <!-- Assets -->
-    <script type="text/javascript" async="" id="tildastatscript" src="./_signup_files/tilda-stat-1.0.min.js"></script>
-    <script src="./_signup_files/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
-    <link rel="stylesheet" href="./_signup_files/tilda-grid-3.0.min.css" type="text/css" media="all"
+    <script type="text/javascript" async="" id="tildastatscript" src="/anastasia/style/_signup_files/tilda-stat-1.0.min.js"></script>
+    <script src="/anastasia/style/_signup_files/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
+    <link rel="stylesheet" href="/anastasia/style/_signup_files/tilda-grid-3.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_signup_files/tilda-blocks-page49487079.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_signup_files/tilda-blocks-page49487079.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_signup_files/tilda-forms-1.0.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_signup_files/tilda-forms-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_signup_files/tilda-cover-1.0.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_signup_files/tilda-cover-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_signup_files/fonts-tildasans.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_signup_files/fonts-tildasans.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <script nomodule="" src="./_signup_files/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
+    <script nomodule="" src="/anastasia/style/_signup_files/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
     <script type="text/javascript">function t_onReady(func) {
 if (document.readyState != 'loading') {
 func();
@@ -47,21 +49,21 @@ t_onFuncLoad(funcName, okFunc, time);
 }
 }
     </script>
-    <script src="./_signup_files/tilda-scripts-3.0.min.js" charset="utf-8" defer=""
+    <script src="/anastasia/style/_signup_files/tilda-scripts-3.0.min.js" charset="utf-8" defer=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_signup_files/tilda-blocks-page49487079.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_signup_files/tilda-blocks-page49487079.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_signup_files/tilda-lazyload-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_signup_files/tilda-lazyload-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_signup_files/tilda-forms-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_signup_files/tilda-forms-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_signup_files/tilda-cover-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_signup_files/tilda-cover-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_signup_files/tilda-menu-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_signup_files/tilda-menu-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_signup_files/tilda-skiplink-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_signup_files/tilda-skiplink-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_signup_files/tilda-events-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_signup_files/tilda-events-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
     <script type="text/javascript">window.dataLayer = window.dataLayer || [];</script>
     <script type="text/javascript">(function () {
@@ -81,7 +83,7 @@ el.classList.add("t-records_visible");
 });
 sessionStorage.setItem("visited", "y");
 }, 400);
-} 
+}
 document.addEventListener('DOMContentLoaded', t_setvisRecs);
 }
 })();
@@ -278,8 +280,8 @@ document.addEventListener('DOMContentLoaded', t_setvisRecs);
         <div id="nav756861802marker"></div>
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
-                <div class="tmenu-mobile__burgerlogo"><a href="http://project9588603.tilda.ws/"><img
-                        src="./_signup_files/home_circle_outline_.svg" class="tmenu-mobile__imglogo" imgfield="img"
+                <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/"><img
+                        src="/anastasia/style/_signup_files/home_circle_outline_.svg" class="tmenu-mobile__imglogo" imgfield="img"
                         style="max-width: 70px; width: 70px;" alt="&amp;lt;&amp;lt; Домашняя страница"></a></div>
                 <button type="button" class="t-menuburger t-menuburger_first t-menuburger__small"
                         aria-label="Навигационное меню" aria-expanded="false"><span
@@ -665,8 +667,8 @@ order: 1;
             <div class="t456__maincontainer " style="">
                 <div class="t456__leftwrapper" style="min-width:70px;width:70px;">
                     <div class="t456__logowrapper" style="display: block;"><a
-                            href="http://project9588603.tilda.ws/"><img class="t456__imglogo t456__imglogomobile"
-                                                                        src="./_signup_files/home_circle_outline_.svg"
+                            href="/anastasia/"><img class="t456__imglogo t456__imglogomobile"
+                                                                        src="/anastasia/style/_signup_files/home_circle_outline_.svg"
                                                                         imgfield="img"
                                                                         style="max-width: 70px; width: 70px;"
                                                                         alt="&amp;lt;&amp;lt; Домашняя страница"></a>
@@ -734,7 +736,7 @@ t_menu__createMobileMenu('756861802', '.t456');
         </script>
         <style>#rec756861802 .t-menu__link-item{
 -webkit-transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out;
-transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out; 
+transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 #rec756861802 .t-menu__link-item:not(.t-active):not(.tooltipstered):hover {
 color: #ddcee4 !important; }
@@ -749,7 +751,7 @@ opacity: 1 !important;
 }
         </style>
         <style>
-             #rec756861802 .t456__logowrapper a { font-size: 10px; color: #ffffff; } #rec756861802 a.t-menu__link-item { font-size: 20px; color: #ffffff; font-weight: 600; text-transform: uppercase; }
+            #rec756861802 .t456__logowrapper a { font-size: 10px; color: #ffffff; } #rec756861802 a.t-menu__link-item { font-size: 20px; color: #ffffff; font-weight: 600; text-transform: uppercase; }
         </style>
         <style> #rec756861802 .t456__logo { font-size: 10px; color: #ffffff; }</style>
     </div>
@@ -764,8 +766,8 @@ opacity: 1 !important;
         </div>
     </template>
 </div>
-<script async="" type="text/javascript" src="./_signup_files/tilda-performance-1.0.min.js"></script>
-<script src="./_signup_files/tilda-errors-1.0.min.js" type="text/javascript" async=""></script>
-<script src="./_signup_files/tilda-errors-1.0.min.js" async=""></script>
+<script async="" type="text/javascript" src="/anastasia/style/_signup_files/tilda-performance-1.0.min.js"></script>
+<script src="/anastasia/style/_signup_files/tilda-errors-1.0.min.js" type="text/javascript" async=""></script>
+<script src="/anastasia/style/_signup_files/tilda-errors-1.0.min.js" async=""></script>
 </body>
 </html>

@@ -23,14 +23,14 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)  // TODO temporary
+        // TODO temporary
+        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_ALL.url).permitAll()
                         .requestMatchers(ANONYMOUS.url).anonymous()
                         .requestMatchers(AUTHENTICATED.url).authenticated()
-                        .requestMatchers(ADMIN.url).hasRole("admin")
-                        .anyRequest().denyAll())
-                .build();  //TODO
+                );
+
 
         return http.build();
     }

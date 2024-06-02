@@ -1,8 +1,10 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!DOCTYPE html>
-<html class=" FB_FW_ext KeyGen">
+<html lang="ru">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--metatextblock--><title>/login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--metatextblock--><title>Авторизация</title>
     <meta property="og:url" content="http://project9588603.tilda.ws/page49486463.html">
     <meta property="og:title" content="/login">
     <meta property="og:description" content="">
@@ -15,21 +17,21 @@
     <link rel="dns-prefetch" href="https://ws.tildacdn.com/">
     <link rel="dns-prefetch" href="https://static.tildacdn.info/">
     <meta name="robots" content="nofollow">
-    <link rel="shortcut icon" href="https://static.tildacdn.info/img/tildafavicon.ico" type="image/x-icon">
+    <link rel="icon" href="/anastasia/favicon1.svg" sizes="any" type="image/svg+xml">
     <!-- Assets -->
-    <script type="text/javascript" async="" id="tildastatscript" src="./_login_files/tilda-stat-1.0.min.js"></script>
-    <script src="./_login_files/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
-    <link rel="stylesheet" href="./_login_files/tilda-grid-3.0.min.css" type="text/css" media="all"
+    <script type="text/javascript" async="" id="tildastatscript" src="/anastasia/style/_login_files/tilda-stat-1.0.min.js"></script>
+    <script src="/anastasia/style/_login_files/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
+    <link rel="stylesheet" href="/anastasia/style/_login_files/tilda-grid-3.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_login_files/tilda-blocks-page49486463.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_login_files/tilda-blocks-page49486463.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_login_files/tilda-forms-1.0.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_login_files/tilda-forms-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_login_files/tilda-cover-1.0.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_login_files/tilda-cover-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="./_login_files/fonts-tildasans.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/_login_files/fonts-tildasans.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <script nomodule="" src="./_login_files/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
+    <script nomodule="" src="/anastasia/style/_login_files/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
     <script type="text/javascript">function t_onReady(func) {
 if (document.readyState != 'loading') {
 func();
@@ -47,21 +49,21 @@ t_onFuncLoad(funcName, okFunc, time);
 }
 }
     </script>
-    <script src="./_login_files/tilda-scripts-3.0.min.js" charset="utf-8" defer=""
+    <script src="/anastasia/style/_login_files/tilda-scripts-3.0.min.js" charset="utf-8" defer=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_login_files/tilda-blocks-page49486463.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_login_files/tilda-blocks-page49486463.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_login_files/tilda-lazyload-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_login_files/tilda-lazyload-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_login_files/tilda-menu-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_login_files/tilda-menu-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_login_files/tilda-forms-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_login_files/tilda-forms-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_login_files/tilda-cover-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_login_files/tilda-cover-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_login_files/tilda-skiplink-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_login_files/tilda-skiplink-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="./_login_files/tilda-events-1.0.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/_login_files/tilda-events-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
     <script type="text/javascript">window.dataLayer = window.dataLayer || [];</script>
     <script type="text/javascript">(function () {
@@ -103,8 +105,8 @@ document.addEventListener('DOMContentLoaded', t_setvisRecs);
         <div id="nav752803193marker"></div>
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
-                <div class="tmenu-mobile__burgerlogo"><a href="http://project9588603.tilda.ws/"><img
-                        src="./_login_files/home_circle_outline_.svg" class="tmenu-mobile__imglogo" imgfield="img"
+                <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/"><img
+                        src="/anastasia/style/_login_files/home_circle_outline_.svg" class="tmenu-mobile__imglogo" imgfield="img"
                         style="max-width: 70px; width: 70px;" alt="&amp;lt;&amp;lt; Домашняя страница"></a></div>
                 <button type="button" class="t-menuburger t-menuburger_first t-menuburger__small"
                         aria-label="Навигационное меню" aria-expanded="false"><span
@@ -490,8 +492,8 @@ order: 1;
             <div class="t456__maincontainer " style="">
                 <div class="t456__leftwrapper" style="min-width:70px;width:70px;">
                     <div class="t456__logowrapper" style="display: block;"><a
-                            href="http://project9588603.tilda.ws/"><img class="t456__imglogo t456__imglogomobile"
-                                                                        src="./_login_files/home_circle_outline_.svg"
+                            href="/anastasia/"><img class="t456__imglogo t456__imglogomobile"
+                                                                        src="/anastasia/style/_login_files/home_circle_outline_.svg"
                                                                         imgfield="img"
                                                                         style="max-width: 70px; width: 70px;"
                                                                         alt="&amp;lt;&amp;lt; Домашняя страница"></a>
