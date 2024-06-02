@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,11 +23,14 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
+        http.csrf(AbstractHttpConfigurer::disable)  // TODO temporary
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_ALL.url).permitAll()
                         .requestMatchers(ANONYMOUS.url).anonymous()
-                        .requestMatchers(AUTHENTICATED.url).authenticated()) //TODO
-                .httpBasic(Customizer.withDefaults());
+                        .requestMatchers(AUTHENTICATED.url).authenticated()
+                        .requestMatchers(ADMIN.url).hasRole("admin")
+                        .anyRequest().denyAll())
+                .build();  //TODO
 
         return http.build();
     }
@@ -34,8 +38,9 @@ public class WebSecurityConfig {
     enum Requests {
 
         PERMIT_ALL("/start"),
-        ANONYMOUS("/login", "/signin"),
-        AUTHENTICATED("/app/**");
+        ANONYMOUS("/login", "/sign-in"),
+        AUTHENTICATED("/main/**"),
+        ADMIN("/admin/**");
 
         final String[] url;
 

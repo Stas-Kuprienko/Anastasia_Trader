@@ -26,7 +26,7 @@ import java.util.Optional;
 import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Args.*;
 import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Resource.*;
 
-@Service("finamExchangeData")
+//@Service("finamExchangeData")
 public class FinamExchangeData implements ExchangeData {
 
     private final String token;
