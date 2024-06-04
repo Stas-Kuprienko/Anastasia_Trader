@@ -22,15 +22,19 @@ public final class User implements Serializable {
 
     private String password; // TODO with byte array
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     private String name;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Account> accounts = new ArrayList<>();
 
 
-    public User(String login, String password, String name) {
+    public User(String login, String password, Role role, String name) {
         this.login = login;
         this.password = password;
+        this.role = role;
         this.name = name;
     }
 
@@ -61,6 +65,14 @@ public final class User implements Serializable {
         this.password = password;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public String getName() {
         return name;
     }
@@ -86,20 +98,25 @@ public final class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(name, user.name) && Objects.equals(login, user.login) && Objects.equals(password, user.password);
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, login, password);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "login='" + login + '\'' +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", role=" + role +
                 ", name='" + name + '\'' +
-                ", accounts=" + accounts +
                 '}';
+    }
+
+    public enum Role {
+        USER, ADMIN
     }
 }
