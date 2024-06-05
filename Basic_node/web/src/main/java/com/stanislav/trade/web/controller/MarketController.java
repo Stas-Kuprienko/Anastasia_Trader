@@ -37,6 +37,6 @@ public final class MarketController {
 
     @GetMapping("/stocks")
     public List<Stock> getStocks() {
-        return exchangeData.getStocks();
+        return exchangeData.getStocks(ExchangeData.SortByColumn.TRADE_VOLUME, ExchangeData.SortOrder.desc);
     }
 }

@@ -18,11 +18,12 @@ public final class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String login;
 
     private String password; // TODO with byte array
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated
     private Role role;
 
     private String name;

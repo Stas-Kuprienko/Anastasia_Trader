@@ -1,6 +1,6 @@
 package com.stanislav.trade.web.configuration;
 
-import com.stanislav.trade.web.authentication.MyUserDetailsService;
+import com.stanislav.trade.entities.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,17 +43,18 @@ public class WebSecurityConfig {
                         .requestMatchers(PERMIT_ALL.url).permitAll()
                         .requestMatchers(ANONYMOUS.url).anonymous()
                         .requestMatchers(AUTHENTICATED.url).authenticated()
-                ).formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
-
+                        .requestMatchers(USER.url).hasRole(User.Role.USER.toString())
+                ).formLogin(Customizer.withDefaults());
 
         return http.build();
     }
 
     enum Requests {
 
-        PERMIT_ALL("/"),
-        ANONYMOUS("/sign-in"),
-        AUTHENTICATED("/main/**"),
+        PERMIT_ALL("/", "/error"),
+        ANONYMOUS("/sign-in/*", "/login/*"),
+        AUTHENTICATED("/market/**", "/logout"),
+        USER("/trade/**", "/user/**", "/smart/**"),
         ADMIN("/admin/**");
 
         final String[] url;

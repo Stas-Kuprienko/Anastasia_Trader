@@ -27,12 +27,12 @@ public class DispatcherServletInitializer
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return null;
+        return new Class[]{AnastasiaTraderConfig.class, WebSecurityConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{AnastasiaTraderConfig.class};
+        return new Class[]{AnastasiaTraderConfig.class, WebSecurityConfig.class, DispatcherServletInitializer.class};
     }
 
     @Override
