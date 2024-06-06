@@ -7,6 +7,7 @@ import com.stanislav.trade.entities.markets.Securities;
 import com.stanislav.trade.entities.markets.Stock;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +42,18 @@ public enum StocksConverter {
     SETTLEDATE;
 
     public static Stock moexDtoToStock(Object[] dto) {
-        Currency currency = dto[CURRENCYID.ordinal()].equals("SUR") ?
-                Currency.RUR : Currency.valueOf((String) dto[CURRENCYID.ordinal()]);
-        double price = Double.parseDouble(dto[PREVLEGALCLOSEPRICE.ordinal()].toString());
-        LocalDate date = LocalDate.parse(dto[PREVDATE.ordinal()].toString());
+        Object value = dto[CURRENCYID.ordinal()];
+        Currency currency = value != null ?
+                (value.equals("SUR") ? Currency.RUR :
+                        Currency.valueOf((String) dto[CURRENCYID.ordinal()]))
+                : null;
+        value = dto[PREVLEGALCLOSEPRICE.ordinal()];
+        double price = Double.parseDouble(value != null ? value.toString() : "0.0");
+        LocalDate date; try {
+            date = LocalDate.parse(dto[PREVDATE.ordinal()].toString());
+        } catch (DateTimeParseException e) {
+            date = null;
+        }
         Securities.PriceAtTheDate priceAtTheDate = new Securities.PriceAtTheDate(price, date);
         return Stock.builder()
                 .ticker((String) dto[SECID.ordinal()])

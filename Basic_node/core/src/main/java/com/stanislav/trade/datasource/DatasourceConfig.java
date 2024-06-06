@@ -9,11 +9,13 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
+import javax.annotation.PreDestroy;
 import java.util.Set;
 
 @Configuration
 public class DatasourceConfig {
 
+    private EntityManagerFactory entityManagerFactory;
 
     @Bean
     public EntityManagerFactory entityManagerFactory() {
@@ -36,6 +38,11 @@ public class DatasourceConfig {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return config.buildSessionFactory();
+        return entityManagerFactory = config.buildSessionFactory();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        entityManagerFactory.close();
     }
 }

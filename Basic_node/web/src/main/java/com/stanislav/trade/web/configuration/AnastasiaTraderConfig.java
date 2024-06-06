@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @PropertySource("classpath:application.properties")
-@ComponentScan("com.stanislav")
+@ComponentScan("com.stanislav.trade")
 public class AnastasiaTraderConfig {
 
     private final String appId;
