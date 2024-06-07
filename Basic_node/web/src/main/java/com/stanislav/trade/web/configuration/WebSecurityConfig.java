@@ -66,12 +66,12 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
     @Bean
     public SecurityFilterChain filterChain(@Autowired AuthenticationProvider authenticationProvider,
                                            @Autowired HttpSecurity http) throws Exception {
-        // TODO temporary
+        // TODO
         http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(formLogin ->
                         formLogin.loginPage("/login")
                                 .successForwardUrl("/")
-                                .usernameParameter("login")
+                                .usernameParameter("email")
                                 .permitAll())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_ALL.url).permitAll()
@@ -79,7 +79,8 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
                         .requestMatchers(AUTHENTICATED.url).authenticated()
                         .requestMatchers(USER.url).hasRole(User.Role.USER.toString())
                         .requestMatchers(ADMIN.url).hasRole(User.Role.ADMIN.toString())
-                        .anyRequest().denyAll());
+                        .anyRequest().denyAll())
+                .servletApi(servletApiConfig -> servletApiConfig.configure(http));
 
         return http.authenticationProvider(authenticationProvider).build();
     }
