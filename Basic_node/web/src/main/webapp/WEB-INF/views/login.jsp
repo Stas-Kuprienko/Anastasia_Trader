@@ -590,26 +590,25 @@ opacity: 1 !important;
                 <div class="t-col t-col_8 t-prefix_2">
                     <div>
                         <form id="form752795118" name="form752795118" role="form"
-                              action="/anastasia/login/save" method="POST"
+                              action="/anastasia/login" method="POST"
                               data-formactiontype="0" data-inputbox=".t-input-group"
-                              class="t-form js-form-proccess t-form_inputs-total_2 "
                               data-success-callback="t678_onSuccess"><!-- NO ONE SERVICES CONNECTED --> <input
                                 type="hidden" name="tildaspec-formname" tabindex="-1" value="Авторизация">
                             <div class="js-successbox t-form__successbox t-text t-text_md" aria-live="polite"
                                  style="display:none;" data-success-message="Выполняется авторизация"></div>
                             <div class="t-form__inputsbox t-form__inputsbox_vertical-form t-form__inputsbox_inrow">
-                                <div class="t-input-group t-input-group_nm " data-input-lid="5527479220180"
-                                     data-field-type="nm"><label for="input_5527479220180"
+                                <div class="t-input-group t-input-group_em " data-input-lid="5527479220180"
+                                     data-field-type="em"><label for="input_5527479220180"
                                                                  class="t-input-title t-descr t-descr_md"
                                                                  id="field-title_5527479220180"
                                                                  data-redactor-toolbar="no"
                                                                  field="li_title__5527479220180"
                                                                  style="color:;">Логин</label>
-                                    <div class="t-input-block "><input type="text" autocomplete="name" name="Name"
+                                    <div class="t-input-block "><input type="email" autocomplete="email" name="email"
                                                                        id="input_5527479220180"
                                                                        class="t-input js-tilda-rule " value=""
                                                                        placeholder="mycompany@co.com" data-tilda-req="1"
-                                                                       aria-required="true" data-tilda-rule="name"
+                                                                       aria-required="true"
                                                                        aria-describedby="error_5527479220180"
                                                                        style="color:#000000;border:1px solid #000000;">
                                         <div class="t-input-error" aria-live="polite" id="error_5527479220180"></div>
@@ -638,18 +637,18 @@ opacity: 1 !important;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="t-input-group t-input-group_nm " data-input-lid="5527479220182"
-                                     data-field-type="nm"><label for="input_5527479220182"
+                                <div class="t-input-group t-input-group_ps " data-input-lid="5527479220182"
+                                     data-field-type="ps"><label for="input_5527479220182"
                                                                  class="t-input-title t-descr t-descr_md"
                                                                  id="field-title_5527479220182"
                                                                  data-redactor-toolbar="no"
                                                                  field="li_title__5527479220182"
                                                                  style="color:;">Пароль</label>
-                                    <div class="t-input-block "><input type="password" autocomplete="name" name="Name_2"
+                                    <div class="t-input-block "><input type="password" autocomplete="password" name="password"
                                                                        id="input_5527479220182"
                                                                        class="t-input js-tilda-rule " value=""
                                                                        placeholder="password1234" data-tilda-req="1"
-                                                                       aria-required="true" data-tilda-rule="name"
+                                                                       aria-required="true"
                                                                        aria-describedby="error_5527479220182"
                                                                        style="color:#000000;border:1px solid #000000;">
                                         <div class="t-input-error" aria-live="polite" id="error_5527479220182"></div>
