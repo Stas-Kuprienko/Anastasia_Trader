@@ -6,29 +6,28 @@ package com.stanislav.trade.datasource.hibernate;
 
 import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.entities.user.User;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import static com.stanislav.trade.datasource.hibernate.QueryGenerator.*;
 
 @Component("userDao")
 public class UserDaoHibernate implements UserDao {
 
     private final EntityManagerFactory entityManagerFactory;
 
-    private final String findAll;
-    private final String findBy;
+    private final QueryGenerator generator;
 
 
     @Autowired
     public UserDaoHibernate(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
-        this.findAll = String.format(Native.selectFrom.q, "user");
-        this.findBy = String.format(Native.selectFromWhere.q, "user", "%s", "%s");
+        this.generator = new QueryGenerator();
     }
 
 
@@ -45,31 +44,41 @@ public class UserDaoHibernate implements UserDao {
 
     @Override
     public List<User> findAll() {
-        Session session = (Session) entityManagerFactory.createEntityManager();
-        try (session) {
-            session.beginTransaction();
-            return session.createQuery(findAll, User.class).getResultList();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
+            String jpql = generator.initSelect().allFrom().table(User.class).build();
+            return entityManager
+                    .createQuery(jpql,User.class)
+                    .getResultList();
         }
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        Session session = (Session) entityManagerFactory.createEntityManager();
-        try (session) {
-            session.beginTransaction();
-            return Optional.of(session.find(User.class, id));
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
+            return Optional.of(entityManager.find(User.class, id));
+        } catch (NoResultException e) {
+            // TODO log
+            return Optional.empty();
         }
     }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        Session session = (Session) entityManagerFactory.createEntityManager();
-        try (session) {
-            session.beginTransaction();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
             String param = "login";
-            var query = session.createNativeQuery(String.format(findBy, param, param), User.class);
+            String jpql = generator.initSelect().allFrom().table(User.class).where(param).build();
+            var query = entityManager.createQuery(jpql, User.class);
             query.setParameter(param, login);
             return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            // TODO log
+            return Optional.empty();
         }
     }
 
