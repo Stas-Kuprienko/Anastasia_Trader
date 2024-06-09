@@ -2,6 +2,8 @@ package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.configuration.WebSecurityConfig;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
 
 @Controller
 public class AuthenticationController {

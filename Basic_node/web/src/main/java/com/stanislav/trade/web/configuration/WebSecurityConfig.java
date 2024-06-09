@@ -31,6 +31,9 @@ import static com.stanislav.trade.web.configuration.WebSecurityConfig.Requests.*
 @EnableWebSecurity
 public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer {
 
+    public static final String entryPoint = "http://localhost:8081/anastasia/login";  //TODO temporary
+    private static final String accessDenied = "/";  //TODO temporary
+
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
@@ -60,7 +63,7 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
 
     @Bean
     public WebSecurityCustomizer ignoringCustomizer() {
-        return web -> web.ignoring().requestMatchers("/style/**");
+        return web -> web.ignoring().requestMatchers("/style/*");
     }
 
     @Bean
@@ -70,9 +73,8 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
         http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(formLogin ->
                         formLogin.loginPage("/login")
-                                .successForwardUrl("/")
-                                .usernameParameter("email")
-                                .permitAll())
+                                .successForwardUrl("/anastasia/")
+                                .usernameParameter("email"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_ALL.url).permitAll()
                         .requestMatchers(ANONYMOUS.url).anonymous()
@@ -80,6 +82,9 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
                         .requestMatchers(USER.url).hasRole(User.Role.USER.toString())
                         .requestMatchers(ADMIN.url).hasRole(User.Role.ADMIN.toString())
                         .anyRequest().denyAll())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((req, resp, ex) -> resp.sendRedirect(entryPoint))
+                        .accessDeniedPage(accessDenied))
                 .servletApi(servletApiConfig -> servletApiConfig.configure(http));
 
         return http.authenticationProvider(authenticationProvider).build();
@@ -94,7 +99,7 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
     enum Requests {
 
         PERMIT_ALL("/*", "/WEB-INF/views/**", "/error/**"),
-        ANONYMOUS("/sign-in/*", "/login/*"),
+        ANONYMOUS("/login/*", "/sing-up/*"),
         AUTHENTICATED("/market/**", "/logout"),
         USER("/trade/**", "/user/**", "/smart/**"),
         ADMIN("/admin/**");

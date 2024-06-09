@@ -1,4 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<sec:authorize access="isAuthenticated()">
+  <c:redirect url = "http://localhost:8081/anastasia"/>
+</sec:authorize>
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -17,7 +23,7 @@
     <link rel="dns-prefetch" href="https://ws.tildacdn.com/">
     <link rel="dns-prefetch" href="https://static.tildacdn.info/">
     <meta name="robots" content="nofollow">
-    <link rel="icon" href="/anastasia/favicon1.svg" sizes="any" type="image/svg+xml">
+    <link rel="icon" href="favicon1.svg" sizes="any" type="image/svg+xml">
     <!-- Assets -->
     <script type="text/javascript" async="" id="tildastatscript" src="/anastasia/style/tilda-stat-1.0.min.js"></script>
     <script src="/anastasia/style/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
