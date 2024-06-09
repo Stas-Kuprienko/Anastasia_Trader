@@ -12,7 +12,7 @@ public class StartCommandHandler implements CommandHandler {
 
 
     @Override
-    public String getResponse() {
+    public String handle(Long chatId) {
         return greeting;
     }
 }

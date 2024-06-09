@@ -17,17 +17,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final String username;
 
-    private final String botToken;
-
     private final CommandDispatcher commandDispatcher;
 
 
     public TelegramBot(@Value("${telegram.username}") String username,
                        @Value("${telegram.botToken}") String botToken,
                        @Autowired CommandDispatcher commandDispatcher) {
-
+        super(botToken);
         this.username = username;
-        this.botToken = botToken;
         this.commandDispatcher = commandDispatcher;
     }
 
@@ -47,11 +44,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Override
-    public String getBotToken() {
-        return botToken;
-    }
-
-    @Override
     public void onUpdateReceived(Update update) {
         System.out.println(update.getMessage().getText());
         if (update.hasMessage()) {
@@ -62,7 +54,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             String response;
 
             if(command != null) {
-                response = commandDispatcher.apply(command);
+                response = commandDispatcher.apply(chatId, command);
                 send(chatId, response);
             }
         }
@@ -73,7 +65,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(text);
-
         try {
             executeAsync(sendMessage);
         } catch (TelegramApiException e) {

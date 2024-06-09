@@ -1,10 +1,18 @@
 package com.stanislav.telegram_bot.entities.user;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "user")
 public final class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String login;
 
@@ -12,10 +20,12 @@ public final class User {
 
     private String name;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Account> accounts = new ArrayList<>();
 
 
-    public User(String login, String chatId, String name) {
+    public User(Long id, String login, String chatId, String name) {
+        this.id = id;
         this.login = login;
         this.chatId = chatId;
         this.name = name;
@@ -23,6 +33,14 @@ public final class User {
 
     public User() {}
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -63,22 +81,20 @@ public final class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(login, user.login) &&
-                Objects.equals(chatId, user.chatId) &&
-                Objects.equals(name, user.name);
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, chatId, name);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "login='" + login + '\'' +
+                "id=" + id +
+                ", login='" + login + '\'' +
                 ", chatId='" + chatId + '\'' +
                 ", name='" + name + '\'' +
                 ", accounts=" + accounts +

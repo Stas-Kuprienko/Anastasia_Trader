@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -26,21 +27,21 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class DatasourceConfig {
 
-    private final Properties databaseProperties;
+    private final Properties properties;
 
 
     public DatasourceConfig(@Value("${database.properties.file}") String fileName) {
-        databaseProperties = loadDatabaseProperties(fileName);
+        properties = loadDatabaseProperties(fileName);
     }
 
 
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource(
-                databaseProperties.getProperty("connection.url"),
-                databaseProperties.getProperty("connection.username"),
-                databaseProperties.getProperty("connection.password"));
-        dataSource.setDriverClassName(databaseProperties.getProperty("connection.driver_class"));
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(properties.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setUrl(properties.getProperty("spring.datasource.url"));
+        dataSource.setUsername(properties.getProperty("spring.datasource.username"));
+        dataSource.setPassword(properties.getProperty("spring.datasource.password"));
         return dataSource;
     }
 
@@ -55,7 +56,7 @@ public class DatasourceConfig {
         entityManagerFactory.setDataSource(dataSource);
         entityManagerFactory.setPackagesToScan("com.stanislav.telegram_bot.entities");
         entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
-        entityManagerFactory.setJpaProperties(databaseProperties);
+        entityManagerFactory.setJpaProperties(properties);
         return entityManagerFactory;
     }
 
@@ -64,6 +65,15 @@ public class DatasourceConfig {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public Properties additionalProperties() {
+        return properties;
+    }
 
     private Properties loadDatabaseProperties(String fileName) {
         Properties properties = new Properties();

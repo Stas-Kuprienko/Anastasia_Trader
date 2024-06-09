@@ -1,32 +1,26 @@
 package com.stanislav.telegram_bot.domain;
 
-import org.springframework.stereotype.Component;
 import com.stanislav.telegram_bot.domain.handler.CommandHandler;
-import com.stanislav.telegram_bot.domain.handler.HelpCommandHandler;
-import com.stanislav.telegram_bot.domain.handler.StartCommandHandler;
+import org.springframework.stereotype.Component;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class CommandDispatcher {
 
-    private static final String START = "/start";
-    private static final String HELP = "/help";
-    private static final String STOCKS = "/stocks";
-
     private static final String unknownCommand = "Ты чё несёшь? Я тебя не понимаю.";
 
+    private final Map<String, CommandHandler> handlerMap;
 
-    public String apply(String message) {
+    public CommandDispatcher() {
+        this.handlerMap = Arrays
+                .stream(Command.values())
+                .collect(Collectors.toMap(c -> c.pattern, c -> c.handler));
+    }
 
-        CommandHandler commandHandler;
-        switch (message) {
-            case START -> commandHandler = new StartCommandHandler();
-            case HELP -> commandHandler = new HelpCommandHandler();
-
-            default -> {
-                return unknownCommand;
-            }
-        }
-
-        return commandHandler.getResponse();
+    public String apply(Long chatId, String message) {
+        CommandHandler handler = handlerMap.get(message);
+        return handler != null ? handler.handle(chatId) : unknownCommand;
     }
 }

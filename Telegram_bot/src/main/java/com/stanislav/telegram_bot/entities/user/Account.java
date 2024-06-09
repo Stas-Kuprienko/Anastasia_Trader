@@ -1,14 +1,26 @@
 package com.stanislav.telegram_bot.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.springframework.lang.NonNull;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public final class Account {
+@Entity
+@Table(name = "account")
+public final class Account implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String clientId;
 
+    @ManyToOne
+    @JoinColumn(name = "user", nullable = false)
+    @JsonIgnore
     private User user;
 
     private String broker;
@@ -18,7 +30,8 @@ public final class Account {
     private BigDecimal balance;
 
 
-    public Account(@NonNull String clientId, @NonNull User user, @NonNull String broker, @NonNull String token) {
+    public Account(Long id, @NonNull String clientId, @NonNull User user, @NonNull String broker, @NonNull String token) {
+        this.id = id;
         this.clientId = clientId;
         this.user = user;
         this.broker = broker;
@@ -29,20 +42,44 @@ public final class Account {
     public Account() {}
 
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getClientId() {
         return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     public User getUser() {
         return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public String getBroker() {
         return broker;
     }
 
+    public void setBroker(String broker) {
+        this.broker = broker;
+    }
+
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public BigDecimal getBalance() {
@@ -53,29 +90,23 @@ public final class Account {
         this.balance = balance;
     }
 
-
-    public void setBalance(long balance) {
-        this.balance = BigDecimal.valueOf(balance);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return Objects.equals(clientId, account.clientId) && Objects.equals(user, account.user) && Objects.equals(broker, account.broker);
+        if (!(o instanceof Account account)) return false;
+        return Objects.equals(id, account.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientId, user, broker);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Account{" +
-                "id='" + clientId + '\'' +
-                ", user=" + user.getLogin() +
+                "id=" + id +
+                ", clientId='" + clientId + '\'' +
                 ", broker='" + broker + '\'' +
                 ", balance=" + balance +
                 '}';

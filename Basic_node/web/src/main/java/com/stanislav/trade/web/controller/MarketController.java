@@ -15,11 +15,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/market")
 public final class MarketController {
 
@@ -29,14 +31,21 @@ public final class MarketController {
 
 
     @GetMapping("/stock/{ticker}")
-    public Stock getStock(@AuthenticationPrincipal UserDetails userDetails,
-                          @PathVariable("ticker") String ticker) {
+    public String getStock(@PathVariable("ticker") String ticker, Model model) {
 
-        return exchangeData.getStock(ticker).orElseThrow();
+        Stock stock = exchangeData.getStock(ticker).orElseThrow();
+        model.addAttribute("stock", stock);
+
+        //TODO
+        return "market page";
     }
 
     @GetMapping("/stocks")
-    public List<Stock> getStocks() {
-        return exchangeData.getStocks(ExchangeData.SortByColumn.TRADE_VOLUME, ExchangeData.SortOrder.desc);
+    public String getStocks(Model model) {
+        List<Stock> stocks = exchangeData.getStocks(ExchangeData.SortByColumn.TRADE_VOLUME, ExchangeData.SortOrder.desc);
+        model.addAttribute("stocks", stocks);
+
+        //TODO
+        return "market page";
     }
 }
