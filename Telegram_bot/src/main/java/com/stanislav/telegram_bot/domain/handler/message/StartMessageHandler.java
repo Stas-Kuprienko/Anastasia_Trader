@@ -1,6 +1,6 @@
-package com.stanislav.telegram_bot.domain.handler;
+package com.stanislav.telegram_bot.domain.handler.message;
 
-public class StartCommandHandler implements CommandHandler {
+public class StartMessageHandler implements MessageHandler {
 
     private static final String greeting = """
             Привет! Меня зовут Анастасия, я трейд-бот. Могу помочь в биржевой торговле.
@@ -12,7 +12,7 @@ public class StartCommandHandler implements CommandHandler {
 
 
     @Override
-    public String handle(Long chatId) {
+    public String apply(Long chatId) {
         return greeting;
     }
 }
