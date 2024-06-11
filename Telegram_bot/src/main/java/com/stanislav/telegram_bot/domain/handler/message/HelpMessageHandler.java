@@ -1,5 +1,8 @@
 package com.stanislav.telegram_bot.domain.handler.message;
 
+import org.springframework.stereotype.Component;
+
+@Component("/help")
 public class HelpMessageHandler implements MessageHandler {
 
     private static final String manual = """

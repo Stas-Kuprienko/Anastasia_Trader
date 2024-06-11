@@ -14,20 +14,25 @@ public final class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String login;
+    @Column(unique = true)
+    private Long chatId;
 
-    private String chatId;
+    @Column(unique = true)
+    private String login;
 
     private String name;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Account> accounts = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private ContextState contextState;
 
-    public User(Long id, String login, String chatId, String name) {
+
+    public User(Long id, Long chatId, String login, String name) {
         this.id = id;
-        this.login = login;
         this.chatId = chatId;
+        this.login = login;
         this.name = name;
     }
 
@@ -58,11 +63,11 @@ public final class User {
         this.login = login;
     }
 
-    public String getChatId() {
+    public Long getChatId() {
         return chatId;
     }
 
-    public void setChatId(String chatId) {
+    public void setChatId(Long chatId) {
         this.chatId = chatId;
     }
 
@@ -76,6 +81,14 @@ public final class User {
 
     public void setAccount(Account account) {
         this.accounts.add(account);
+    }
+
+    public ContextState getContextState() {
+        return contextState;
+    }
+
+    public void setContextState(ContextState contextState) {
+        this.contextState = contextState;
     }
 
     @Override

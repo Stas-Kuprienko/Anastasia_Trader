@@ -1,5 +1,8 @@
 package com.stanislav.telegram_bot.domain.handler.message;
 
+import org.springframework.stereotype.Component;
+
+@Component("/start")
 public class StartMessageHandler implements MessageHandler {
 
     private static final String greeting = """

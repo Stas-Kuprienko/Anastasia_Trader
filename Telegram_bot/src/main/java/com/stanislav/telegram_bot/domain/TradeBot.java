@@ -31,10 +31,11 @@ public class TradeBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update.getMessage().getText());
-        System.out.println(update.getMessage().getFrom().getFirstName());
         try {
             if (update.hasMessage()) {
+                if (update.getMessage().hasText()) {
+                    System.out.println(update.getMessage().getText());
+                }
                 execute(commandDispatcher.handle(update.getMessage()));
             }
         } catch (TelegramApiException e) {
