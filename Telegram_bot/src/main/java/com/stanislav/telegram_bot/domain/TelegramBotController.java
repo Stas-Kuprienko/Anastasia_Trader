@@ -8,15 +8,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class TradeBot extends TelegramLongPollingBot {
+public class TelegramBotController extends TelegramLongPollingBot {
 
     private final String username;
     private final CommandDispatcher commandDispatcher;
 
 
-    public TradeBot(@Value("${telegram.username}") String username,
-                    @Value("${telegram.botToken}") String botToken,
-                    @Autowired CommandDispatcher commandDispatcher) {
+    public TelegramBotController(@Value("${telegram.username}") String username,
+                                 @Value("${telegram.botToken}") String botToken,
+                                 @Autowired CommandDispatcher commandDispatcher) {
 
         super(botToken);
         this.username = username;

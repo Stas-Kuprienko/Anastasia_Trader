@@ -3,13 +3,24 @@ package com.stanislav.telegram_bot.domain.elements;
 import com.stanislav.telegram_bot.entities.user.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class KeyboardKit {
+
+    private final ReplyKeyboardMarkup mainKeyboard;
+
+
+    public KeyboardKit() {
+        this.mainKeyboard = buildMainKeyboard();
+    }
+
 
     public InlineKeyboardMarkup accounts(List<Account> accounts) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
@@ -23,6 +34,28 @@ public class KeyboardKit {
         }
 
         markup.setKeyboard(buttons);
+        return markup;
+    }
+
+    public ReplyKeyboardMarkup getMainKeyboard() {
+        return mainKeyboard;
+    }
+
+    private ReplyKeyboardMarkup buildMainKeyboard() {
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        markup.setResizeKeyboard(true);
+        markup.setSelective(true);
+        markup.setOneTimeKeyboard(true);
+
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+
+        row1.add(new KeyboardButton("Order"));
+        row1.add(new KeyboardButton("Securities"));
+        row2.add(new KeyboardButton("Accounts"));
+        row2.add(new KeyboardButton("Smart"));
+
+        markup.setKeyboard(List.of(row1, row2));
         return markup;
     }
 }

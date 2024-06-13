@@ -4,7 +4,8 @@ public enum Commands {
 
     START("/start"),
     HELP("/help"),
-    ACCOUNT("/accounts")
+    ACCOUNT("/accounts"),
+    ORDER("/order")
     ;
 
     public final String pattern;

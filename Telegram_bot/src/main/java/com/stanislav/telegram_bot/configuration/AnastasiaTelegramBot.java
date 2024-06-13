@@ -1,7 +1,7 @@
 package com.stanislav.telegram_bot.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stanislav.telegram_bot.domain.TradeBot;
+import com.stanislav.telegram_bot.domain.TelegramBotController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,10 +28,10 @@ public class AnastasiaTelegramBot {
 	private final BotSession botSession;
 
 	@Autowired
-	public AnastasiaTelegramBot(TradeBot tradeBot) {
+	public AnastasiaTelegramBot(TelegramBotController telegramBotController) {
 		try {
-			TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
-			this.botSession = api.registerBot(tradeBot);
+			TelegramBotsApi telegram = new TelegramBotsApi(DefaultBotSession.class);
+			this.botSession = telegram.registerBot(telegramBotController);
 		} catch (TelegramApiException e) {
 			//TODO logs
 			throw new RuntimeException(e);

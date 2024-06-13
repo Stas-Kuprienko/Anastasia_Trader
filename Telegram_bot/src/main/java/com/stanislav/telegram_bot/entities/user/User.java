@@ -11,10 +11,7 @@ import java.util.Objects;
 public final class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
+    @Column(name = "id")
     private Long chatId;
 
     @Column(unique = true)
@@ -29,8 +26,7 @@ public final class User {
     private ContextState contextState;
 
 
-    public User(Long id, Long chatId, String login, String name) {
-        this.id = id;
+    public User(Long chatId, String login, String name) {
         this.chatId = chatId;
         this.login = login;
         this.name = name;
@@ -39,12 +35,12 @@ public final class User {
     public User() {}
 
 
-    public Long getId() {
-        return id;
+    public Long getChatId() {
+        return chatId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public String getName() {
@@ -61,14 +57,6 @@ public final class User {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
     }
 
     public List<Account> getAccounts() {
@@ -95,20 +83,19 @@ public final class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(id, user.id);
+        return Objects.equals(chatId, user.chatId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(chatId);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "chatId=" + chatId +
                 ", login='" + login + '\'' +
-                ", chatId='" + chatId + '\'' +
                 ", name='" + name + '\'' +
                 ", accounts=" + accounts +
                 '}';
