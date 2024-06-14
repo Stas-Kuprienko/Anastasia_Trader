@@ -50,12 +50,16 @@ public class KeyboardKit {
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
 
-        row1.add(new KeyboardButton("Order"));
-        row1.add(new KeyboardButton("Securities"));
-        row2.add(new KeyboardButton("Accounts"));
-        row2.add(new KeyboardButton("Smart"));
+        row1.add(new KeyboardButton("/order"));
+        row1.add(new KeyboardButton("/securities"));
+        row2.add(new KeyboardButton("/accounts"));
+        row2.add(new KeyboardButton("/smart"));
 
         markup.setKeyboard(List.of(row1, row2));
         return markup;
+    }
+
+    private ReplyKeyboardMarkup buildAskLogin() {
+        return null;
     }
 }

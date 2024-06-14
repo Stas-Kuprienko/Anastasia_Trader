@@ -1,6 +1,7 @@
 package com.stanislav.telegram_bot.domain.handler.message;
 
-import com.stanislav.telegram_bot.domain.user_context.UserContext;
+import com.stanislav.telegram_bot.domain.handler.ResponseHandler;
+import com.stanislav.telegram_bot.domain.session.SessionContext;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,7 +12,7 @@ public class AccountResponseHandler implements ResponseHandler {
 
 
     @Override
-    public BotApiMethodMessage handle(UserContext context, Message message) {
+    public BotApiMethodMessage handle(SessionContext context, Message message) {
         return new SendMessage();
     }
 }

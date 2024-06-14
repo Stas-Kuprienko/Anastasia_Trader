@@ -1,4 +1,8 @@
-package com.stanislav.telegram_bot.domain;
+/*
+ * Stanislav Kuprienko *** Omsk, Russia
+ */
+
+package com.stanislav.telegram_bot.domain.handler;
 
 public enum Commands {
 

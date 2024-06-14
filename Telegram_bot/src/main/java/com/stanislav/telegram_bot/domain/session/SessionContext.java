@@ -1,4 +1,4 @@
-package com.stanislav.telegram_bot.domain.user_context;
+package com.stanislav.telegram_bot.domain.session;
 
 import org.springframework.beans.factory.support.AbstractBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -8,25 +8,30 @@ import java.util.Optional;
 
 @Component
 @Scope(AbstractBeanFactory.SCOPE_PROTOTYPE)
-public class UserContext {
+public class SessionContext {
 
     private final HashMap<Attribute, Object> attributes;
-    private Long chatId;
+    private long chatId;
+    private long lastActivity;
 
-    public UserContext() {
+
+    public SessionContext() {
         this.attributes = new HashMap<>(Attribute.values().length);
     }
 
 
     public <T> void addAttribute(Attribute key, T value) {
+        updateLastActivity();
         attributes.put(key, value);
     }
 
     public Optional<Object> getAttribute(Attribute key) {
+        updateLastActivity();
         return Optional.ofNullable(attributes.get(key));
     }
 
     public <T> Optional<T> getAttribute(Attribute key, Class<T> classType) {
+        updateLastActivity();
         try {
             return Optional.ofNullable(classType.cast(attributes.get(key)));
         } catch (ClassCastException e) {
@@ -43,6 +48,13 @@ public class UserContext {
         this.chatId = chatId;
     }
 
+    public long getLastActivity() {
+        return lastActivity;
+    }
+
+    private void updateLastActivity() {
+        lastActivity = System.currentTimeMillis();
+    }
 
     public enum Attribute {
         ORDER,
