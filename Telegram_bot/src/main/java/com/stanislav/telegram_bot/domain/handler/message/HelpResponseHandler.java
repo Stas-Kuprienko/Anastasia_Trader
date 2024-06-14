@@ -1,6 +1,7 @@
 package com.stanislav.telegram_bot.domain.handler.message;
 
 import com.stanislav.telegram_bot.domain.Commands;
+import com.stanislav.telegram_bot.domain.user_context.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class HelpResponseHandler implements ResponseHandler {
 
 
     @Override
-    public BotApiMethodMessage apply(Message message) {
+    public BotApiMethodMessage handle(UserContext context, Message message) {
         SendMessage sendMessage = new SendMessage();
         String lang = message.getFrom().getLanguageCode().toUpperCase();
         sendMessage.setChatId(message.getChatId());

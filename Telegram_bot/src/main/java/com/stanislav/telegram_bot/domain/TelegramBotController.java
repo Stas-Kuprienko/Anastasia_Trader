@@ -36,7 +36,7 @@ public class TelegramBotController extends TelegramLongPollingBot {
                 if (update.getMessage().hasText()) {
                     System.out.println(update.getMessage().getText());
                 }
-                execute(commandDispatcher.handle(update.getMessage()));
+                execute(commandDispatcher.apply(update.getMessage()));
             }
         } catch (TelegramApiException e) {
             //TODO logs
