@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page isELIgnored = "false" %>
 
 <sec:authorize access="isAuthenticated()">
   <c:redirect url = "http://localhost:8081/anastasia"/>
@@ -120,6 +121,7 @@ document.addEventListener('DOMContentLoaded', t_setvisRecs);
                             <div class="js-successbox t-form__successbox t-text t-text_md" aria-live="polite"
                                  style="display:none;" data-success-message="Выполняется регистрация"></div>
                             <div class="t-form__inputsbox t-form__inputsbox_vertical-form t-form__inputsbox_inrow">
+                                <input type="hidden" name="chatId" value="${requestScope.chatId}">
                                 <div class="t-input-group t-input-group_nm " data-input-lid="1716496121972"
                                      data-field-type="nm"><label for="input_1716496121972"
                                                                  class="t-input-title t-descr t-descr_md"

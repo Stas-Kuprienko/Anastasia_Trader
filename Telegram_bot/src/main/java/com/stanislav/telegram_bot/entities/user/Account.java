@@ -30,13 +30,13 @@ public final class Account implements Serializable {
     private BigDecimal balance;
 
 
-    public Account(Long id, @NonNull String clientId, @NonNull User user, @NonNull String broker, @NonNull String token) {
+    public Account(Long id, String clientId, User user, String broker, String token, BigDecimal balance) {
         this.id = id;
         this.clientId = clientId;
         this.user = user;
         this.broker = broker;
         this.token = token;
-        this.balance = BigDecimal.valueOf(0);
+        this.balance = balance;
     }
 
     public Account() {}

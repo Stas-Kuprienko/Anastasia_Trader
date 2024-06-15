@@ -98,7 +98,7 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
 
     enum Requests {
 
-        PERMIT_ALL("/*", "/WEB-INF/views/**", "/error/**"),
+        PERMIT_ALL("/*", "/WEB-INF/views/**", "/error/**", "/telegram/*"),
         ANONYMOUS("/login/*", "/sing-up/*"),
         AUTHENTICATED("/market/**", "/logout"),
         USER("/trade/**", "/user/**", "/smart/**"),

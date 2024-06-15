@@ -5,6 +5,7 @@ import com.stanislav.telegram_bot.domain.handler.ResponseHandler;
 import com.stanislav.telegram_bot.domain.service.UserService;
 import com.stanislav.telegram_bot.domain.session.SessionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
@@ -17,17 +18,19 @@ import static com.stanislav.telegram_bot.domain.handler.Commands.START;
 @Component("/start")
 public class StartResponseHandler implements ResponseHandler {
 
-    private static final String resource = "http://localhost:8081/anastasia/";
+    private final String resource;
     private final MessageSource messageSource;
     private final UserService userService;
     private final KeyboardKit keyboardKit;
 
 
     @Autowired
-    public StartResponseHandler(MessageSource messageSource, UserService userService, KeyboardKit keyboardKit) {
+    public StartResponseHandler(MessageSource messageSource, UserService userService, KeyboardKit keyboardKit,
+                                @Value("${api.resource}") String resource) {
         this.messageSource = messageSource;
         this.userService = userService;
         this.keyboardKit = keyboardKit;
+        this.resource = resource;
     }
 
 
@@ -39,6 +42,7 @@ public class StartResponseHandler implements ResponseHandler {
         String lang = message.getFrom().getLanguageCode().toUpperCase();
         String name = message.getFrom().getFirstName();
         if (userService.findById(chatId).isEmpty()) {
+//            response.setReplyMarkup(keyboardKit.signUpLink(chatId));
             response.setText(messageSource.getMessage(
                     START.pattern
                             + '.' +

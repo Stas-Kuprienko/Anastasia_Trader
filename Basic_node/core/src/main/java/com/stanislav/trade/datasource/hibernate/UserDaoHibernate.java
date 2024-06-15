@@ -33,11 +33,11 @@ public class UserDaoHibernate implements UserDao {
 
     @Override
     public User save(User user) {
-        Session session = (Session) entityManagerFactory.createEntityManager();
-        try (session) {
-            session.beginTransaction();
-            session.persist(user);
-            session.getTransaction().commit();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
+            entityManager.persist(user);
+            entityManager.getTransaction().commit();
             return user;
         }
     }

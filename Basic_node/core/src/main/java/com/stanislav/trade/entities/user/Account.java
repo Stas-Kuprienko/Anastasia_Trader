@@ -16,6 +16,7 @@ public final class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(nullable = false)
@@ -31,6 +32,7 @@ public final class Account implements Serializable {
     private String token;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private RiskProfile riskProfile;
 
     private BigDecimal balance;

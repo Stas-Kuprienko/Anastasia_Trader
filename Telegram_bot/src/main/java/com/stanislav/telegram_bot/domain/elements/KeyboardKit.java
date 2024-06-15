@@ -1,6 +1,7 @@
 package com.stanislav.telegram_bot.domain.elements;
 
 import com.stanislav.telegram_bot.entities.user.Account;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -14,10 +15,16 @@ import java.util.List;
 @Component
 public class KeyboardKit {
 
+    private static final String signUpUri = "telegram/sign-up";
+    private static final String chatIdParam = "chatId";
+
+    private final String resource;
+
     private final ReplyKeyboardMarkup mainKeyboard;
 
 
-    public KeyboardKit() {
+    public KeyboardKit(@Value("${api.resource}") String resource) {
+        this.resource = resource;
         this.mainKeyboard = buildMainKeyboard();
     }
 
@@ -34,6 +41,16 @@ public class KeyboardKit {
         }
 
         markup.setKeyboard(buttons);
+        return markup;
+    }
+
+    public InlineKeyboardMarkup signUpLink(long chatId) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> buttons = new ArrayList<>();
+        InlineKeyboardButton button = new InlineKeyboardButton("sign up");
+        button.setUrl(resource + signUpUri + '?' + chatIdParam + '=' + chatId);
+        buttons.add(button);
+        markup.setKeyboard(List.of(buttons));
         return markup;
     }
 
