@@ -17,6 +17,7 @@ import static com.stanislav.telegram_bot.domain.handler.Commands.START;
 @Component("/start")
 public class StartResponseHandler implements ResponseHandler {
 
+    private static final String resource = "http://localhost:8081/anastasia/";
     private final MessageSource messageSource;
     private final UserService userService;
     private final KeyboardKit keyboardKit;
@@ -41,7 +42,7 @@ public class StartResponseHandler implements ResponseHandler {
             response.setText(messageSource.getMessage(
                     START.pattern
                             + '.' +
-                            Response.greeting, new Object[]{name}, Locale.of(lang)));
+                            Response.greeting, new Object[]{name, resource}, Locale.of(lang)));
         } else {
             response.setReplyMarkup(keyboardKit.getMainKeyboard());
             response.setText(messageSource.getMessage(
