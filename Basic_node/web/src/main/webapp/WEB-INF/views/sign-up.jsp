@@ -114,14 +114,13 @@ document.addEventListener('DOMContentLoaded', t_setvisRecs);
                 <div class="t-col t-col_8 t-prefix_2">
                     <div>
                         <form id="form752799850" name="form752799850" role="form"
-                              action="/anastasia/sign-up" method="POST"
+                              action="${requestScope.signUp}" method="POST"
                               data-formactiontype="0" data-inputbox=".t-input-group"
                               data-success-callback="t678_onSuccess"><!-- NO ONE SERVICES CONNECTED --> <input
                                 type="hidden" name="tildaspec-formname" tabindex="-1" value="Авторизация">
                             <div class="js-successbox t-form__successbox t-text t-text_md" aria-live="polite"
                                  style="display:none;" data-success-message="Выполняется регистрация"></div>
                             <div class="t-form__inputsbox t-form__inputsbox_vertical-form t-form__inputsbox_inrow">
-                                <input type="hidden" name="chatId" value="${requestScope.chatId}">
                                 <div class="t-input-group t-input-group_nm " data-input-lid="1716496121972"
                                      data-field-type="nm"><label for="input_1716496121972"
                                                                  class="t-input-title t-descr t-descr_md"
@@ -683,7 +682,7 @@ order: 1;
                 <nav class="t456__rightwrapper t456__menualign_right" style="">
                     <ul role="list" class="t456__list t-menu__list">
                         <li class="t456__list_item" style="padding:0 0 0 15px 0 0;"><a class="t-menu__link-item"
-                                                                                       href="/anastasia/login"
+                                                                                       href="${requestScope.login}"
                                                                                        data-menu-submenu-hook=""
                                                                                        data-menu-item-number="1">Войти</a>
                         </li>

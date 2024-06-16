@@ -32,15 +32,12 @@ public final class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Account> accounts = new ArrayList<>();
 
-    private Long telegramId;
 
-
-    public User(String login, String password, Role role, String name, Long telegramId) {
+    public User(String login, String password, Role role, String name) {
         this.login = login;
         this.password = password;
         this.role = role;
         this.name = name;
-        this.telegramId = telegramId;
     }
 
     public User() {}
@@ -98,14 +95,6 @@ public final class User implements Serializable {
         this.accounts.add(account);
     }
 
-    public Long getTelegramId() {
-        return telegramId;
-    }
-
-    public void setTelegramId(Long telegramId) {
-        this.telegramId = telegramId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -126,7 +115,6 @@ public final class User implements Serializable {
                 ", login='" + login + '\'' +
                 ", role=" + role +
                 ", name='" + name + '\'' +
-                ", telegramId=" + telegramId +
                 '}';
     }
 

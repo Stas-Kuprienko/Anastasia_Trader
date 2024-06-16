@@ -45,17 +45,22 @@ public class UserController {
 
     @PostMapping("/register")
     public boolean register(@RequestParam("login") String login,
-                         @RequestParam("chatId") long chatId,
-                         @RequestParam("name") String name) {
+                            @RequestParam("chatId") long chatId,
+                            @RequestParam("name") String name) {
 
         try {
             User user = new User(chatId, login, name);
-            ResponseEntity<Account[]> response = restTemplate.getForEntity(resource + uri.ACCOUNTS.value, Account[].class);
+            String uri = resource + Mapping.ACCOUNTS.v + "?login=" + login;
+            ResponseEntity<Account[]> response =
+                    restTemplate.getForEntity(uri, Account[].class);
             List<Account> accounts = List.of(Objects.requireNonNull(response.getBody()));
             user.setAccounts(accounts);
             //TODO locale
             String messageToUser = messageSource.getMessage("signed-up", null, Locale.of("RU"));
-            controller.execute(new SendMessage(String.valueOf(chatId), messageToUser));
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setText(messageToUser);
+            controller.execute(sendMessage);
             userService.save(user);
             return true;
         } catch (RestClientException | NullPointerException | PersistenceException e) {
@@ -67,13 +72,13 @@ public class UserController {
     }
 
 
-    enum uri {
+    enum Mapping {
         ACCOUNTS("/accounts");
 
-        final String value;
+        final String v;
 
-        uri(String value) {
-            this.value = value;
+        Mapping(String v) {
+            this.v = v;
         }
     }
 }

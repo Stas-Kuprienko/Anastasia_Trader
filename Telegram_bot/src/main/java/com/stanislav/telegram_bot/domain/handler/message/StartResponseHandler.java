@@ -18,19 +18,16 @@ import static com.stanislav.telegram_bot.domain.handler.Commands.START;
 @Component("/start")
 public class StartResponseHandler implements ResponseHandler {
 
-    private final String resource;
     private final MessageSource messageSource;
     private final UserService userService;
     private final KeyboardKit keyboardKit;
 
 
     @Autowired
-    public StartResponseHandler(MessageSource messageSource, UserService userService, KeyboardKit keyboardKit,
-                                @Value("${api.resource}") String resource) {
+    public StartResponseHandler(MessageSource messageSource, UserService userService, KeyboardKit keyboardKit) {
         this.messageSource = messageSource;
         this.userService = userService;
         this.keyboardKit = keyboardKit;
-        this.resource = resource;
     }
 
 
@@ -46,7 +43,7 @@ public class StartResponseHandler implements ResponseHandler {
             response.setText(messageSource.getMessage(
                     START.pattern
                             + '.' +
-                            Response.greeting, new Object[]{name, resource}, Locale.of(lang)));
+                            Response.greeting, new Object[]{name}, Locale.of(lang)));
         } else {
             response.setReplyMarkup(keyboardKit.getMainKeyboard());
             response.setText(messageSource.getMessage(

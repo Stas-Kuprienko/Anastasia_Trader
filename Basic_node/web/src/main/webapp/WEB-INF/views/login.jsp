@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page isELIgnored = "false" %>
 
 <sec:authorize access="isAuthenticated()">
   <c:redirect url = "http://localhost:8081/anastasia"/>
@@ -508,7 +509,7 @@ order: 1;
                 <nav class="t456__rightwrapper t456__menualign_right" style="">
                     <ul role="list" class="t456__list t-menu__list">
                         <li class="t456__list_item" style="padding:0 0 0 15px 0 0;"><a class="t-menu__link-item"
-                                                                                       href="/anastasia/sign-up"
+                                                                                       href="${requestScope.signUp}"
                                                                                        data-menu-submenu-hook=""
                                                                                        data-menu-item-number="1">Зарегистрироваться</a>
                         </li>
@@ -596,7 +597,7 @@ opacity: 1 !important;
                 <div class="t-col t-col_8 t-prefix_2">
                     <div>
                         <form id="form752795118" name="form752795118" role="form"
-                              action="/anastasia/login" method="POST"
+                              action="${requestScope.login}" method="POST"
                               data-formactiontype="0" data-inputbox=".t-input-group"
                               data-success-callback="t678_onSuccess"><!-- NO ONE SERVICES CONNECTED --> <input
                                 type="hidden" name="tildaspec-formname" tabindex="-1" value="Авторизация">
