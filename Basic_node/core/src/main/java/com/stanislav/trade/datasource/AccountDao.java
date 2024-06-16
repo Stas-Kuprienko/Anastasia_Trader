@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface AccountDao extends EntityDao<Account, Long> {
 
-    List<Account> findAllByUserId(Long id);
+    List<Account> findAllByUserLogin(String login);
 }
