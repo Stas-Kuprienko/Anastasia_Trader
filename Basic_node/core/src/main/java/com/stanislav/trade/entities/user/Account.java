@@ -122,11 +122,11 @@ public final class Account implements Serializable {
     @Override
     public String toString() {
         return "Account{" +
-                "id='" + clientId + '\'' +
-                ", user=" + user.getLogin() + '\'' +
+                "id=" + id +
+                ", clientId='" + clientId + '\'' +
+                ", userId=" + user.getId() +
                 ", broker='" + broker + '\'' +
-                ", balance=" + balance+ '\'' +
-                ", riskProfile='" + riskProfile +
+                ", balance=" + balance +
                 '}';
     }
 }

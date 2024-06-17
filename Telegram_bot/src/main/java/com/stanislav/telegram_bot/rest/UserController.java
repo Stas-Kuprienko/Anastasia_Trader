@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -71,6 +68,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/confirm")
+    public int confirm(@RequestParam long chatId) {
+        try {
+            int code = generateCode();
+            String messageToUser = messageSource
+                    .getMessage("confirm_code", new Object[]{code}, Locale.of("RU"));
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setText(messageToUser);
+            controller.executeAsync(sendMessage);
+            return code;
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     enum Mapping {
         ACCOUNTS("/accounts");
@@ -80,5 +93,14 @@ public class UserController {
         Mapping(String v) {
             this.v = v;
         }
+    }
+
+
+    private int generateCode() {
+        StringBuilder value = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            value.append(Math.random() * 10);
+        }
+        return Integer.parseInt(value.toString());
     }
 }

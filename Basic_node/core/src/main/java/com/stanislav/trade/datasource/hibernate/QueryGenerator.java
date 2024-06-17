@@ -9,10 +9,6 @@ public class QueryGenerator {
     private final StringBuilder strBuilder;
 
 
-    private QueryGenerator(KeyWord query) {
-        this.strBuilder = new StringBuilder(query.toString());
-    }
-
     public QueryGenerator() {
         this.strBuilder = new StringBuilder();
     }
@@ -70,14 +66,21 @@ public class QueryGenerator {
         return q;
     }
 
+    public String nativeSelectAll(Class<?> clas) {
+        return String.format(Native.selectFrom.q, getTableName(clas));
+    }
+
+    public String nativeSelectAllWhere1Param(Class<?> clas, String param) {
+        return String.format(Native.selectFromWhere.q, getTableName(clas), param, param);
+    }
 
     enum KeyWord {
         INSERT, SELECT, FROM, UPDATE, WHERE, SET, DELETE
     }
 
     enum Native {
-        selectFrom("FROM %s;"),
-        selectFromWhere("FROM %s WHERE %s = :%s;");
+        selectFrom("SELECT * FROM %s;"),
+        selectFromWhere("SELECT * FROM %s WHERE %s = :%s;");
 
         final String q;
 
@@ -86,16 +89,16 @@ public class QueryGenerator {
         }
     }
 
-//    private String getTableName(Class<?> clas) {
-//        if (clas.getAnnotation(Entity.class) != null) {
-//            Table table = clas.getAnnotation(Table.class);
-//            if (table != null) {
-//                return table.name();
-//            } else {
-//                return clas.getSimpleName();
-//            }
-//        } else {
-//            throw new IllegalArgumentException('\'' + clas.getName() + "' is not @Entity annotated class.");
-//        }
-//    }
+    private String getTableName(Class<?> clas) {
+        if (clas.getAnnotation(Entity.class) != null) {
+            Table table = clas.getAnnotation(Table.class);
+            if (table != null) {
+                return table.name();
+            } else {
+                return clas.getSimpleName();
+            }
+        } else {
+            throw new IllegalArgumentException('\'' + clas.getName() + "' is not @Entity annotated class.");
+        }
+    }
 }

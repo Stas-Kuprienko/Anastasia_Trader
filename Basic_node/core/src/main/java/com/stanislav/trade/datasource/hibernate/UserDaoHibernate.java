@@ -5,11 +5,9 @@
 package com.stanislav.trade.datasource.hibernate;
 
 import com.stanislav.trade.datasource.UserDao;
+import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.NoResultException;
-import org.hibernate.Session;
+import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -83,12 +81,54 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public User update(Long id, Consumer<User> updating) {
-        return null;
+    public Optional<User> update(Object id, Consumer<User> updating) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
+            String login = (String) id;
+            User user = findByLogin(login).orElseThrow(EntityNotFoundException::new);
+            updating.accept(user);
+            entityManager.getTransaction().commit();
+            return Optional.of(user);
+        } catch (ClassCastException | PersistenceException e) {
+            //TODO log
+            return Optional.empty();
+        }
     }
 
     @Override
     public void delete(User object) {
 
+    }
+
+    @Override
+    public boolean addTelegramChatId(User user, Long chatId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            TelegramChatId telegramChatId = new TelegramChatId(chatId, user);
+            entityManager.getTransaction().begin();
+            entityManager.persist(telegramChatId);
+            entityManager.getTransaction().commit();
+            return true;
+        } catch (PersistenceException e) {
+            //TODO logs
+            return false;
+        }
+    }
+
+    @Override
+    public Optional<TelegramChatId> findTelegramChatId(Long userId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
+            String param = "user";
+            var query = entityManager.createNativeQuery(
+                    generator.nativeSelectAllWhere1Param(TelegramChatId.class, param), TelegramChatId.class);
+            query.setParameter(param, userId);
+            return Optional.of((TelegramChatId) query.getSingleResult());
+        } catch (Exception e) {
+            //TODO loggers
+            return Optional.empty();
+        }
     }
 }

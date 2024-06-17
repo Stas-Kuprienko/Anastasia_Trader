@@ -2,21 +2,15 @@ package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.controller.ErrorDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class AuthenticationController {
@@ -27,23 +21,20 @@ public class AuthenticationController {
     private static final String SIGN_UP_TELEGRAM_MAPPING = "/anastasia/telegram/sign-up";
     private final static String loginPage = "login";
     private final static String signUpPage = "sign-up";
-    private final String telegramBot;
-    private final String telegramBotApiUrl;
 
     private final PasswordEncoder passwordEncoder;
+    private final ErrorDispatcher errorDispatcher;
     private final UserDao userDao;
-    private final RestTemplate restTemplate;
+    private final TelegramBotAuthentication telegramBotAuthentication;
 
 
     @Autowired
-    public AuthenticationController(PasswordEncoder passwordEncoder, UserDao userDao, RestTemplate restTemplate,
-                                    @Value("${telegram_bot.link}") String telegramBot,
-                                    @Value("${telegram.rest}") String telegramBotApiUrl) {
-        this.telegramBot = telegramBot;
+    public AuthenticationController(PasswordEncoder passwordEncoder, ErrorDispatcher errorDispatcher,
+                                    UserDao userDao, TelegramBotAuthentication telegramBotAuthentication) {
         this.passwordEncoder = passwordEncoder;
+        this.errorDispatcher = errorDispatcher;
         this.userDao = userDao;
-        this.restTemplate = restTemplate;
-        this.telegramBotApiUrl = telegramBotApiUrl;
+        this.telegramBotAuthentication = telegramBotAuthentication;
     }
 
 
@@ -65,24 +56,30 @@ public class AuthenticationController {
     public String signUpHandle(@RequestParam("email") String login,
                                @RequestParam("password") String password,
                                @RequestParam(name = "name", required = false) String name,
-                               HttpServletRequest request) throws ServletException {
+                               HttpServletRequest request) {
         User user = new User(
                 login,
                 passwordEncoder.encode(password),
                 User.Role.USER,
                 name != null ? name : "");
         userDao.save(user);
-        request.login(login, password);
-        return loginPage;
+        try {
+            request.login(login, password);
+            return loginPage;
+        } catch (ServletException e) {
+            //TODO
+            return errorDispatcher.apply(400);
+        }
     }
 
     @GetMapping("/telegram/sign-up")
-    public String signUpFromTelegram(@RequestParam("chatId") Long chatId, HttpServletRequest request) throws ServletException {
+    public String signUpFromTelegram(@RequestParam("chatId") Long chatId, HttpServletRequest request) {
         Long chatId1;
         if (chatId == null) {
             chatId1 = (Long) request.getSession().getAttribute(Args.chatId.toString());
             if (chatId1 == null) {
-                throw new ServletException();
+                //TODO
+                return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
             }
         } else {
             chatId1 = chatId;
@@ -94,10 +91,10 @@ public class AuthenticationController {
     }
 
     @GetMapping("/telegram/login")
-    public String loginFromTelegram(HttpServletRequest request) throws ServletException {
+    public String loginFromTelegram(HttpServletRequest request) {
         Long chatId = (Long) request.getSession().getAttribute(Args.chatId.toString());
         if (chatId == null) {
-            throw new ServletException();
+            return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
         } else {
             request.getSession().setAttribute(Args.chatId.toString(), chatId);
         }
@@ -110,57 +107,52 @@ public class AuthenticationController {
     public String signUpFromTelegramHandle(@RequestParam("email") String login,
                                            @RequestParam("password") String password,
                                            @RequestParam(name = "name", required = false) String name,
-                                           HttpServletRequest request) throws ServletException {
-        Long chatId = (Long) request.getAttribute(Args.chatId.toString());
+                                           HttpServletRequest request) {
+        Long chatId = (Long) request.getSession().getAttribute(Args.chatId.toString());
+        if (chatId == null) {
+            return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
+        }
+        request.getSession().removeAttribute(Args.chatId.toString());
         User user = new User(
                 login,
                 passwordEncoder.encode(password),
                 User.Role.USER,
                 name != null ? name : "");
         userDao.save(user);
-        if (chatId != null) {
-            if (!signUpToTelegram(login, chatId, name)) {
-                //TODO
-                request.setAttribute("error", "telegram bot signing up failed.");
-            }
+        try {
+            request.login(login, password);
+        } catch (ServletException e) {
+            return errorDispatcher.apply(400);
         }
-        request.getSession().removeAttribute(Args.chatId.toString());
-        request.login(login, password);
-        if (signUpToTelegram(login, chatId, user.getName())) {
-            return "redirect:" + telegramBot;
-        } else {
-            //TODO errors
-            return "/";
-        }
+        return telegramBotAuthentication.signUpToTelegram(chatId, user);
     }
 
     @PostMapping("/telegram/login")
     public String loginFromTelegramHandle(@RequestParam("email") String login,
                                           @RequestParam("password") String password,
-                                          HttpServletRequest request) throws ServletException {
+                                          HttpServletRequest request) {
         User user = userDao.findByLogin(login).orElseThrow();
         Long chatId = (Long) request.getSession().getAttribute(Args.chatId.toString());
         request.getSession().removeAttribute(Args.chatId.toString());
-        request.login(login, password);
-        if (signUpToTelegram(login, chatId, user.getName())) {
-            return "redirect:" + telegramBot;
-        } else {
-            //TODO errors
-            return "/";
+        try {
+            request.login(login, password);
+            return telegramBotAuthentication.signUpToTelegram(chatId, user);
+        } catch (ServletException e) {
+            return errorDispatcher.apply(400);
         }
     }
 
-
-    private boolean signUpToTelegram(String login, Long chatId, String name) {
-        MultiValueMap<String, Object> parameterMap = new LinkedMultiValueMap<>();
-        parameterMap.add(Args.login.toString(), login);
-        parameterMap.add(Args.chatId.toString(), chatId);
-        parameterMap.add(Args.name.toString(), name);
-        HttpEntity<MultiValueMap<String, Object>> parameters = new HttpEntity<>(parameterMap);
-        ResponseEntity<Boolean> response = restTemplate
-                .exchange(telegramBotApiUrl + "user/register", HttpMethod.POST, parameters, Boolean.class);
-        return Boolean.TRUE.equals(response.getBody());
+    @GetMapping("/telegram/confirm")
+    public String confirmChatId() {
+        return "confirmChatId";
     }
+
+    @PostMapping("/telegram/confirm")
+    public String confirmChatIdHandle() {
+        //TODO
+        return "";
+    }
+
 
     enum Args {
         login, signUp, name, chatId

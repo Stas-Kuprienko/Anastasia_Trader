@@ -20,9 +20,9 @@ public class AccountDaoHibernate implements AccountDao {
 
 
     @Autowired
-    public AccountDaoHibernate(EntityManagerFactory entityManagerFactory, QueryGenerator generator) {
+    public AccountDaoHibernate(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
-        this.generator = generator;
+        this.generator = new QueryGenerator();
     }
 
     @Override
@@ -46,8 +46,8 @@ public class AccountDaoHibernate implements AccountDao {
     }
 
     @Override
-    public Account update(Long aLong, Consumer<Account> updating) {
-        return null;
+    public Optional<Account> update(Object id, Consumer<Account> updating) {
+        return Optional.empty();
     }
 
     @Override
