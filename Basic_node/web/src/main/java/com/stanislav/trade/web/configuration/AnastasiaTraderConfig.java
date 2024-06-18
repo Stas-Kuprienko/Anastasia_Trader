@@ -9,6 +9,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.stanislav.trade.domain.service.grpc.GRpcConnection;
 import com.stanislav.trade.domain.smart.SmartAutoTradeService;
 import com.stanislav.trade.domain.smart.impl.SmartAutoTradeImpl;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +21,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
+
+import javax.crypto.SecretKey;
 
 
 @Configuration
@@ -45,6 +52,20 @@ public class AnastasiaTraderConfig {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper().registerModule(new JavaTimeModule());
+    }
+
+    @Bean
+    public JwtBuilder jwtBuilder() {
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        return Jwts.builder()
+                .id(appId)
+                .signWith(key);
+    }
+
+    @Bean
+    public JwtParser jwtParser() {
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        return Jwts.parser().verifyWith(key).build();
     }
 
     @Bean
