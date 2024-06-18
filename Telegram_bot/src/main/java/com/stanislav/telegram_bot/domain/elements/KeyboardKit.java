@@ -15,16 +15,10 @@ import java.util.List;
 @Component
 public class KeyboardKit {
 
-    private static final String signUpUri = "telegram/sign-up";
-    private static final String chatIdParam = "chatId";
-
-    private final String resource;
-
     private final ReplyKeyboardMarkup mainKeyboard;
 
 
-    public KeyboardKit(@Value("${api.resource}") String resource) {
-        this.resource = resource;
+    public KeyboardKit() {
         this.mainKeyboard = buildMainKeyboard();
     }
 
@@ -44,11 +38,11 @@ public class KeyboardKit {
         return markup;
     }
 
-    public InlineKeyboardMarkup signUpLink(long chatId) {
+    public InlineKeyboardMarkup signUpLink(String buttonText, String link) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> buttons = new ArrayList<>();
-        InlineKeyboardButton button = new InlineKeyboardButton("sign up");
-        button.setUrl(resource + signUpUri + '?' + chatIdParam + '=' + chatId);
+        InlineKeyboardButton button = new InlineKeyboardButton(buttonText);
+        button.setUrl(link);
         buttons.add(button);
         markup.setKeyboard(List.of(buttons));
         return markup;

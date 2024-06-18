@@ -4,6 +4,7 @@ import com.stanislav.telegram_bot.domain.elements.KeyboardKit;
 import com.stanislav.telegram_bot.domain.handler.ResponseHandler;
 import com.stanislav.telegram_bot.domain.service.UserService;
 import com.stanislav.telegram_bot.domain.session.SessionContext;
+import io.jsonwebtoken.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -18,16 +19,24 @@ import static com.stanislav.telegram_bot.domain.handler.Commands.START;
 @Component("/start")
 public class StartResponseHandler implements ResponseHandler {
 
+    private static final String AUTH = "telegram/auth";
+    private static final String CHAT_ID = "chatId";
+    private final String resource;
     private final MessageSource messageSource;
     private final UserService userService;
     private final KeyboardKit keyboardKit;
+    private final JwtBuilder jwtBuilder;
 
 
     @Autowired
-    public StartResponseHandler(MessageSource messageSource, UserService userService, KeyboardKit keyboardKit) {
+    public StartResponseHandler(MessageSource messageSource, UserService userService,
+                                KeyboardKit keyboardKit, JwtBuilder jwtBuilder,
+                                @Value("${api.resource}") String resource) {
         this.messageSource = messageSource;
         this.userService = userService;
         this.keyboardKit = keyboardKit;
+        this.jwtBuilder = jwtBuilder;
+        this.resource = resource;
     }
 
 
@@ -39,7 +48,10 @@ public class StartResponseHandler implements ResponseHandler {
         String lang = message.getFrom().getLanguageCode().toUpperCase();
         String name = message.getFrom().getFirstName();
         if (userService.findById(chatId).isEmpty()) {
-//            response.setReplyMarkup(keyboardKit.signUpLink(chatId));
+            String chatIdToken = jwtBuilder.claim("chatId", chatId).compact();
+            String link = resource + AUTH + '?' +
+                    CHAT_ID + '=' + chatId + '&' + 't' + '=' + chatIdToken;
+//            response.setReplyMarkup(keyboardKit.signUpLink("Click", link));
             response.setText(messageSource.getMessage(
                     START.pattern
                             + '.' +

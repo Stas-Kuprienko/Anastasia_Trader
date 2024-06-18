@@ -43,17 +43,20 @@ public class UserController {
     @PostMapping("/register")
     public boolean register(@RequestParam("login") String login,
                             @RequestParam("chatId") long chatId,
-                            @RequestParam("name") String name) {
+                            @RequestParam("name") String name,
+                            @RequestParam("locale") String locale) {
 
         try {
             User user = new User(chatId, login, name);
-            String uri = resource + Mapping.ACCOUNTS.v + "?login=" + login;
-            ResponseEntity<Account[]> response =
-                    restTemplate.getForEntity(uri, Account[].class);
-            List<Account> accounts = List.of(Objects.requireNonNull(response.getBody()));
-            user.setAccounts(accounts);
-            //TODO locale
-            String messageToUser = messageSource.getMessage("signed-up", null, Locale.of("RU"));
+//            String uri = resource + Mapping.ACCOUNTS.v + "?login=" + login;
+//            ResponseEntity<Account[]> response =
+//                    restTemplate.getForEntity(uri, Account[].class);
+//            List<Account> accounts;
+//            if (response.getBody() != null) {
+//                accounts = List.of(response.getBody());
+//                user.setAccounts(accounts);
+//            }
+            String messageToUser = messageSource.getMessage("signed-up", null, Locale.of(locale));
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
             sendMessage.setText(messageToUser);
@@ -68,22 +71,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/confirm")
-    public int confirm(@RequestParam long chatId) {
-        try {
-            int code = generateCode();
-            String messageToUser = messageSource
-                    .getMessage("confirm_code", new Object[]{code}, Locale.of("RU"));
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(chatId);
-            sendMessage.setText(messageToUser);
-            controller.executeAsync(sendMessage);
-            return code;
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     enum Mapping {
         ACCOUNTS("/accounts");
@@ -93,14 +80,5 @@ public class UserController {
         Mapping(String v) {
             this.v = v;
         }
-    }
-
-
-    private int generateCode() {
-        StringBuilder value = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
-            value.append(Math.random() * 10);
-        }
-        return Integer.parseInt(value.toString());
     }
 }
