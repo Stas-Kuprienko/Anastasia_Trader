@@ -14,14 +14,12 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
-
 import javax.crypto.SecretKey;
 
 
@@ -74,7 +72,7 @@ public class AnastasiaTraderConfig {
     }
 
     @Bean
-    public SmartAutoTradeService smartAutoTradeService(@Autowired GRpcConnection connection) {
-        return new SmartAutoTradeImpl(appId, secretKey, connection);
+    public SmartAutoTradeService smartAutoTradeService(GRpcConnection connection, JwtBuilder jwtBuilder) {
+        return new SmartAutoTradeImpl(jwtBuilder.compact(), connection);
     }
 }

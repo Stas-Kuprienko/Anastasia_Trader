@@ -10,6 +10,7 @@ import com.stanislav.trade.domain.service.grpc.GRpcConnection;
 import com.stanislav.trade.domain.smart.strategy.TradeStrategy;
 import com.stanislav.trade.entities.Board;
 import io.grpc.stub.StreamObserver;
+import io.jsonwebtoken.JwtBuilder;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
 import stanislav.anastasia.trade.Strategies;
@@ -19,8 +20,7 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     private final SmartAutoTradeGrpc.SmartAutoTradeStub stub;
 
 
-    public SmartAutoTradeImpl(String appId, String secretKey, GRpcConnection connection) {
-        String token = Authentication.generateToken(appId, secretKey);
+    public SmartAutoTradeImpl(String token, GRpcConnection connection) {
         this.stub = SmartAutoTradeGrpc.newStub(connection.getChannel()).
                 withCallCredentials(Authentication.xApiKeyAuthorization(token));
     }

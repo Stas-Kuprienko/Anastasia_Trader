@@ -25,14 +25,6 @@ public class Authentication extends CallCredentials {
     }
 
 
-    public static String generateToken(String appId, String key) {
-        SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
-        return Jwts.builder()
-                .id(appId)
-                .signWith(secretKey)
-                .compact();
-    }
-
     public static Authentication xApiKeyAuthorization(String token) {
         return new Authentication(Authorization.API_KEY.value, token);
     }

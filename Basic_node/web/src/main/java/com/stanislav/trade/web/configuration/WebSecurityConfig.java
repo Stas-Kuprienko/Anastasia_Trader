@@ -1,7 +1,6 @@
 package com.stanislav.trade.web.configuration;
 
 import com.stanislav.trade.entities.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -53,8 +52,7 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(@Autowired PasswordEncoder passwordEncoder,
-                                                         @Autowired UserDetailsService userDetailsService) {
+    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder);
         provider.setUserDetailsService(userDetailsService);
@@ -67,8 +65,7 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
     }
 
     @Bean
-    public SecurityFilterChain filterChain(@Autowired AuthenticationProvider authenticationProvider,
-                                           @Autowired HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(AuthenticationProvider authenticationProvider, HttpSecurity http) throws Exception {
         // TODO
         http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(formLogin ->
@@ -91,7 +88,7 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
     }
 
     @Bean
-    public FilterChainProxy filterChainProxy(@Autowired SecurityFilterChain filterChain) {
+    public FilterChainProxy filterChainProxy(SecurityFilterChain filterChain) {
         return new FilterChainProxy(filterChain);
     }
 
