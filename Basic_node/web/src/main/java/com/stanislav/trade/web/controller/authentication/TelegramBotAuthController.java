@@ -57,8 +57,14 @@ public class TelegramBotAuthController {
             Long chatIdFromToken = Long.valueOf(
                     jwtParser.parseSignedClaims(t).getPayload().get(CHAT_ID).toString());
             if (chatId.equals(chatIdFromToken)) {
-                request.getSession().setAttribute(CHAT_ID, chatId);
-                return "forward:/telegram-bot/sign-up";
+                var principal = request.getUserPrincipal();
+                if (principal == null) {
+                    request.getSession().setAttribute(CHAT_ID, chatId);
+                    return "forward:/telegram-bot/sign-up";
+                } else {
+                    User user = userService.findByLogin(principal.getName()).orElseThrow();
+                    return signUpToTelegram(chatId, user);
+                }
             }
         }
         return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
