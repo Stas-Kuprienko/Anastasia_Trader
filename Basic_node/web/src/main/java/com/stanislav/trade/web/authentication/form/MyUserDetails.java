@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.web.authentication;
+package com.stanislav.trade.web.authentication.form;
 
 import com.stanislav.trade.entities.user.User;
 import org.springframework.security.core.GrantedAuthority;

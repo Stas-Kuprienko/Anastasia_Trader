@@ -48,4 +48,10 @@ public final class MarketController {
         //TODO
         return "market page";
     }
+
+
+    @GetMapping("/test")
+    public String example() {
+        return "hello";
+    }
 }

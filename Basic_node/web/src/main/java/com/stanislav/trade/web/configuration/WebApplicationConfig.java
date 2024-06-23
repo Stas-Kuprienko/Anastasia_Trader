@@ -1,20 +1,27 @@
 package com.stanislav.trade.web.configuration;
 
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.authentication.rest.MyJwtFilter;
+import jakarta.servlet.DispatcherType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -22,16 +29,20 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import static com.stanislav.trade.web.configuration.WebSecurityConfig.Requests.*;
+import static com.stanislav.trade.web.configuration.WebApplicationConfig.Requests.*;
 
 @Configuration
 @ComponentScan("com.stanislav.trade.web")
 @EnableWebMvc
 @EnableWebSecurity
-public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer {
+public class WebApplicationConfig extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer {
 
     public static final String entryPoint = "http://localhost:8081/anastasia/login";  //TODO temporary
     private static final String accessDenied = "/";  //TODO temporary
+
+    @Autowired
+    private MyJwtFilter myJwtFilter;
+
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -65,14 +76,26 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
     }
 
     @Bean
+    @Order(1)
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/api/**").csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(myJwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .exceptionHandling(e -> e.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        return http.build();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(AuthenticationProvider authenticationProvider, HttpSecurity http) throws Exception {
-        // TODO
         http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(formLogin ->
                         formLogin.loginPage("/login")
-                                .successForwardUrl("/anastasia/")
+                                .successForwardUrl("/")
                                 .usernameParameter("email"))
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers(PERMIT_ALL.url).permitAll()
                         .requestMatchers(ANONYMOUS.url).anonymous()
                         .requestMatchers(AUTHENTICATED.url).authenticated()
@@ -87,15 +110,10 @@ public class WebSecurityConfig extends AbstractSecurityWebApplicationInitializer
         return http.authenticationProvider(authenticationProvider).build();
     }
 
-    @Bean
-    public FilterChainProxy filterChainProxy(SecurityFilterChain filterChain) {
-        return new FilterChainProxy(filterChain);
-    }
-
 
     enum Requests {
 
-        PERMIT_ALL("/*", "/WEB-INF/views/**", "/error/**", "/telegram-bot/*"),
+        PERMIT_ALL("/*", "/WEB-INF/views/**", "/telegram-bot/*"),
         ANONYMOUS("/login/*", "/sing-up/*"),
         AUTHENTICATED("/market/**", "/logout"),
         USER("/trade/**", "/user/**", "/smart/**"),

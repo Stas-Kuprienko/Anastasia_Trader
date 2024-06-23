@@ -1,6 +1,7 @@
 package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.authentication.rest.RestAuthService;
 import com.stanislav.trade.web.controller.ErrorDispatcher;
 import com.stanislav.trade.web.service.UserService;
 import io.jsonwebtoken.JwtParser;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,11 +36,13 @@ public class TelegramBotAuthController {
     private final JwtParser jwtParser;
     private final ErrorDispatcher errorDispatcher;
     private final UserService userService;
+    private final RestAuthService restAuthService;
 
 
     @Autowired
     public TelegramBotAuthController(RestTemplate restTemplate, JwtParser jwtParser,
                                      ErrorDispatcher errorDispatcher, UserService userService,
+                                     RestAuthService restAuthService,
                                      @Value("${telegram.rest}") String telegramBotApiUrl,
                                      @Value("${telegram_bot.link}") String telegramBot) {
         this.telegramBotApiUrl = telegramBotApiUrl;
@@ -47,6 +51,7 @@ public class TelegramBotAuthController {
         this.restTemplate = restTemplate;
         this.userService = userService;
         this.errorDispatcher = errorDispatcher;
+        this.restAuthService = restAuthService;
     }
 
 
@@ -129,16 +134,10 @@ public class TelegramBotAuthController {
 
 
     private String signUpToTelegram(Long chatId, User user) {
-        MultiValueMap<String, Object> parameterMap = new LinkedMultiValueMap<>();
-        parameterMap.add("login", user.getLogin());
-        parameterMap.add(CHAT_ID, chatId);
-        parameterMap.add("name", user.getName());
-        //TODO locale
-        parameterMap.add("locale", "RU");
-        HttpEntity<MultiValueMap<String, Object>> parameters = new HttpEntity<>(parameterMap);
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = buildRequestData(chatId, user);
         //TODO remake with json response
         ResponseEntity<Boolean> response = restTemplate
-                .exchange(telegramBotApiUrl + "user/register", HttpMethod.POST, parameters, Boolean.class);
+                .exchange(telegramBotApiUrl + "user/register", HttpMethod.POST, httpEntity, Boolean.class);
         if (Boolean.TRUE.equals(response.getBody()) &&
                 userService.addTelegramChatId(user, chatId)) {
             return "redirect:" + telegramBot;
@@ -146,5 +145,18 @@ public class TelegramBotAuthController {
             //TODO
             return errorDispatcher.apply(500);
         }
+    }
+
+    private HttpEntity<MultiValueMap<String, Object>> buildRequestData(Long chatId, User user) {
+        MultiValueMap<String, Object> parameterMap = new LinkedMultiValueMap<>();
+        parameterMap.add("login", user.getLogin());
+        parameterMap.add(CHAT_ID, chatId);
+        parameterMap.add("name", user.getName());
+        //TODO locale
+        parameterMap.add("locale", "RU");
+        HttpHeaders headers = new HttpHeaders();
+        String token = restAuthService.getToken();
+        headers.add(RestAuthService.Headers.API.value, token);
+        return new HttpEntity<>(parameterMap, headers);
     }
 }

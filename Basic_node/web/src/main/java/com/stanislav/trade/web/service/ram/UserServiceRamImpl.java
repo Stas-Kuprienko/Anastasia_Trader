@@ -1,6 +1,7 @@
 package com.stanislav.trade.web.service.ram;
 
 import com.stanislav.trade.datasource.UserDao;
+import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,10 @@ public class UserServiceRamImpl  implements UserService {
 
     @Override
     public boolean addTelegramChatId(User user, Long chatId) {
+        Optional<TelegramChatId> chat = userDao.findTelegramChatId(chatId);
+        if (chat.isPresent() && chat.get().getUser().equals(user)) {
+            return true;
+        }
         return userDao.addTelegramChatId(user, chatId);
     }
 }

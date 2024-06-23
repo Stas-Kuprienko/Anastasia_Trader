@@ -22,21 +22,20 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
 import javax.crypto.SecretKey;
 
-
 @Configuration
 @PropertySource("classpath:application.properties")
 @ComponentScan("com.stanislav.trade")
 public class AnastasiaTraderConfig {
 
-    private final String appId;
+    private final String id;
     private final String secretKey;
     private final String grpcServer;
 
 
-    public AnastasiaTraderConfig(@Value("${grpc.service.appId}") String appId,
-                                 @Value("${grpc.service.secretKey}") String secretKey,
+    public AnastasiaTraderConfig(@Value("${api.id}") String id,
+                                 @Value("${api.secretKey}") String secretKey,
                                  @Value("${grpc.service.resource}") String grpcServer) {
-        this.appId = appId;
+        this.id = id;
         this.secretKey = secretKey;
         this.grpcServer = grpcServer;
     }
@@ -56,7 +55,7 @@ public class AnastasiaTraderConfig {
     public JwtBuilder jwtBuilder() {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         return Jwts.builder()
-                .id(appId)
+                .id(id)
                 .signWith(key);
     }
 
