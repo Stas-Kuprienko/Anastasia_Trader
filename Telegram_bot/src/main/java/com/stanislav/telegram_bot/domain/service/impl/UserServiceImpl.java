@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = Optional.ofNullable(cache.get(id));
         if (user.isEmpty()) {
             user = dao.findById(id);
+            user.ifPresent(u -> cache.put(id, u));
         }
         return user;
     }
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
         var user = cache.get(login);
         if (user.isEmpty()) {
             user = dao.findByLogin(login);
+            user.ifPresent(u -> cache.put(u.getChatId(), u));
         }
         return user;
     }

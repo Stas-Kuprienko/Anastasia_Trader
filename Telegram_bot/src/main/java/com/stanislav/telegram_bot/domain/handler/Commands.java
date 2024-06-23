@@ -8,8 +8,10 @@ public enum Commands {
 
     START("/start"),
     HELP("/help"),
+    RESET("/reset"),
     ACCOUNT("/accounts"),
-    ORDER("/order")
+    ORDER("/order"),
+    UNRECOGNIZED("unrecognized"),
     ;
 
     public final String pattern;

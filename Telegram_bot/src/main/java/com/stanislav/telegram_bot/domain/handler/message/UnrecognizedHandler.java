@@ -7,14 +7,14 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMess
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-@Component("/accounts")
-public class AccountResponseHandler implements ResponseHandler {
-
+@Component("unrecognized")
+public class UnrecognizedHandler implements ResponseHandler {
 
     @Override
     public BotApiMethodMessage handle(SessionContext context, Message message) {
-
-
-        return new SendMessage();
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(message.getChatId());
+        sendMessage.setText(this.getClass().getSimpleName());
+        return sendMessage;
     }
 }

@@ -1,6 +1,7 @@
 package com.stanislav.telegram_bot.domain.handler.message;
 
 import com.stanislav.telegram_bot.domain.elements.KeyboardKit;
+import com.stanislav.telegram_bot.domain.handler.Commands;
 import com.stanislav.telegram_bot.domain.handler.ResponseHandler;
 import com.stanislav.telegram_bot.domain.service.UserService;
 import com.stanislav.telegram_bot.domain.session.SessionContext;
@@ -13,8 +14,6 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMess
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.Locale;
-
-import static com.stanislav.telegram_bot.domain.handler.Commands.START;
 
 @Component("/start")
 public class StartResponseHandler implements ResponseHandler {
@@ -47,19 +46,20 @@ public class StartResponseHandler implements ResponseHandler {
         response.setChatId(chatId);
         String lang = message.getFrom().getLanguageCode().toUpperCase();
         String name = message.getFrom().getFirstName();
-        if (userService.findById(chatId).isEmpty()) {
+        if (context == null || userService.findById(chatId).isEmpty()) {
             String chatIdToken = jwtBuilder.claim("chatId", chatId).compact();
             String link = resource + AUTH + '?' +
                     CHAT_ID + '=' + chatId + '&' + 't' + '=' + chatIdToken;
 //            response.setReplyMarkup(keyboardKit.signUpLink("Click", link));
             response.setText(messageSource.getMessage(
-                    START.pattern
+                    Commands.START.pattern
                             + '.' +
                             Response.greeting, new Object[]{name}, Locale.of(lang)));
         } else {
+
             response.setReplyMarkup(keyboardKit.getMainKeyboard());
             response.setText(messageSource.getMessage(
-                    START.pattern
+                    Commands.START.pattern
                             + '.' + Response.forExistUser, new Object[]{name}, Locale.of(lang)));
         }
         return response;

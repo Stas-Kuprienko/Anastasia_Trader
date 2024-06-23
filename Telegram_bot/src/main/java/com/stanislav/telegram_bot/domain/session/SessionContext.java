@@ -40,6 +40,10 @@ public class SessionContext {
         }
     }
 
+    public void reset() {
+        attributes.clear();
+    }
+
     public Long getChatId() {
         return chatId;
     }

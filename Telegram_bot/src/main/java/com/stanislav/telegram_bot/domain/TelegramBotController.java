@@ -1,5 +1,6 @@
 package com.stanislav.telegram_bot.domain;
 
+import com.stanislav.telegram_bot.domain.elements.MainMenuCustomizer;
 import com.stanislav.telegram_bot.domain.handler.CommandDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,15 +14,19 @@ public class TelegramBotController extends TelegramLongPollingBot {
 
     private final String username;
     private final CommandDispatcher commandDispatcher;
+    private final MainMenuCustomizer mainMenuCustomizer;
 
 
-    public TelegramBotController(@Value("${telegram.username}") String username,
-                                 @Value("${telegram.botToken}") String botToken,
-                                 @Autowired CommandDispatcher commandDispatcher) {
+    @Autowired
+    public TelegramBotController(CommandDispatcher commandDispatcher,
+                                 MainMenuCustomizer mainMenuCustomizer,
+                                 @Value("${telegram.username}") String username,
+                                 @Value("${telegram.botToken}") String botToken) {
 
         super(botToken);
         this.username = username;
         this.commandDispatcher = commandDispatcher;
+        this.mainMenuCustomizer = mainMenuCustomizer;
     }
 
 
@@ -34,14 +39,26 @@ public class TelegramBotController extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         try {
             if (update.hasMessage()) {
-                if (update.getMessage().hasText()) {
-                    System.out.println(update.getMessage().getText());
-                }
+                setMenuIfStart(update);
                 execute(commandDispatcher.apply(update.getMessage()));
             }
+            System.out.println(update);
         } catch (TelegramApiException e) {
             //TODO logs
-            throw new RuntimeException(e);
+//            throw new RuntimeException(e);
+            e.printStackTrace();
+        }
+    }
+
+
+    private void setMenuIfStart(Update update) throws TelegramApiException {
+        if (update.getMessage().hasText()) {
+            String text = update.getMessage().getText();
+            if (text.equals("/start")) {
+                executeAsync(mainMenuCustomizer
+                        .form(update.getMessage().getFrom().getLanguageCode()));
+            }
+            System.out.println(update.getMessage().getText());
         }
     }
 }
