@@ -42,7 +42,6 @@ public class TelegramBotController extends TelegramLongPollingBot {
                 setMenuIfStart(update);
                 execute(commandDispatcher.apply(update.getMessage()));
             }
-            System.out.println(update);
         } catch (TelegramApiException e) {
             //TODO logs
 //            throw new RuntimeException(e);

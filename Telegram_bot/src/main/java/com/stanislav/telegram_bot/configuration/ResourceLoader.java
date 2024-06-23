@@ -18,13 +18,13 @@ import javax.crypto.SecretKey;
 @PropertySource("classpath:application.properties")
 public class ResourceLoader {
 
-    private final String appId;
+    private final String id;
     private final String secretKey;
 
 
-    public ResourceLoader(@Value("${api.appId}") String appId,
+    public ResourceLoader(@Value("${api.id}") String id,
                           @Value("${api.secretKey}") String secretKey) {
-        this.appId = appId;
+        this.id = id;
         this.secretKey = secretKey;
     }
 
@@ -41,7 +41,7 @@ public class ResourceLoader {
     public JwtBuilder jwtBuilder() {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         return Jwts.builder()
-                .id(appId)
+                .id(id)
                 .signWith(key);
     }
 
