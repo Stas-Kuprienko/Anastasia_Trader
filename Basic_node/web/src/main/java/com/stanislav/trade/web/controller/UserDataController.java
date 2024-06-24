@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.Set;
 
 @Controller
@@ -49,6 +48,18 @@ public class UserDataController {
         }
         User user = userService.findById(id).orElseThrow();
         accountService.create(user, clientId, token, broker);
+        Set<Account> accounts = accountService.findByUserId(id);
+        model.addAttribute("accounts", accounts);
+        return "accounts";
+    }
+
+    @GetMapping("/accounts")
+    public String getAccounts(HttpSession session, Model model) {
+        Long id = (Long) session.getAttribute("id");
+        if (id == null) {
+            //TODO error
+            return errorDispatcher.apply(0);
+        }
         Set<Account> accounts = accountService.findByUserId(id);
         model.addAttribute("accounts", accounts);
         return "accounts";
