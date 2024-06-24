@@ -151,12 +151,10 @@ public class TelegramBotAuthController {
         MultiValueMap<String, Object> parameterMap = new LinkedMultiValueMap<>();
         parameterMap.add("login", user.getLogin());
         parameterMap.add(CHAT_ID, chatId);
+        parameterMap.add("id", user.getId());
         parameterMap.add("name", user.getName());
         //TODO locale
         parameterMap.add("locale", "RU");
-        HttpHeaders headers = new HttpHeaders();
-        String token = restAuthService.getToken();
-        headers.add(RestAuthService.Headers.API.value, token);
-        return new HttpEntity<>(parameterMap, headers);
+        return new HttpEntity<>(parameterMap, restAuthService.authorize());
     }
 }

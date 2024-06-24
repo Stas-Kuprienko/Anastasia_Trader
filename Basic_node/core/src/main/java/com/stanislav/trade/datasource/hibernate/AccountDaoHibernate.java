@@ -25,6 +25,20 @@ public class AccountDaoHibernate implements AccountDao {
         this.generator = new QueryGenerator();
     }
 
+
+    @Override
+    public List<Account> findAllByUserId(long id) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
+            String param = "user";
+            String jpql = generator.initSelect().allFrom().table(Account.class).where(param).build();
+            var query = entityManager.createQuery(jpql, Account.class);
+            query.setParameter(param, id);
+            return query.getResultList();
+        }
+    }
+
     @Override
     public List<Account> findAllByUserLogin(String login) {
         return null;
@@ -32,7 +46,13 @@ public class AccountDaoHibernate implements AccountDao {
 
     @Override
     public Account save(Account object) {
-        return null;
+        var entityManager = entityManagerFactory.createEntityManager();
+        try (entityManager) {
+            entityManager.getTransaction().begin();
+            entityManager.persist(object);
+            entityManager.getTransaction().commit();
+            return object;
+        }
     }
 
     @Override

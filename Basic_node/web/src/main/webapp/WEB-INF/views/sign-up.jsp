@@ -4,7 +4,7 @@
 <%@ page isELIgnored = "false" %>
 
 <sec:authorize access="isAuthenticated()">
-  <c:redirect url = "http://localhost:8081/anastasia"/>
+  <c:redirect url = "http://localhost:8081/anastasia/main"/>
 </sec:authorize>
 
 <!DOCTYPE html>

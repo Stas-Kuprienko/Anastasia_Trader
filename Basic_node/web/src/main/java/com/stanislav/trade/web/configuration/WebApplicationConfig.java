@@ -26,6 +26,7 @@ import org.springframework.security.web.context.AbstractSecurityWebApplicationIn
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -47,6 +48,11 @@ public class WebApplicationConfig extends AbstractSecurityWebApplicationInitiali
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/style/**").addResourceLocations("/style/");
     }
 
     @Bean
@@ -78,6 +84,7 @@ public class WebApplicationConfig extends AbstractSecurityWebApplicationInitiali
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+        //TODO exception handling
         http.securityMatcher("/api/**").csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(myJwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
@@ -92,15 +99,15 @@ public class WebApplicationConfig extends AbstractSecurityWebApplicationInitiali
         http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(formLogin ->
                         formLogin.loginPage("/login")
-                                .successForwardUrl("/")
+                                .successForwardUrl("/login/auth")
                                 .usernameParameter("email"))
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers(PERMIT_ALL.url).permitAll()
                         .requestMatchers(ANONYMOUS.url).anonymous()
                         .requestMatchers(AUTHENTICATED.url).authenticated()
-                        .requestMatchers(USER.url).hasRole(User.Role.USER.toString())
-                        .requestMatchers(ADMIN.url).hasRole(User.Role.ADMIN.toString())
+                        .requestMatchers(USER.url).hasAuthority(User.Role.USER.toString())
+                        .requestMatchers(ADMIN.url).hasAuthority(User.Role.ADMIN.toString())
                         .anyRequest().denyAll())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint((req, resp, ex) -> resp.sendRedirect(entryPoint))

@@ -4,7 +4,7 @@
 <%@ page isELIgnored = "false" %>
 
 <sec:authorize access="isAuthenticated()">
-  <c:redirect url = "http://localhost:8081/anastasia"/>
+  <c:redirect url = "http://localhost:8081/anastasia/main"/>
 </sec:authorize>
 
 <!DOCTYPE html>
@@ -26,19 +26,19 @@
     <meta name="robots" content="nofollow">
     <link rel="icon" href="favicon1.svg" sizes="any" type="image/svg+xml">
     <!-- Assets -->
-    <script type="text/javascript" async="" id="tildastatscript" src="/anastasia/style/tilda-stat-1.0.min.js"></script>
-    <script src="/anastasia/style/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
-    <link rel="stylesheet" href="/anastasia/style/tilda-grid-3.0.min.css" type="text/css" media="all"
+    <script type="text/javascript" async="" id="tildastatscript" src="${pageContext.request.contextPath}/style/tilda-stat-1.0.min.js"></script>
+    <script src="${pageContext.request.contextPath}/style/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/tilda-grid-3.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="/anastasia/style/tilda-blocks-page49486463.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/tilda-blocks-page49486463.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="/anastasia/style/tilda-forms-1.0.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/tilda-forms-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="/anastasia/style/tilda-cover-1.0.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/tilda-cover-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="/anastasia/style/fonts-tildasans.css" type="text/css" media="all"
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/fonts-tildasans.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <script nomodule="" src="/anastasia/style/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
+    <script nomodule="" src="${pageContext.request.contextPath}/style/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
     <script type="text/javascript">function t_onReady(func) {
 if (document.readyState != 'loading') {
 func();
@@ -56,21 +56,21 @@ t_onFuncLoad(funcName, okFunc, time);
 }
 }
     </script>
-    <script src="/anastasia/style/tilda-scripts-3.0.min.js" charset="utf-8" defer=""
+    <script src="${pageContext.request.contextPath}/style/tilda-scripts-3.0.min.js" charset="utf-8" defer=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-blocks-page49486463.min.js" charset="utf-8" async=""
+    <script src="${pageContext.request.contextPath}/style/tilda-blocks-page49486463.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-lazyload-1.0.min.js" charset="utf-8" async=""
+    <script src="${pageContext.request.contextPath}/style/tilda-lazyload-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-menu-1.0.min.js" charset="utf-8" async=""
+    <script src="${pageContext.request.contextPath}/style/tilda-menu-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-forms-1.0.min.js" charset="utf-8" async=""
+    <script src="${pageContext.request.contextPath}/style/tilda-forms-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-cover-1.0.min.js" charset="utf-8" async=""
+    <script src="${pageContext.request.contextPath}/style/tilda-cover-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-skiplink-1.0.min.js" charset="utf-8" async=""
+    <script src="${pageContext.request.contextPath}/style/tilda-skiplink-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-events-1.0.min.js" charset="utf-8" async=""
+    <script src="${pageContext.request.contextPath}/style/tilda-events-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
     <script type="text/javascript">window.dataLayer = window.dataLayer || [];</script>
     <script type="text/javascript">(function () {
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', t_setvisRecs);
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
                 <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/"><img
-                        src="/anastasia/style/home_circle_outline_.svg" class="tmenu-mobile__imglogo" imgfield="img"
+                        src="${pageContext.request.contextPath}/style/home_circle_outline_.svg" class="tmenu-mobile__imglogo" imgfield="img"
                         style="max-width: 70px; width: 70px;" alt="&amp;lt;&amp;lt; Домашняя страница"></a></div>
                 <button type="button" class="t-menuburger t-menuburger_first t-menuburger__small"
                         aria-label="Навигационное меню" aria-expanded="false"><span
@@ -500,7 +500,7 @@ order: 1;
                 <div class="t456__leftwrapper" style="min-width:70px;width:70px;">
                     <div class="t456__logowrapper" style="display: block;"><a
                             href="/anastasia/"><img class="t456__imglogo t456__imglogomobile"
-                                                                        src="/anastasia/style/home_circle_outline_.svg"
+                                                                        src="${pageContext.request.contextPath}/style/home_circle_outline_.svg"
                                                                         imgfield="img"
                                                                         style="max-width: 70px; width: 70px;"
                                                                         alt="&amp;lt;&amp;lt; Домашняя страница"></a>
