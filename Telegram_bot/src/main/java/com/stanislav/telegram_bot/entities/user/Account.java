@@ -27,6 +27,7 @@ public final class Account implements Serializable {
 
     private String token;
 
+    @Transient
     private BigDecimal balance;
 
 

@@ -14,6 +14,8 @@ public final class User {
     @Column(name = "id")
     private Long chatId;
 
+    private Long dbId;
+
     @Column(unique = true)
     private String login;
 
@@ -26,8 +28,9 @@ public final class User {
     private ContextState contextState;
 
 
-    public User(Long chatId, String login, String name) {
+    public User(Long chatId, Long dbId, String login, String name) {
         this.chatId = chatId;
+        this.dbId = dbId;
         this.login = login;
         this.name = name;
     }
@@ -41,6 +44,14 @@ public final class User {
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public Long getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(Long dbId) {
+        this.dbId = dbId;
     }
 
     public String getName() {
