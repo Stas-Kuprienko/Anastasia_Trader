@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page isELIgnored = "false" %>
 
 <!DOCTYPE html>
@@ -19,6 +18,7 @@
     <link rel="dns-prefetch" href="https://ws.tildacdn.com/">
     <link rel="dns-prefetch" href="https://static.tildacdn.info/">
     <meta name="robots" content="nofollow">
+    <link rel="icon" href="/anastasia/favicon1.svg" sizes="any" type="image/svg+xml">
     <script type="text/javascript" async="" id="tildastatscript" src="/anastasia/style/tilda-stat-1.0.min.js"></script>
     <script src="/anastasia/style/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
     <link rel="stylesheet" href="/anastasia/style/tilda-grid-3.0.min.css" type="text/css" media="all"
@@ -27,34 +27,8 @@
           onerror="this.loaderr=&#39;y&#39;;">
     <link rel="stylesheet" href="/anastasia/style/tilda-animation-2.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="/anastasia/style/tilda-popup-1.1.min.css" type="text/css" media="all"
-          onload="this.media=&#39;all&#39;;" onerror="this.loaderr=&#39;y&#39;;">
-    <noscript>
-        <link rel="stylesheet" href="https://static.tildacdn.info/css/tilda-popup-1.1.min.css" type="text/css"
-              media="all"/>
-    </noscript>
-    <link rel="stylesheet" href="/anastasia/style/tilda-slds-1.4.min.css" type="text/css" media="all"
-          onload="this.media=&#39;all&#39;;" onerror="this.loaderr=&#39;y&#39;;">
-    <noscript>
-        <link rel="stylesheet" href="https://static.tildacdn.info/css/tilda-slds-1.4.min.css" type="text/css"
-              media="all"/>
-    </noscript>
-    <link rel="stylesheet" href="/anastasia/style/tilda-catalog-1.1.min.css" type="text/css" media="all"
-          onload="this.media=&#39;all&#39;;" onerror="this.loaderr=&#39;y&#39;;">
-    <noscript>
-        <link rel="stylesheet" href="https://static.tildacdn.info/css/tilda-catalog-1.1.min.css" type="text/css"
-              media="all"/>
-    </noscript>
-    <link rel="stylesheet" href="/anastasia/style/tilda-forms-1.0.min.css" type="text/css" media="all"
-          onerror="this.loaderr=&#39;y&#39;;">
     <link rel="stylesheet" href="/anastasia/style/tilda-cover-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="/anastasia/style/tilda-zoom-2.0.min.css" type="text/css" media="all"
-          onload="this.media=&#39;all&#39;;" onerror="this.loaderr=&#39;y&#39;;">
-    <noscript>
-        <link rel="stylesheet" href="https://static.tildacdn.info/css/tilda-zoom-2.0.min.css" type="text/css"
-              media="all"/>
-    </noscript>
     <link rel="stylesheet" href="/anastasia/style/fonts-tildasans.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
     <script nomodule="" src="/anastasia/style/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
@@ -84,16 +58,7 @@
             onerror="this.loaderr=&#39;y&#39;;"></script>
     <script src="/anastasia/style/tilda-menu-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/hammer.min.js" charset="utf-8" async="" onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-slds-1.4.min.js" charset="utf-8" async=""
-            onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-products-1.0.min.js" charset="utf-8" async=""
-            onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-catalog-1.1.min.js" charset="utf-8" async=""
-            onerror="this.loaderr=&#39;y&#39;;"></script>
     <script src="/anastasia/style/tilda-cover-1.0.min.js" charset="utf-8" async=""
-            onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-zoom-2.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
     <script src="/anastasia/style/tilda-skiplink-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
@@ -128,7 +93,8 @@
      data-tilda-project-id="9588603" data-tilda-page-id="49542893"
      data-tilda-formskey="c760884931208f612fcce878e9588603" data-tilda-cookie="no" data-tilda-lazy="yes"
      data-tilda-root-zone="com">
-    <div id="rec759806950" class="r t-rec" style=" " data-animationappear="off" data-record-type="456"><!-- T456 -->
+    <div id="rec759806950" class="r t-rec t-rec_pb_0" style="padding-bottom:0px; " data-animationappear="off"
+         data-record-type="456"><!-- T456 -->
         <div id="nav759806950marker"></div>
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
@@ -527,17 +493,17 @@
                 <nav class="t456__rightwrapper t456__menualign_right" style="">
                     <ul role="list" class="t456__list t-menu__list">
                         <li class="t456__list_item" style="padding:0 15px 0 0;"><a class="t-menu__link-item"
-                                                                                   href="/anastasia"
+                                                                                   href="/anastasia/"
                                                                                    data-menu-submenu-hook=""
                                                                                    data-menu-item-number="1">Торговля</a>
                         </li>
                         <li class="t456__list_item" style="padding:0 15px;"><a class="t-menu__link-item"
-                                                                               href="/anastasia"
+                                                                               href="/anastasia/"
                                                                                data-menu-submenu-hook=""
                                                                                data-menu-item-number="2">Информация</a>
                         </li>
                         <li class="t456__list_item" style="padding:0 15px;"><a class="t-menu__link-item"
-                                                                               href="/anastasia"
+                                                                               href="/anastasia/"
                                                                                data-menu-submenu-hook=""
                                                                                data-menu-item-number="3">Личный
                             кабинет</a></li>
@@ -621,125 +587,76 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
         </style><![endif]-->
         <style>#rec759806950 .t456 {box-shadow: 0px 2px 3px rgba(0,11,48,0.25);}</style>
     </div>
-    <div id="rec759806941" class="r t-rec t-rec_pt_150 t-rec_pb_210 r_showed r_anim"
-         style="padding-top:150px;padding-bottom:210px;background-image:linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%); "
-         data-record-type="776"
+    <div id="rec766761820" class="r t-rec t-rec_pt_165 t-rec_pb_120 r_showed r_anim"
+         style="padding-top:165px;padding-bottom:120px;background-image:linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%); "
+         data-record-type="508"
          data-bg-color="linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%)">
-        <!-- t776 -->
-        <!-- @classes: t-text t-text_xxs t-name t-name_xs t-name_md t-name_xl t-descr t-descr_xxs t-btn t-btn_xs t-btn_sm data-zoomable="yes" -->
-        <div class="t776" data-show-count="">
-            <div class="t776__parent t776__container_mobile-grid">
-                <div class="t776__col t-col t-col_4 t-align_center t-item t776__col_mobile-grid js-product"
-                     data-product-lid="1716583997384">
-                    <div class="t776__content">
-                        <div class="t776__textwrapper">
-                            <div class="t776__title t-name t-name_md js-product-name" field="li_title__1716583997384">
-                                Finam
-                            </div>
-                            <div class="t776__descr t-descr t-descr_xxs" field="li_descr__1716583997384">462932R56XU
-                            </div>
-                            <div class="t776__price-wrapper ">
-                                <div class="t776__price t776__price-item t-name t-name_xs" style="">
-                                    <div class="t776__price-value js-product-price notranslate" translate="off"
-                                         field="li_price__1716583997384">152 014
-                                    </div>
-                                    <div class="t776__price-currency">р.</div>
-                                </div>
-                            </div>
-                        </div>
+        <!-- t508 -->
+        <div class="t508">
+            <div class="t-section__container t-container t-container_flex">
+                <div class="t-col t-col_10 t-prefix_1">
+                    <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">Ваши
+                        торговые счета
                     </div>
-                    <div class="t776__btn-wrapper t1002__btns-wrapper t1002__btns-wrapper_center "><a
-                            href="/anastasia/user/account/${account.id}" class="t776__btn t-btn t-btn_xs"
-                            style="color:#ffffff;background-color:#000000;border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;box-shadow:0px 2px 3px rgba(0,11,48,0.25);">
-                        <table role="presentation" style="width:100%; height:100%;">
-                            <tbody>
-                            <tr>
-                                <td>открыть</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </a></div>
                 </div>
-                <div class="t776__col t-col t-col_4 t-align_center t-item t776__col_mobile-grid js-product"
-                     data-product-lid="1716585437858">
-                    <div class="t776__content">
-                        <div class="t776__textwrapper">
-                            <div class="t776__title t-name t-name_md js-product-name" field="li_title__1716585437858">
-                                Finam
-                            </div>
-                            <div class="t776__descr t-descr t-descr_xxs" field="li_descr__1716585437858">462932R56XU
-                            </div>
-                            <div class="t776__price-wrapper ">
-                                <div class="t776__price t776__price-item t-name t-name_xs" style="">
-                                    <div class="t776__price-value js-product-price notranslate" translate="off"
-                                         field="li_price__1716585437858">152 014
-                                    </div>
-                                    <div class="t776__price-currency">р.</div>
-                                </div>
+            </div>
+            <style>.t-section__descr {max-width: 560px;}#rec766761820 .t-section__title {margin-bottom: 90px;}#rec766761820 .t-section__descr {}@media screen and (max-width: 960px) {#rec766761820 .t-section__title {margin-bottom: 45px;}}</style>
+            <ul role="list" class="t508__container t-container">
+                <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
+                    <a href="/anastasia/account">
+                        <div class="t-cell t-valign_top">
+                            <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1476889049104"
+                                 data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
+                                 style=" background-image: url(&#39;https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png&#39;);"
+                                 itemscope="" itemtype="http://schema.org/ImageObject">
+                                <meta itemprop="image"
+                                      content="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png">
                             </div>
                         </div>
-                    </div>
-                    <div class="t776__btn-wrapper t1002__btns-wrapper t1002__btns-wrapper_center "><a
-                            href="/anastasia/user/account/${account.id}" class="t776__btn t-btn t-btn_xs"
-                            style="color:#ffffff;background-color:#000000;border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;box-shadow:0px 2px 3px rgba(0,11,48,0.25);">
-                        <table role="presentation" style="width:100%; height:100%;">
-                            <tbody>
-                            <tr>
-                                <td>открыть</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </a></div>
-                </div>
-                <div class="t776__col t-col t-col_4 t-align_center t-item t776__col_mobile-grid js-product"
-                     data-product-lid="1716585448069">
-                    <div class="t776__content">
-                        <div class="t776__textwrapper">
-                            <div class="t776__title t-name t-name_md js-product-name" field="li_title__1716585448069">
-                                Tinkoff
-                            </div>
-                            <div class="t776__descr t-descr t-descr_xxs" field="li_descr__1716585448069">1233456</div>
-                            <div class="t776__price-wrapper ">
-                                <div class="t776__price t776__price-item t-name t-name_xs" style="">
-                                    <div class="t776__price-value js-product-price notranslate" translate="off"
-                                         field="li_price__1716585448069">124123
-                                    </div>
-                                    <div class="t776__price-currency">р.</div>
-                                </div>
+                        <div class="t508__textwrapper t-cell t-valign_top" style="">
+                            <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">Финам</div>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">150 018</div>
+                        </div>
+                    </a>
+                </li>
+                <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
+                    <a href="/anastasia/account">
+                        <div class="t-cell t-valign_top">
+                            <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1719340195719"
+                                 data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
+                                 style=" background-image: url(&#39;https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png&#39;);"
+                                 itemscope="" itemtype="http://schema.org/ImageObject">
+                                <meta itemprop="image"
+                                      content="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png">
                             </div>
                         </div>
-                    </div>
-                    <div class="t776__btn-wrapper t1002__btns-wrapper t1002__btns-wrapper_center "><a
-                            href="/anastasia/user/account/${account.id}" class="t776__btn t-btn t-btn_xs"
-                            style="color:#ffffff;background-color:#000000;border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;box-shadow:0px 2px 3px rgba(0,11,48,0.25);">
-                        <table role="presentation" style="width:100%; height:100%;">
+                        <div class="t508__textwrapper t-cell t-valign_top" style="">
+                            <div class="t-name t-name_md t508__bottommargin" field="li_title__1719340195719">Тинькофф
+                            </div>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1719340195719">149 990</div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="t-section__container t-container">
+                <div class="t-col t-col_12">
+                    <div class="t-section__bottomwrapper t-clear t-align_center"><a
+                            href="/anastasia/user/new-account" target="" class="t-btn t-btn_md"
+                            style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                            data-buttonfieldset="bbutton">
+                        <table style="width:100%; height:100%;">
                             <tbody>
                             <tr>
-                                <td>открыть</td>
+                                <td data-field="bbuttontitle">Добавить счёт</td>
                             </tr>
                             </tbody>
                         </table>
                     </a></div>
                 </div>
             </div>
+            <style>#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) {position: relative;overflow: hidden;z-index: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) * {-webkit-backface-visibility: hidden;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover)::after {content: '';position: absolute;top: 0;left: 0;right: 0;bottom: 0;z-index: -1;width: 100%;height: 100%;opacity: 0;transition: opacity 0.2s ease-in-out;background-image: linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%);}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover::after {opacity: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible::after {opacity: 1;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: 0.2s;animation-timing-function: linear;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: s;animation-timing-function: linear;}}@keyframes rec_766761820_btnanim {to {background-image: none;background-color: transparent;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}}</style>
         </div>
-        <script>t_onReady(function () {
-            t_onFuncLoad('t776__showMore', function () {
-                t776__showMore('759806941');
-            });
-            t_onFuncLoad('t776__init', function () {
-                t776__init('759806941');
-            });
-        });</script>
-        <style type="text/css">#rec759806941 .t-slds__bullet_active .t-slds__bullet_body {
-            background-color: #222 !important;
-        }
-        #rec759806941 .t-slds__bullet:hover .t-slds__bullet_body {
-            background-color: #222 !important;
-        }</style>
-        <style>@media (hover: hover), (min-width: 0\0) {#rec759806941 .t-btn:not(.t-animate_no-hover):hover {box-shadow: 0px 10px 20px rgba(0,11,48,0.25) !important;background-color: #dc3aaa !important;}#rec759806941 .t-btn:not(.t-animate_no-hover):focus-visible {box-shadow: 0px 10px 20px rgba(0,11,48,0.25) !important;background-color: #dc3aaa !important;}#rec759806941 .t-btn:not(.t-animate_no-hover) {transition-property: background-color, color, border-color, box-shadow;transition-duration: 0.2s;transition-timing-function: ease-in-out;}}</style>
-        <style> #rec759806941 .t776__content .t776__title { font-weight: 700; } #rec759806941 .t776__price { font-weight: 400; } #rec759806941 .t776__price_old { font-weight: 400; }</style>
-        <style> #rec759806941 .t-popup .t776__title { font-weight: 700; }</style>
+        <style> #rec766761820 .t-name { font-weight: 600; }</style>
     </div>
     <div id="rec759807303" class="r t-rec" style=" " data-animationappear="off" data-record-type="18"><!-- cover -->
         <div class="t-cover" id="recorddiv759807303" bgimgfield="img"
@@ -772,36 +689,5 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
 window.tildastatcookie='no';
 setTimeout(function(){ (function (d, w, k, o, g) { var n=d.getElementsByTagName(o)[0],s=d.createElement(o),f=function(){n.parentNode.insertBefore(s,n);}; s.type = "text/javascript"; s.async = true; s.key = k; s.id = "tildastatscript"; s.src=g; if (w.opera=="[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else { f(); } })(document, window, '9bbfc50c62aa9e581d78a7ed0c24bf3e','script','https://static.tildacdn.info/js/tilda-stat-1.0.min.js');
 }, 2000); </script>
-<div class="t-zoomer__wrapper">
-    <div class="t-zoomer__container"></div>
-    <div class="t-zoomer__bg"></div>
-    <div class="t-zoomer__close" style="display: none;">
-        <svg width="20" height="20" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1.41421 -0.000151038L0 1.41406L21.2132 22.6273L22.6274 21.2131L1.41421 -0.000151038Z"
-                  fill="black"></path>
-            <path d="M22.6291 1.41421L21.2148 0L0.00164068 21.2132L1.41585 22.6274L22.6291 1.41421Z"
-                  fill="black"></path>
-        </svg>
-    </div>
-    <div class="t-zoomer__scale showed">
-        <svg class="icon-increase" width="20" height="20" viewBox="0 0 25 24" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.832 22L17.8592 17.0273" stroke="black" stroke-width="2" stroke-linecap="square"></path>
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M4.58591 3.7511C0.917768 7.41924 0.917768 13.367 4.58591 17.0352C8.25405 20.7033 14.2019 20.7033 17.87 17.0352C21.5381 13.367 21.5381 7.41924 17.87 3.7511C14.2019 0.0829653 8.25405 0.0829653 4.58591 3.7511Z"
-                  stroke="black" stroke-width="2"></path>
-            <path d="M6.25781 10.3931H16.2035" stroke="black" stroke-width="2"></path>
-            <path d="M11.2305 15.3662V5.42053" stroke="black" stroke-width="2"></path>
-        </svg>
-        <svg class="icon-decrease" width="20" height="20" viewBox="0 0 24 24" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
-            <path d="M21.9961 22L17.0233 17.0273" stroke="black" stroke-width="2" stroke-linecap="square"></path>
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M3.74997 3.7511C0.0818308 7.41924 0.0818308 13.367 3.74997 17.0352C7.41811 20.7033 13.3659 20.7033 17.0341 17.0352C20.7022 13.367 20.7022 7.41924 17.0341 3.7511C13.3659 0.0829653 7.41811 0.0829653 3.74997 3.7511Z"
-                  stroke="black" stroke-width="2"></path>
-            <path d="M5.41797 10.3931H15.3637" stroke="black" stroke-width="2"></path>
-        </svg>
-    </div>
-</div>
 </body>
 </html>

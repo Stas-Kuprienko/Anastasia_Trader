@@ -8,10 +8,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Set;
 
 @Controller
@@ -29,16 +27,21 @@ public class UserDataController {
         this.accountService = accountService;
     }
 
-    @GetMapping("/account")
+    @GetMapping("/new-account")
     public String newAccount() {
         return "new_account";
     }
 
+    @GetMapping("/account/{account-id}")
+    public String getAccount(@PathVariable("account-id") Long accountId) {
+        return "account";
+    }
+
     @PostMapping("/account")
     public String newAccountHandle(HttpSession session,
-                             @RequestParam String clientId,
-                             @RequestParam String token,
-                             @RequestParam String broker,
+                             @RequestParam("clientId") String clientId,
+                             @RequestParam("token") String token,
+                             @RequestParam("broker") String broker,
                              Model model) {
 
         Long id = (Long) session.getAttribute("id");
@@ -48,7 +51,7 @@ public class UserDataController {
         }
         User user = userService.findById(id).orElseThrow();
         accountService.create(user, clientId, token, broker);
-        Set<Account> accounts = accountService.findByUserId(id);
+        Set<Account> accounts = accountService.findByUser(user);
         model.addAttribute("accounts", accounts);
         return "accounts";
     }
@@ -60,7 +63,8 @@ public class UserDataController {
             //TODO error
             return errorDispatcher.apply(0);
         }
-        Set<Account> accounts = accountService.findByUserId(id);
+        User user = userService.findById(id).orElseThrow();
+        Set<Account> accounts = accountService.findByUser(user);
         model.addAttribute("accounts", accounts);
         return "accounts";
     }

@@ -2,6 +2,7 @@ package com.stanislav.trade.datasource.hibernate;
 
 import com.stanislav.trade.datasource.AccountDao;
 import com.stanislav.trade.entities.user.Account;
+import com.stanislav.trade.entities.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,14 @@ public class AccountDaoHibernate implements AccountDao {
 
 
     @Override
-    public List<Account> findAllByUserId(long id) {
+    public List<Account> findAllByUser(User user) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try (entityManager) {
             entityManager.getTransaction().begin();
             String param = "user";
             String jpql = generator.initSelect().allFrom().table(Account.class).where(param).build();
             var query = entityManager.createQuery(jpql, Account.class);
-            query.setParameter(param, id);
+            query.setParameter(param, user);
             return query.getResultList();
         }
     }

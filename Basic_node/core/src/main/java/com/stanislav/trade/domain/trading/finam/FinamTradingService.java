@@ -13,6 +13,7 @@ import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderResponse;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.orders.Stop;
 import com.stanislav.trade.entities.user.Account;
+import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.utils.ApiDataParser;
 import com.stanislav.trade.utils.GetQueryBuilder;
 import com.stanislav.trade.utils.RestConsumer;
@@ -47,6 +48,11 @@ public class FinamTradingService implements TradingService {
         this.restConsumer.setResource(resource);
     }
 
+
+    @Override
+    public Portfolio getPortfolio(String clientId) {
+        return null;
+    }
 
     @Override
     public List<Order> getOrders(Account account, boolean matched, boolean canceled, boolean active) {
