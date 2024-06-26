@@ -1,7 +1,7 @@
 package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.entities.user.User;
-import com.stanislav.trade.web.controller.ErrorDispatcher;
+import com.stanislav.trade.web.service.ErrorDispatcher;
 import com.stanislav.trade.web.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

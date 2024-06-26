@@ -15,12 +15,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.client.RestTemplate;
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @PropertySource("classpath:application.properties")
@@ -40,6 +44,11 @@ public class AnastasiaTraderConfig {
         this.grpcServer = grpcServer;
     }
 
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Bean
     public RestTemplate restTemplate() {
@@ -73,5 +82,13 @@ public class AnastasiaTraderConfig {
     @Bean
     public SmartAutoTradeService smartAutoTradeService(GRpcConnection connection, JwtBuilder jwtBuilder) {
         return new SmartAutoTradeImpl(jwtBuilder.compact(), connection);
+    }
+
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:messages");
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
+        return messageSource;
     }
 }

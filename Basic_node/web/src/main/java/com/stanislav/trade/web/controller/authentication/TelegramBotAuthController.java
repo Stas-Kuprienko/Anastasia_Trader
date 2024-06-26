@@ -2,7 +2,8 @@ package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.authentication.rest.RestAuthService;
-import com.stanislav.trade.web.controller.ErrorDispatcher;
+import com.stanislav.trade.web.service.ErrorCase;
+import com.stanislav.trade.web.service.ErrorDispatcher;
 import com.stanislav.trade.web.service.UserService;
 import io.jsonwebtoken.JwtParser;
 import jakarta.servlet.ServletException;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -68,17 +68,21 @@ public class TelegramBotAuthController {
                     return "forward:/telegram-bot/sign-up";
                 } else {
                     User user = userService.findByLogin(principal.getName()).orElseThrow();
-                    return signUpToTelegram(chatId, user);
+                    return signUpToTelegram(chatId, user, request);
                 }
             }
         }
-        return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
+        String message = errorDispatcher.apply(ErrorCase.TELEGRAM_ID_LOST);
+        request.setAttribute("message", message);
+        return ErrorDispatcher.ERROR_PAGE;
     }
 
     @GetMapping("/sign-up")
     public String signUp(HttpServletRequest request) {
         if (request.getSession().getAttribute(CHAT_ID) == null) {
-            return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
+            String message = errorDispatcher.apply(ErrorCase.TELEGRAM_ID_LOST);
+            request.setAttribute("message", message);
+            return ErrorDispatcher.ERROR_PAGE;
         }
         request.setAttribute(AuthenticationController.Args.login.toString(), LOGIN_TELEGRAM_MAPPING);
         request.setAttribute(AuthenticationController.Args.signUp.toString(), SIGN_UP_TELEGRAM_MAPPING);
@@ -88,7 +92,9 @@ public class TelegramBotAuthController {
     @GetMapping("/login")
     public String login(HttpServletRequest request) {
         if (request.getSession().getAttribute(CHAT_ID) == null) {
-            return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
+            String message = errorDispatcher.apply(ErrorCase.TELEGRAM_ID_LOST);
+            request.setAttribute("message", message);
+            return ErrorDispatcher.ERROR_PAGE;
         }
         request.setAttribute(AuthenticationController.Args.login.toString(), LOGIN_TELEGRAM_MAPPING);
         request.setAttribute(AuthenticationController.Args.signUp.toString(), SIGN_UP_TELEGRAM_MAPPING);
@@ -102,7 +108,9 @@ public class TelegramBotAuthController {
                                            HttpServletRequest request) {
         Long chatId = (Long) request.getSession().getAttribute(CHAT_ID);
         if (chatId == null) {
-            return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
+            String message = errorDispatcher.apply(ErrorCase.TELEGRAM_ID_LOST);
+            request.setAttribute("message", message);
+            return ErrorDispatcher.ERROR_PAGE;
         }
         request.getSession().removeAttribute(CHAT_ID);
         User user = userService.create(login, password, name);
@@ -111,7 +119,7 @@ public class TelegramBotAuthController {
         } catch (ServletException e) {
             return errorDispatcher.apply(400);
         }
-        return signUpToTelegram(chatId, user);
+        return signUpToTelegram(chatId, user, request);
     }
 
     @PostMapping("/login")
@@ -120,20 +128,24 @@ public class TelegramBotAuthController {
                                           HttpServletRequest request) {
         Long chatId = (Long) request.getSession().getAttribute(CHAT_ID);
         if (chatId == null) {
-            return errorDispatcher.apply(ErrorDispatcher.Case.TELEGRAM_ID_LOST);
+            String message = errorDispatcher.apply(ErrorCase.TELEGRAM_ID_LOST);
+            request.setAttribute("message", message);
+            return ErrorDispatcher.ERROR_PAGE;
         }
         request.getSession().removeAttribute(CHAT_ID);
         try {
             request.login(login, password);
             User user = userService.findByLogin(login).orElseThrow();
-            return signUpToTelegram(chatId, user);
+            return signUpToTelegram(chatId, user, request);
         } catch (ServletException e) {
-            return errorDispatcher.apply(400);
+            String message = errorDispatcher.apply(400);
+            request.setAttribute("message", message);
+            return ErrorDispatcher.ERROR_PAGE;
         }
     }
 
 
-    private String signUpToTelegram(Long chatId, User user) {
+    private String signUpToTelegram(Long chatId, User user, HttpServletRequest request) {
         HttpEntity<MultiValueMap<String, Object>> httpEntity = buildRequestData(chatId, user);
         //TODO remake with json response
         ResponseEntity<Boolean> response = restTemplate
@@ -142,8 +154,9 @@ public class TelegramBotAuthController {
                 userService.addTelegramChatId(user, chatId)) {
             return "redirect:" + telegramBot;
         } else {
-            //TODO
-            return errorDispatcher.apply(500);
+            String message = errorDispatcher.apply(500);
+            request.setAttribute("message", message);
+            return ErrorDispatcher.ERROR_PAGE;
         }
     }
 
