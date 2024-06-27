@@ -5,6 +5,7 @@ import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

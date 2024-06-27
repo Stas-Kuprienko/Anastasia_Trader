@@ -2,6 +2,10 @@ package com.stanislav.trade.datasource;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManagerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +16,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import javax.annotation.PreDestroy;
 import java.util.Set;
 
+@Slf4j
 @Configuration
 public class DatasourceConfig {
 
@@ -19,8 +24,8 @@ public class DatasourceConfig {
 
     @Bean
     public EntityManagerFactory entityManagerFactory() {
-        org.hibernate.cfg.Configuration config = new org.hibernate.cfg.Configuration().configure();
-
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+        MetadataSources metadataSources = new MetadataSources(registry);
         ClassPathScanningCandidateComponentProvider componentProvider =
                 new ClassPathScanningCandidateComponentProvider(false);
 
@@ -32,17 +37,21 @@ public class DatasourceConfig {
         try {
             for (BeanDefinition bd : beanDefinitions) {
                 if (bd instanceof AnnotatedBeanDefinition) {
-                    config.addAnnotatedClass(Class.forName(bd.getBeanClassName()));
+                    metadataSources.addAnnotatedClass(Class.forName(bd.getBeanClassName()));
                 }
             }
         } catch (ClassNotFoundException e) {
+            StandardServiceRegistryBuilder.destroy(registry);
+            log.error(e.getMessage());
             throw new RuntimeException(e);
         }
-        return entityManagerFactory = config.buildSessionFactory();
+        return entityManagerFactory = metadataSources.buildMetadata().buildSessionFactory();
     }
 
     @PreDestroy
     public void destroy() {
-        entityManagerFactory.close();
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+        }
     }
 }
