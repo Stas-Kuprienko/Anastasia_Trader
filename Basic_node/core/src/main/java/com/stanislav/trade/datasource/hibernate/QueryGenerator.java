@@ -34,7 +34,7 @@ public class QueryGenerator {
         return this;
     }
 
-    public QueryGenerator allFrom() {
+    public QueryGenerator fullyFrom() {
         strBuilder.append(' ')
                 .append(tableAlias)
                 .append(' ')

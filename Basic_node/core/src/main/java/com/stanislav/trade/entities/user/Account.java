@@ -22,7 +22,7 @@ public final class Account implements Serializable {
     @Column(nullable = false)
     private String clientId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user", nullable = false)
     @JsonIgnore
     private User user;
@@ -31,7 +31,7 @@ public final class Account implements Serializable {
 
     private String token;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JsonIgnore
     private RiskProfile riskProfile;
 

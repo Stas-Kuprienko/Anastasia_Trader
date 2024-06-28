@@ -4,6 +4,7 @@ import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class UserServiceRamImpl  implements UserService {
 
 
     @Override
+    @Transactional
     public User create(String login, String password, String name)  {
         User user = new User(
                 login,

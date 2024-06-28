@@ -7,11 +7,11 @@ package com.stanislav.trade.datasource.hibernate;
 import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
@@ -21,115 +21,81 @@ import java.util.function.Consumer;
 @Component("userDao")
 public class UserDaoHibernate implements UserDao {
 
-    private final SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    private final QueryGenerator generator;
+    private final QueryGenerator jpQuery;
 
 
-    @Autowired
-    public UserDaoHibernate(EntityManagerFactory entityManagerFactory) {
-        try {
-            this.sessionFactory = (SessionFactory) entityManagerFactory;
-        } catch (ClassCastException e) {
-            log.error(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        this.generator = new QueryGenerator();
+    public UserDaoHibernate() {
+        this.jpQuery = new QueryGenerator();
     }
 
 
     @Override
     public User save(User user) {
-        sessionFactory.inTransaction(s -> s.persist(user));
-        return user;
+        entityManager.persist(user);
+        entityManager.flush();
+        return entityManager.find(User.class, user.getId());
     }
 
     @Override
     public List<User> findAll() {
-        Session session = sessionFactory.getCurrentSession();
-        try (session) {
-            session.beginTransaction();
-            String jpql = generator.initSelect().allFrom().table(User.class).build();
-            return session
-                    .createQuery(jpql,User.class)
-                    .getResultList();
-        }
+        String jpql = jpQuery.initSelect().fullyFrom().table(User.class).build();
+        return entityManager.createQuery(jpql, User.class).getResultList();
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        Session session = sessionFactory.getCurrentSession();
-        try (session) {
-            session.beginTransaction();
-            return Optional.of(session.find(User.class, id));
-        } catch (NoResultException e) {
-            log.debug(e.getMessage());
-            return Optional.empty();
-        }
+        return Optional.ofNullable(entityManager.find(User.class, id));
     }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        Session session = sessionFactory.getCurrentSession();
-        try (session) {
-            session.beginTransaction();
-            String param = "login";
-            String jpql = generator.initSelect().allFrom().table(User.class).where(param).build();
-            var query = session.createQuery(jpql, User.class);
-            query.setParameter(param, login);
-            return Optional.of(query.getSingleResult());
+        String param = "login";
+        String jpql = jpQuery.initSelect().fullyFrom().table(User.class).where(param).build();
+        try {
+            return Optional.of(entityManager
+                    .createQuery(jpql, User.class)
+                    .setParameter(param, login)
+                    .getSingleResult());
         } catch (NoResultException e) {
-            log.debug(e.getMessage());
+            log.info(e.getMessage());
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<User> update(Object id, Consumer<User> updating) {
-        Session session = sessionFactory.getCurrentSession();
-        try (session) {
-            session.beginTransaction();
-            String login = (String) id;
-            User user = findByLogin(login).orElseThrow(EntityNotFoundException::new);
-            updating.accept(user);
-            session.getTransaction().commit();
-            return Optional.of(user);
-        } catch (ClassCastException | PersistenceException e) {
-            log.warn(e.getMessage());
-            return Optional.empty();
-        }
+    public Optional<User> update(Long id, Consumer<User> updating) {
+        Optional<User> user = Optional.ofNullable(entityManager.find(User.class, id));
+        user.ifPresent(updating);
+        return user;
     }
 
     @Override
-    public void delete(User object) {
-
+    public void delete(User user) {
+        entityManager.remove(user);
     }
 
     @Override
     public boolean addTelegramChatId(User user, Long chatId) {
+        TelegramChatId chat = new TelegramChatId(chatId, user);
         try {
-            TelegramChatId telegramChatId = new TelegramChatId(chatId, user);
-            sessionFactory.inTransaction(s -> s.persist(telegramChatId));
+            entityManager.persist(chat);
             return true;
-        } catch (PersistenceException e) {
-            log.warn(e.getMessage());
+        } catch (EntityExistsException e) {
+            log.info(e.getMessage());
             return false;
         }
     }
 
     @Override
     public Optional<TelegramChatId> findTelegramChatId(Long userId) {
-        Session session = sessionFactory.getCurrentSession();
-        try (session) {
-            session.beginTransaction();
-            String param = "user";
-            var query = session.createNativeQuery(
-                    generator.nativeSelectAllWhere1Param(TelegramChatId.class, param), TelegramChatId.class);
-            query.setParameter(param, userId);
-            return Optional.of(query.getSingleResult());
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            return Optional.empty();
-        }
+        String param = "user";
+        var query = entityManager.createNativeQuery(
+                jpQuery.nativeSelectAllWhere1Param(TelegramChatId.class, param),
+                TelegramChatId.class);
+        query.setParameter(param, userId);
+        return Optional.of((TelegramChatId) query.getSingleResult());
     }
 }

@@ -1,57 +1,81 @@
 package com.stanislav.trade.datasource;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinition;
+import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.PreDestroy;
-import java.util.Set;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 @Slf4j
 @Configuration
+@EnableTransactionManagement
 public class DatasourceConfig {
 
-    private EntityManagerFactory entityManagerFactory;
+    private LocalContainerEntityManagerFactoryBean entityManagerFactory;
+    private final Properties properties;
+
+
+    public DatasourceConfig(@Value("${database.properties.file}") String fileName) {
+        properties = loadDatabaseProperties(fileName);
+    }
+
 
     @Bean
-    public EntityManagerFactory entityManagerFactory() {
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
-        MetadataSources metadataSources = new MetadataSources(registry);
-        ClassPathScanningCandidateComponentProvider componentProvider =
-                new ClassPathScanningCandidateComponentProvider(false);
+    public DataSource dataSource() {
+        return new JndiDataSourceLookup().getDataSource(properties.getProperty("datasource.name"));
+    }
 
-        componentProvider.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
 
-        Set<BeanDefinition> beanDefinitions =
-                componentProvider.findCandidateComponents("com.stanislav.trade.entities");
+        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 
-        try {
-            for (BeanDefinition bd : beanDefinitions) {
-                if (bd instanceof AnnotatedBeanDefinition) {
-                    metadataSources.addAnnotatedClass(Class.forName(bd.getBeanClassName()));
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            StandardServiceRegistryBuilder.destroy(registry);
-            log.error(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        return entityManagerFactory = metadataSources.buildMetadata().buildSessionFactory();
+        entityManagerFactory.setDataSource(dataSource);
+        entityManagerFactory.setPackagesToScan("com.stanislav.trade.entities");
+        entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        entityManagerFactory.setJpaProperties(properties);
+
+        entityManagerFactory.setPersistenceProvider(new HibernatePersistenceProvider());
+
+        return this.entityManagerFactory = entityManagerFactory;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
+        return transactionManager;
     }
 
     @PreDestroy
     public void destroy() {
         if (entityManagerFactory != null) {
-            entityManagerFactory.close();
+            entityManagerFactory.destroy();
+        }
+    }
+
+
+    private Properties loadDatabaseProperties(String fileName) {
+        Properties properties = new Properties();
+        try (InputStream inputStream =
+                     DatasourceConfig.class.getClassLoader().getResourceAsStream(fileName)) {
+
+            properties.load(inputStream);
+            return properties;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

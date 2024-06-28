@@ -58,7 +58,7 @@ public class AuthenticationController {
         try {
             request.login(login, password);
             request.getSession().setAttribute("id", user.getId());
-            return "redirect:/main/" + user.getId();
+            return "redirect:/user/" + user.getId();
         } catch (ServletException e) {
             //TODO
             return errorDispatcher.apply(400);
