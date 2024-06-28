@@ -83,8 +83,8 @@
 
     </dependencies>
 
-<!--    <build>-->
-<!--        <directory>${pom.basedir}/../local-tomcat/apache-tomcat-11.0.0/webapps/anastasia</directory>-->
-<!--    </build>-->
+    <build>
+        <directory>${pom.basedir}/../local-tomcat/apache-tomcat-11.0.0/webapps</directory>
+    </build>
 
 </project>
