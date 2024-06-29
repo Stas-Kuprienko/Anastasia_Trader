@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TomcatRun" type="com.poratu.idea.plugins.tomcat">
+  <configuration default="false" name="run_without_package" type="com.poratu.idea.plugins.tomcat">
     <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
     <predefined_log_file enabled="true" id="Tomcat Access Log" />
     <predefined_log_file id="Tomcat Catalina Log" />
     <predefined_log_file id="Tomcat Manager Log" />
     <predefined_log_file id="Tomcat Host Manager Log" />
     <option name="adminPort" value="8006" />
-    <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\Anastasia_Trader\web" />
+    <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\Anastasia_Trader\basic_node" />
     <option name="contextPath" value="/anastasia" />
     <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Basic_node\web\src\main\webapp" />
     <option name="envOptions">
@@ -23,8 +23,6 @@
     </option>
     <option name="vmOptions" value="" />
     <module name="web" />
-    <method v="2">
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/Basic_node/pom.xml" goal="package" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>
