@@ -8,7 +8,6 @@
 
 package com.stanislav.trade.web.controller;
 
-import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.domain.trading.TradeCriteria;
 import com.stanislav.trade.domain.trading.TradingService;
 import com.stanislav.trade.domain.trading.finam.FinamOrderTradeCriteria;
@@ -16,14 +15,16 @@ import com.stanislav.trade.entities.Direction;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.service.UserDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public final class TradeController {
     private TradingService tradingService;
 
     @Autowired
-    private UserDao userDao;
+    private UserDataService userDataService;
 
 
     @GetMapping(value = "/orders")
@@ -46,7 +47,7 @@ public final class TradeController {
                                  @RequestParam boolean includeCanceled,
                                  @RequestParam boolean includeActive) {
         //TODO
-        User user = userDao.findByLogin(userDetails.getUsername()).orElseThrow();
+        User user = userDataService.findByLogin(userDetails.getUsername()).orElseThrow();
         Account account = user.getAccounts()
                 .stream()
                 .filter(e -> e.getClientId().equals(clientId))

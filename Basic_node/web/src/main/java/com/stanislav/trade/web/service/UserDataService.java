@@ -4,7 +4,7 @@ import com.stanislav.trade.entities.user.User;
 
 import java.util.Optional;
 
-public interface UserService {
+public interface UserDataService {
 
     User create(String login, String password, String name);
 

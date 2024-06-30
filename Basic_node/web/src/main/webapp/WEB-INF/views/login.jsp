@@ -595,6 +595,11 @@ opacity: 1 !important;
         <div class="t678 ">
             <div class="t-container">
                 <div class="t-col t-col_8 t-prefix_2">
+                    <c:if test="${param.error != null}">
+                        <div style="color:red;">
+                            Ошибка авторизации.
+                        </div>
+                    </c:if>
                     <div>
                         <form id="form752795118" name="form752795118" role="form"
                               action="${requestScope.login}" method="POST"

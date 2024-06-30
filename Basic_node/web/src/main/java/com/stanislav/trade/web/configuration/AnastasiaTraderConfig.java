@@ -85,9 +85,9 @@ public class AnastasiaTraderConfig {
     }
 
     @Bean
-    public MessageSource messageSource() {
+    public MessageSource errorMessageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages");
+        messageSource.setBasename("classpath:error_messages");
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return messageSource;
     }

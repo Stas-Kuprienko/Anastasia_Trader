@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page isELIgnored = "false" %>
 
 <!DOCTYPE html>
@@ -98,7 +99,8 @@
         <div id="nav767254499marker"></div>
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
-                <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/login">
+                <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/user/${sessionScope.id}">
+                        <img src="/anastasia/style/img-back-1.png">
                     <div class="tmenu-mobile__burgerlogo__title t-title" field="title">&lt;&lt;</div>
                 </a></div>
                 <button type="button" class="t-menuburger t-menuburger_first t-menuburger__small"
@@ -481,11 +483,20 @@
              data-menu-items-align="right" data-menu="yes">
             <div class="t456__maincontainer " style="">
                 <div class="t456__leftwrapper" style="min-width:70px;width:70px;">
-                    <div class="t456__logowrapper"><a href="/anastasia/">
-                        <img src="_error_files/img-back-1.png">
-                    </a></div>
+                    <div class="t456__logowrapper">
+                        <c:if test="${sessionScope.id != null}">
+                            <a href="/anastasia/user/${sessionScope.id}">
+                                <img src="/anastasia/style/img-back-1.png">
+                            </a>
+                        </c:if>
+                        <c:if test="${sessionScope.id == null}">
+                            <a href="/anastasia/login">
+                                <img src="/anastasia/style/img-back-1.png">
+                            </a>
+                        </c:if>
+                    </div>
+                </div>
             </div>
-        </div>
     </div>
     <style>@media screen and (max-width: 980px) {
         #rec767254499 .t456__logowrapper{
@@ -568,9 +579,9 @@
                 <div class="t-cover__wrapper t-valign_middle" style="height: 859px;">
                     <div class="t001 t-align_center">
                         <div class="t001__wrapper" data-hook-content="covercontent">
-                            <img src="/anastasia/style/error_img.png" height="128px" width="106">
+                            <img src="/anastasia/style/${requestScope.error.image}" height="128px" width="128">
                             <div class="t001__uptitle t-uptitle t-uptitle_sm" field="subtitle" >Ой... Что-то пошло не так.</div>
-                            <div class="t001__descr t-descr t-descr_xl t001__descr_center" field="descr">${message}</div>
+                            <div class="t001__descr t-descr t-descr_xl t001__descr_center" field="descr">${requestScope.error.message}</div>
                             <span class="space"></span></div>
                     </div>
                 </div>

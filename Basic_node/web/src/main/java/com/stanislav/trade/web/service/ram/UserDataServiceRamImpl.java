@@ -3,18 +3,17 @@ package com.stanislav.trade.web.service.ram;
 import com.stanislav.trade.datasource.UserDao;
 import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
-import com.stanislav.trade.web.service.UserService;
+import com.stanislav.trade.web.service.UserDataService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service("userService")
-public class UserServiceRamImpl  implements UserService {
+@Service("userDataService")
+public class UserDataServiceRamImpl implements UserDataService {
 
     //TODO   TEMPORARY SOLUTION. NEED TO REPLACE BY REDIS   !!!!!!!!!!!
 
@@ -24,7 +23,7 @@ public class UserServiceRamImpl  implements UserService {
 
 
     @Autowired
-    public UserServiceRamImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserDataServiceRamImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.ram = new ConcurrentHashMap<>();
@@ -49,6 +48,7 @@ public class UserServiceRamImpl  implements UserService {
         Optional<User> user = Optional.ofNullable(ram.get(id));
         if (user.isEmpty()) {
             user = userDao.findById(id);
+            user.ifPresent(u -> ram.put(id, u));
         }
         return user;
     }
@@ -60,7 +60,9 @@ public class UserServiceRamImpl  implements UserService {
                 return Optional.of(e.getValue());
             }
         }
-        return userDao.findByLogin(login);
+        var user = userDao.findByLogin(login);
+        user.ifPresent(u -> ram.put(u.getId(), u));
+        return user;
     }
 
     @Override

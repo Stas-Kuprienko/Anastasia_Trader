@@ -3,9 +3,7 @@ package com.stanislav.trade.web.controller;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.service.AccountService;
-import com.stanislav.trade.web.service.ErrorCase;
-import com.stanislav.trade.web.service.ErrorDispatcher;
-import com.stanislav.trade.web.service.UserService;
+import com.stanislav.trade.web.service.UserDataService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +18,12 @@ import java.util.Set;
 @RequestMapping("/user")
 public class UserDataController {
 
-    private final ErrorDispatcher errorDispatcher;
-    private final UserService userService;
+    private final UserDataService userDataService;
     private final AccountService accountService;
 
     @Autowired
-    public UserDataController(ErrorDispatcher errorDispatcher, UserService userService, AccountService accountService) {
-        this.errorDispatcher = errorDispatcher;
-        this.userService = userService;
+    public UserDataController(UserDataService userDataService, AccountService accountService) {
+        this.userDataService = userDataService;
         this.accountService = accountService;
     }
 
@@ -53,16 +49,15 @@ public class UserDataController {
             log.warn("Session scope attribute user ID is null");
             return "login";
         }
-        Optional<User> user = userService.findById(id);
+        Optional<User> user = userDataService.findById(id);
         if (user.isPresent()) {
             accountService.create(user.get(), clientId, token, broker);
             Set<Account> accounts = accountService.findByUser(user.get());
             model.addAttribute("accounts", accounts);
             return "accounts";
         } else {
-            String message = errorDispatcher.apply(ErrorCase.NO_SUCH_USER);
-            model.addAttribute("message", message);
-            return ErrorDispatcher.ERROR_PAGE;
+            log.error("User not found: " + user);
+            return "redirect:/login";
         }
     }
 
@@ -73,7 +68,7 @@ public class UserDataController {
             log.warn("Session scope attribute user ID is null");
             return "login";
         }
-        User user = userService.findById(id).orElseThrow();
+        User user = userDataService.findById(id).orElseThrow();
         Set<Account> accounts = accountService.findByUser(user);
         model.addAttribute("accounts", accounts);
         return "accounts";

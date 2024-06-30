@@ -2,7 +2,9 @@ package com.stanislav.trade.web.configuration;
 
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.authentication.rest.MyJwtFilter;
+import com.stanislav.trade.web.service.ErrorCase;
 import jakarta.servlet.DispatcherType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -32,14 +33,15 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import static com.stanislav.trade.web.configuration.WebApplicationConfig.Requests.*;
 
+@Slf4j
 @Configuration
 @ComponentScan("com.stanislav.trade.web")
 @EnableWebMvc
 @EnableWebSecurity
 public class WebApplicationConfig extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer {
 
-    public static final String entryPoint = "http://localhost:8081/anastasia/login";  //TODO temporary
-    private static final String accessDenied = "/";  //TODO temporary
+    public static final String resource = "http://localhost:8081/anastasia/";
+    public static final String entryPage = "login";
 
     @Autowired
     private MyJwtFilter myJwtFilter;
@@ -99,8 +101,9 @@ public class WebApplicationConfig extends AbstractSecurityWebApplicationInitiali
         http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(formLogin ->
                         formLogin.loginPage("/login")
+                                .usernameParameter("email")
                                 .successForwardUrl("/login/auth")
-                                .usernameParameter("email"))
+                )
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers(PERMIT_ALL.url).permitAll()
@@ -108,11 +111,12 @@ public class WebApplicationConfig extends AbstractSecurityWebApplicationInitiali
                         .requestMatchers(AUTHENTICATED.url).authenticated()
                         .requestMatchers(USER.url).hasAuthority(User.Role.USER.toString())
                         .requestMatchers(ADMIN.url).hasAuthority(User.Role.ADMIN.toString())
-                        .anyRequest().denyAll())
+                        .anyRequest().denyAll()
+                )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint((req, resp, ex) -> resp.sendRedirect(entryPoint))
-                        .accessDeniedPage(accessDenied))
-                .servletApi(servletApiConfig -> servletApiConfig.configure(http));
+                        .accessDeniedPage("/error/" + ErrorCase.ACCESS_DENIED)
+                        .authenticationEntryPoint((req, resp, ex) -> resp.sendRedirect(resource + entryPage))
+                );
 
         return http.authenticationProvider(authenticationProvider).build();
     }

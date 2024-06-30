@@ -4,7 +4,7 @@
 
 package com.stanislav.trade.web.authentication.form;
 
-import com.stanislav.trade.datasource.UserDao;
+import com.stanislav.trade.web.service.UserDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,16 +14,16 @@ import org.springframework.stereotype.Component;
 @Component("userDetailsService")
 public class MyUserDetailsService implements UserDetailsService {
 
-    private final UserDao userDao;
+    private final UserDataService userDataService;
 
     @Autowired
-    public MyUserDetailsService(UserDao userDao) {
-        this.userDao = userDao;
+    public MyUserDetailsService(UserDataService userDataService) {
+        this.userDataService = userDataService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userDao
+        return userDataService
                 .findByLogin(username)
                 .map(MyUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
