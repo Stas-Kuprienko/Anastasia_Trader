@@ -25,11 +25,11 @@ public class AccountDaoHibernate implements AccountDao {
 
 
     @Override
-    public List<Account> findAllByUser(User user) {
+    public List<Account> findAllByUser(Long userId) {
         String param = "user";
-        String jpql = jpQuery.initSelect().fullyFrom().table(Account.class).where(param).build();
+        String jpql = jpQuery.nativeSelectAllWhere1Param(Account.class, param);
         var query = entityManager.createQuery(jpql, Account.class);
-        query.setParameter(param, user);
+        query.setParameter(param, userId);
         return query.getResultList();
     }
 

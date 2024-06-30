@@ -1,4 +1,4 @@
-package com.stanislav.trade.web.controller;
+package com.stanislav.trade.web.controller.service;
 
 import com.stanislav.trade.web.service.ErrorCase;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +47,7 @@ public class ErrorController {
 
             case NOT_FOUND -> new ErrorModel(
                     messageSource.getMessage(errorCase, null, locale),
-                    Images.DEFAULT.file, 404);
+                    Images.NOT_FOUND.file, 404);
 
             case TELEGRAM_ID_LOST -> new ErrorModel(
                     messageSource.getMessage(errorCase, null, locale),
@@ -68,6 +68,7 @@ public class ErrorController {
     public enum Images {
 
         ACCESS_DENIED("access-denied.webp"),
+        NOT_FOUND("not-found.webp"),
         DEFAULT("default-error.webp");
 
         public final String file;

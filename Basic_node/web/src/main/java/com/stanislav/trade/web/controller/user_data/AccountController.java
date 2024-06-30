@@ -1,4 +1,4 @@
-package com.stanislav.trade.web.controller;
+package com.stanislav.trade.web.controller.user_data;
 
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
@@ -18,13 +18,13 @@ import java.util.Set;
 @Slf4j
 @Controller
 @RequestMapping("/user")
-public class UserDataController {
+public class AccountController {
 
     private final UserDataService userDataService;
     private final AccountService accountService;
 
     @Autowired
-    public UserDataController(UserDataService userDataService, AccountService accountService) {
+    public AccountController(UserDataService userDataService, AccountService accountService) {
         this.userDataService = userDataService;
         this.accountService = accountService;
     }
@@ -77,8 +77,9 @@ public class UserDataController {
         }
         Optional<User> user = userDataService.findById(id);
         if (user.isPresent()) {
-            accountService.create(user.get(), clientId, token, broker);
-            Set<Account> accounts = accountService.findByUser(user.get());
+            Account account = accountService.create(user.get(), clientId, token, broker);
+            var accounts = user.get().getAccounts();
+            accounts.add(account);
             model.addAttribute("accounts", accounts);
             return "accounts";
         } else {
@@ -98,10 +99,10 @@ public class UserDataController {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             Set<Account> accounts;
-            if (user.getAccounts() != null) {
-                accounts = accountService.findByUser(user);
+            if (user.getAccounts() == null) {
+                accounts = accountService.findByUser(user.getId());
             } else {
-                accounts = new HashSet<>();
+                accounts = new HashSet<>(user.getAccounts());
             }
             model.addAttribute("accounts", accounts);
             return "accounts";
@@ -109,5 +110,25 @@ public class UserDataController {
             log.error("User not found: " + id);
             return "redirect:/login";
         }
+    }
+
+    @DeleteMapping("/account/{account}")
+    public String deleteAccount(@PathVariable("account") String accountId, HttpSession session, Model model) {
+        Long id = (Long) session.getAttribute("id");
+        if (id == null) {
+            log.error("User ID is lost");
+            return "redirect:/login";
+        }
+        long accId;
+        try {
+            accId = Long.parseLong(accountId);
+        } catch (NumberFormatException | NullPointerException e) {
+            log.info(e.getMessage());
+            return "forward:/error/" + ErrorCase.BAD_REQUEST;
+        }
+        accountService.delete(accId);
+        var accounts = accountService.findByUser(id);
+        model.addAttribute("accounts", accounts);
+        return "accounts";
     }
 }

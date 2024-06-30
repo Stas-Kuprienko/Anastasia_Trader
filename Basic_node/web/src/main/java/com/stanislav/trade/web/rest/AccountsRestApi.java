@@ -27,6 +27,6 @@ public class AccountsRestApi {
     @GetMapping("/accounts")
     public Account[] getAccounts(@RequestParam Long id) {
         User user = userDataService.findById(id).orElseThrow();
-        return accountService.findByUser(user).toArray(new Account[]{});
+        return accountService.findByUser(user.getId()).toArray(new Account[]{});
     }
 }

@@ -86,6 +86,7 @@ public class AuthenticationController {
     public String mainPage(HttpSession session, Model model) {
         Long id = (Long) session.getAttribute("id");
         if (id == null) {
+            log.error("User ID is lost");
             return "redirect:/login";
         }
         User user = userDataService.findById(id).orElseThrow();

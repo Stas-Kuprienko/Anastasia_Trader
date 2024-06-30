@@ -23,7 +23,7 @@ public class AccountServiceRamImpl implements AccountService {
 
     //TODO   TEMPORARY SOLUTION. NEED TO REPLACE BY REDIS   !!!!!!!!!!!
 
-    private final ConcurrentHashMap<Long, Set<Account>> ram;
+    private final ConcurrentHashMap<Long, Account> ram;
     private final AccountDao accountDao;
     private final JwtBuilder jwtBuilder;
     private final JwtParser jwtParser;
@@ -53,23 +53,22 @@ public class AccountServiceRamImpl implements AccountService {
         account.setBalance(BigDecimal.valueOf(0));
 //        tradingService.getPortfolio(clientId);
         account = accountDao.save(account);
-        account.setToken(token);
-        if (ram.get(user.getId()) == null) {
-            ram.put(user.getId(), Set.of(account));
-        } else {
-            ram.get(user.getId()).add(account);
-        }
+        ram.putIfAbsent(account.getId(), account);
         return account;
     }
 
     @Override
-    public Set<Account> findByUser(User user) {
-        var accounts = ram.get(user.getId());
-        if (accounts == null || accounts.isEmpty()) {
-            accounts = new HashSet<>(accountDao.findAllByUser(user));
-            ram.put(user.getId(), accounts);
+    public Set<Account> findByUser(Long userId) {
+        return new HashSet<>(accountDao.findAllByUser(userId));
+    }
+
+    public Optional<Account> findById(Long id) {
+        Optional<Account> account = Optional.ofNullable(ram.get(id));
+        if (account.isEmpty()) {
+            account = accountDao.findById(id);
+            account.ifPresent(a -> ram.put(a.getId(), a));
         }
-        return accounts;
+        return account;
     }
 
     @Override
@@ -87,5 +86,10 @@ public class AccountServiceRamImpl implements AccountService {
                 .parseSignedClaims(account.getToken())
                 .getPayload()
                 .get("token");
+    }
+
+    @Override
+    public void delete(Long id) {
+
     }
 }

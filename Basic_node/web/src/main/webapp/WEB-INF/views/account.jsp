@@ -596,47 +596,125 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
         <div class="t508">
             <div class="t-section__container t-container t-container_flex">
                 <div class="t-col t-col_10 t-prefix_1">
-                    <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">Ваши
-                        торговые счета
+                    <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">
+                        ${account.broker}
                     </div>
                 </div>
             </div>
             <style>.t-section__descr {max-width: 560px;}#rec766761820 .t-section__title {margin-bottom: 90px;}#rec766761820 .t-section__descr {}@media screen and (max-width: 960px) {#rec766761820 .t-section__title {margin-bottom: 45px;}}</style>
-            <ul role="list" class="t508__container t-container">
-                <c:forEach items="${accounts}" var = "account">
-                    <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
-                        <a href="/anastasia/user/account/${account.id}">
-                            <div class="t-cell t-valign_top">
-                                <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1476889049104"
-                                     data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
-                                     style=" background-image: url(&#39;https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png&#39;);"
-                                     itemscope="" itemtype="http://schema.org/ImageObject">
-                                    <meta itemprop="image"
-                                          content="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png">
+            <div class="t508__container t-container">
+                <div class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
+                    <div class="t-cell t-valign_top">
+                        <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1476889049104"
+                             data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
+                             style=" background-image: url(&#39;https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png&#39;);"
+                             itemscope="" itemtype="http://schema.org/ImageObject">
+                            <meta itemprop="image"
+                                  content="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png">
+                        </div>
+                    </div>
+                    <div class="t508__textwrapper t-cell t-valign_top" style="">
+                        <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
+                            ${account.clientId}
+                        </div>
+                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                            ${account.balance}
+                        </div>
+                    </div>
+                </div><br>
+                <c:if test="${param.updateToken != null}">
+                    <div class="t-col t-col_8 t-prefix_2" style="float:right;">
+                        <form id="form766231016" name="form766231016" role="form"
+                              action="/anastasia/user/account/${account.id}" method="POST"
+                              data-formactiontype="0" data-inputbox=".t-input-group"
+                              data-success-callback="t678_onSuccess">
+                            <input type="hidden" name="_method" value="PUT">
+                            <div class="t-form__inputsbox t-form__inputsbox_vertical-form t-form__inputsbox_inrow">
+                                <div class="t-input-group t-input-group_in " data-input-lid="5527479220182"
+                                     data-field-type="in"><label for="input_5527479220182"
+                                                                 class="t-input-title t-descr t-descr_md"
+                                                                 id="field-title_5527479220182"
+                                                                 data-redactor-toolbar="no"
+                                                                 field="li_title__5527479220182"
+                                                                 style="color:;">Токен</label>
+                                    <div class="t-input-block "><input type="password" name="token"
+                                                                       id="input_5527479220182"
+                                                                       class="t-input js-tilda-rule "
+                                                                       value=""
+                                                                       data-tilda-req="1"
+                                                                       aria-required="true"
+                                                                       aria-describedby="error_5527479220182"
+                                                                       style="border:1px solid #000;font-weight:600;width:50%;height:32px">
+                                        <div class="t-input-error" aria-live="polite"
+                                             id="error_5527479220182"></div>
+                                    </div>
+                                </div>
+                                <div class="t-form__errorbox-middle"><!--noindex-->
+                                    <div class="js-errorbox-all t-form__errorbox-wrapper"
+                                         style="display:none;"
+                                         data-nosnippet="" tabindex="-1"
+                                         aria-label="Ошибки при заполнении формы">
+                                        <ul role="list" class="t-form__errorbox-text t-text t-text_md">
+                                            <li class="t-form__errorbox-item js-rule-error js-rule-error-all"></li>
+                                            <li class="t-form__errorbox-item js-rule-error js-rule-error-req"></li>
+                                            <li class="t-form__errorbox-item js-rule-error js-rule-error-minlength"></li>
+                                            <li class="t-form__errorbox-item js-rule-error js-rule-error-string"></li>
+                                        </ul>
+                                    </div><!--/noindex--> </div>
+                                <div class="t-form__submit">
+                                    <button type="submit" class="t-btn t-btn_md"
+                                            style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                                            data-field="buttontitle" data-buttonfieldset="button">
+                                        Обновить токен
+                                    </button>
                                 </div>
                             </div>
-                            <div class="t508__textwrapper t-cell t-valign_top" style="">
-                                <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">${account.broker}</div>
-                                <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">${account.balance}</div>
-                            </div>
-                        </a>
-                    </li>
-                </c:forEach>
-            </ul>
+                        </form>
+                    </div>
+                </c:if>
+            </div>
             <div class="t-section__container t-container">
                 <div class="t-col t-col_12">
-                    <div class="t-section__bottomwrapper t-clear t-align_center"><a
-                            href="/anastasia/user/new-account" target="" class="t-btn t-btn_md"
-                            style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
-                            data-buttonfieldset="bbutton">
+                    <div class="t-section__bottomwrapper t-clear t-align_center">
+                        <c:if test="${sessionScope.defaultAccount != account.id}">
+                            <a href="/anastasia/user/account/${account.id}/set-default" target="" class="t-btn t-btn_md"
+                               style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                               data-buttonfieldset="bbutton">
+                                <table style="width:100%; height:100%;">
+                                    <tbody>
+                                    <tr>
+                                        <td data-field="bbuttontitle">Выбрать основным</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </a>
+                        </c:if>
+                        <c:if test="${param.updateToken == null}">
+                            <a href="/anastasia/user/account/${account.id}?updateToken=true" target="" class="t-btn t-btn_md"
+                               style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                               data-buttonfieldset="bbutton">
+                                <table style="width:100%; height:100%;">
+                                    <tbody>
+                                    <tr>
+                                        <td data-field="bbuttontitle">Обновить токен</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </a>
+                        </c:if>
+                    <a href="/anastasia/user/account" target="" class="t-btn t-btn_md"
+                       style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                       data-buttonfieldset="bbutton">
+                        <input type="hidden" name="_method" value="DELETE">
                         <table style="width:100%; height:100%;">
                             <tbody>
                             <tr>
-                                <td data-field="bbuttontitle">Добавить счёт</td>
+                                <td data-field="bbuttontitle">Удалить счёт</td>
                             </tr>
                             </tbody>
                         </table>
-                    </a></div>
+                    </a>
+                    </div>
                 </div>
             </div>
             <style>#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) {position: relative;overflow: hidden;z-index: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) * {-webkit-backface-visibility: hidden;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover)::after {content: '';position: absolute;top: 0;left: 0;right: 0;bottom: 0;z-index: -1;width: 100%;height: 100%;opacity: 0;transition: opacity 0.2s ease-in-out;background-image: linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%);}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover::after {opacity: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible::after {opacity: 1;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: 0.2s;animation-timing-function: linear;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: s;animation-timing-function: linear;}}@keyframes rec_766761820_btnanim {to {background-image: none;background-color: transparent;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}}</style>
