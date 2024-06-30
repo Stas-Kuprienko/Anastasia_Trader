@@ -37,7 +37,7 @@ public class AccountDaoHibernate implements AccountDao {
     public Account save(Account account) {
         entityManager.persist(account);
         entityManager.flush();
-        return entityManager.find(Account.class, account);
+        return account;
     }
 
     @Override

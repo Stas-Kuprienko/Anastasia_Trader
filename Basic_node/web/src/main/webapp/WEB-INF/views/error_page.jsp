@@ -99,7 +99,7 @@
         <div id="nav767254499marker"></div>
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
-                <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/user/${sessionScope.id}">
+                <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/user">
                         <img src="/anastasia/style/img-back-1.png">
                     <div class="tmenu-mobile__burgerlogo__title t-title" field="title">&lt;&lt;</div>
                 </a></div>
@@ -485,7 +485,7 @@
                 <div class="t456__leftwrapper" style="min-width:70px;width:70px;">
                     <div class="t456__logowrapper">
                         <c:if test="${sessionScope.id != null}">
-                            <a href="/anastasia/user/${sessionScope.id}">
+                            <a href="/anastasia/user">
                                 <img src="/anastasia/style/img-back-1.png">
                             </a>
                         </c:if>

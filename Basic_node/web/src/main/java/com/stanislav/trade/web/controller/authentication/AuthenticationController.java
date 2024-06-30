@@ -1,9 +1,11 @@
 package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.service.ErrorCase;
 import com.stanislav.trade.web.service.UserDataService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,9 +22,10 @@ import java.util.Optional;
 @Controller
 public class AuthenticationController {
 
+    public static final String LOGIN_ATTRIBUTE = "login";
+    public static final String SIGN_UP_ATTRIBUTE = "signUp";
     private final static String LOGIN_MAPPING = "/anastasia/login";
     private static final String SIGN_UP_MAPPING = "/anastasia/sign-up";
-    private static final String LOGIN_ERROR = "login_error";
 
     private final UserDataService userDataService;
 
@@ -42,8 +45,8 @@ public class AuthenticationController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request) {
-        request.setAttribute(Args.login.toString(), LOGIN_MAPPING);
-        request.setAttribute(Args.signUp.toString(), SIGN_UP_MAPPING);
+        request.setAttribute(LOGIN_ATTRIBUTE, LOGIN_MAPPING);
+        request.setAttribute(SIGN_UP_ATTRIBUTE, SIGN_UP_MAPPING);
         return "login";
     }
 
@@ -56,10 +59,9 @@ public class AuthenticationController {
         try {
             request.login(login, password);
             request.getSession().setAttribute("id", user.getId());
-            return "redirect:/user/" + user.getId();
+            return "redirect:/user";
         } catch (ServletException e) {
             log.error(e.getMessage());
-            //TODO
             return "redirect:/sign-up";
         }
     }
@@ -70,9 +72,9 @@ public class AuthenticationController {
         if (user.isPresent()) {
             request.getSession().setAttribute("id", user.get().getId());
             if (user.get().getRole().equals(User.Role.USER)) {
-                return "redirect:/user/" + user.get().getId();
+                return "redirect:/user";
             } else if (user.get().getRole().equals(User.Role.ADMIN)) {
-                return "redirect:/admin/" + user.get().getId();
+                return "redirect:/admin";
             } else {
                 log.error("user role is " + user.get().getRole());
             }
@@ -80,10 +82,13 @@ public class AuthenticationController {
         return "redirect:/login?error=true";
     }
 
-    @GetMapping("/user/{id}")
-    public String mainPage(@PathVariable("id") String id, Model model) {
-        Long userId = Long.valueOf(id);
-        User user = userDataService.findById(userId).orElseThrow();
+    @GetMapping("/user")
+    public String mainPage(HttpSession session, Model model) {
+        Long id = (Long) session.getAttribute("id");
+        if (id == null) {
+            return "redirect:/login";
+        }
+        User user = userDataService.findById(id).orElseThrow();
         model.addAttribute("user", user);
         return "main";
     }

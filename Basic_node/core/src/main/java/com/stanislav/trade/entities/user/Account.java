@@ -111,12 +111,14 @@ public final class Account implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Account account)) return false;
-        return Objects.equals(id, account.id);
+        return Objects.equals(clientId, account.clientId) &&
+                Objects.equals(user, account.user) &&
+                Objects.equals(broker, account.broker);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(clientId, user, broker);
     }
 
     @Override

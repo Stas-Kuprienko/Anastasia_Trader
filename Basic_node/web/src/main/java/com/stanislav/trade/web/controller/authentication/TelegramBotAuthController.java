@@ -79,8 +79,8 @@ public class TelegramBotAuthController {
         if (request.getSession().getAttribute(CHAT_ID) == null) {
             return "forward:/error/" + ErrorCase.TELEGRAM_ID_LOST;
         }
-        request.setAttribute(AuthenticationController.Args.login.toString(), LOGIN_TELEGRAM_MAPPING);
-        request.setAttribute(AuthenticationController.Args.signUp.toString(), SIGN_UP_TELEGRAM_MAPPING);
+        request.setAttribute(AuthenticationController.LOGIN_ATTRIBUTE, LOGIN_TELEGRAM_MAPPING);
+        request.setAttribute(AuthenticationController.SIGN_UP_ATTRIBUTE, SIGN_UP_TELEGRAM_MAPPING);
         return "sign-up";
     }
 

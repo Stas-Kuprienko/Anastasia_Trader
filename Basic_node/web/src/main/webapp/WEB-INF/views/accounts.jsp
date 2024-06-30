@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page isELIgnored = "false" %>
 
 <!DOCTYPE html>
@@ -602,41 +603,25 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
             </div>
             <style>.t-section__descr {max-width: 560px;}#rec766761820 .t-section__title {margin-bottom: 90px;}#rec766761820 .t-section__descr {}@media screen and (max-width: 960px) {#rec766761820 .t-section__title {margin-bottom: 45px;}}</style>
             <ul role="list" class="t508__container t-container">
-                <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
-                    <a href="/anastasia/account">
-                        <div class="t-cell t-valign_top">
-                            <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1476889049104"
-                                 data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
-                                 style=" background-image: url(&#39;https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png&#39;);"
-                                 itemscope="" itemtype="http://schema.org/ImageObject">
-                                <meta itemprop="image"
-                                      content="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png">
+                <c:forEach items="${accounts}" var = "account">
+                    <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
+                        <a href="/anastasia/user/account/${account.clientId}">
+                            <div class="t-cell t-valign_top">
+                                <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1476889049104"
+                                     data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
+                                     style=" background-image: url(&#39;https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png&#39;);"
+                                     itemscope="" itemtype="http://schema.org/ImageObject">
+                                    <meta itemprop="image"
+                                          content="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png">
+                                </div>
                             </div>
-                        </div>
-                        <div class="t508__textwrapper t-cell t-valign_top" style="">
-                            <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">Финам</div>
-                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">150 018</div>
-                        </div>
-                    </a>
-                </li>
-                <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
-                    <a href="/anastasia/account">
-                        <div class="t-cell t-valign_top">
-                            <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1719340195719"
-                                 data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
-                                 style=" background-image: url(&#39;https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png&#39;);"
-                                 itemscope="" itemtype="http://schema.org/ImageObject">
-                                <meta itemprop="image"
-                                      content="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png">
+                            <div class="t508__textwrapper t-cell t-valign_top" style="">
+                                <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">${account.broker}</div>
+                                <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">${account.balance}</div>
                             </div>
-                        </div>
-                        <div class="t508__textwrapper t-cell t-valign_top" style="">
-                            <div class="t-name t-name_md t508__bottommargin" field="li_title__1719340195719">Тинькофф
-                            </div>
-                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1719340195719">149 990</div>
-                        </div>
-                    </a>
-                </li>
+                        </a>
+                    </li>
+                </c:forEach>
             </ul>
             <div class="t-section__container t-container">
                 <div class="t-col t-col_12">

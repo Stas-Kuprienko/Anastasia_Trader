@@ -40,12 +40,23 @@ public class ErrorController {
             throw new IllegalArgumentException(e);
         }
         ErrorModel em = switch (ec) {
+
             case ACCESS_DENIED -> new ErrorModel(
                     messageSource.getMessage(errorCase, null, locale),
                     Images.ACCESS_DENIED.file, 403);
+
+            case NOT_FOUND -> new ErrorModel(
+                    messageSource.getMessage(errorCase, null, locale),
+                    Images.DEFAULT.file, 404);
+
             case TELEGRAM_ID_LOST -> new ErrorModel(
                     messageSource.getMessage(errorCase, null, locale),
                     Images.DEFAULT.file, 400);
+
+            case BAD_REQUEST -> new ErrorModel(
+                    messageSource.getMessage(errorCase, null, locale),
+                    Images.ACCESS_DENIED.file, 400);
+
             default -> new ErrorModel("", Images.DEFAULT.file, 500);
         };
         request.setAttribute("error", em);
