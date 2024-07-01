@@ -59,7 +59,8 @@ public class ErrorController {
                     messageSource.getMessage(errorCase, null, locale),
                     Images.ACCESS_DENIED.file, 400);
 
-            default -> new ErrorModel("", Images.DEFAULT.file, 500);
+            default -> new ErrorModel(messageSource.getMessage("500", null, locale),
+                    Images.SERVER_ERROR.file, 500);
         };
         request.setAttribute(ERROR, em);
         response.setStatus(em.code);
@@ -81,6 +82,7 @@ public class ErrorController {
 
         ACCESS_DENIED("access-denied.webp"),
         NOT_FOUND("not-found.webp"),
+        SERVER_ERROR("server_error.webp"),
         DEFAULT("default-error.webp");
 
         public final String file;

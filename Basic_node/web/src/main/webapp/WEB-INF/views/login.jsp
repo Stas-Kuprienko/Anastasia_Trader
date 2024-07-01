@@ -24,8 +24,7 @@
     <link rel="dns-prefetch" href="https://ws.tildacdn.com/">
     <link rel="dns-prefetch" href="https://static.tildacdn.info/">
     <meta name="robots" content="nofollow">
-    <link rel="icon" href="favicon1.svg" sizes="any" type="image/svg+xml">
-    <!-- Assets -->
+    <link rel="icon" href="/anastasia/style/favicon_file.webp" sizes="any" type="image/svg+xml">
     <script type="text/javascript" async="" id="tildastatscript" src="${pageContext.request.contextPath}/style/tilda-stat-1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/style/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/tilda-grid-3.0.min.css" type="text/css" media="all"
