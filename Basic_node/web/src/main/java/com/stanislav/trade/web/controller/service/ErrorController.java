@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import java.util.Locale;
 @Controller
 public class ErrorController {
 
+    private static final String ERROR = "error";
     private final MessageSource messageSource;
 
     @Autowired
@@ -59,9 +61,19 @@ public class ErrorController {
 
             default -> new ErrorModel("", Images.DEFAULT.file, 500);
         };
-        request.setAttribute("error", em);
+        request.setAttribute(ERROR, em);
         response.setStatus(em.code);
         return "error_page";
+    }
+
+    @GetMapping("/error/404")
+    public String error404(Model model) {
+        ErrorModel errorModel = new ErrorModel(
+                messageSource.getMessage(ErrorCase.NOT_FOUND.toString(),
+                        null,
+                        Locale.of("RU")), Images.NOT_FOUND.file, 404);
+        model.addAttribute(ERROR, errorModel);
+        return "error404";
     }
 
 

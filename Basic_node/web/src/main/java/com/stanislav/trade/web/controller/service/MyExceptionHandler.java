@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
 import java.util.Locale;
 
 @Slf4j
@@ -30,12 +29,8 @@ public class MyExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ModelAndView handle(HttpServletRequest request, Exception e) {
+    public ModelAndView handle(HttpServletRequest request, NoHandlerFoundException e) {
         log.info(e.getMessage());
-        request.setAttribute("error", new ErrorController.ErrorModel(
-                messageSource.getMessage(ErrorCase.NOT_FOUND.toString(), null, Locale.of("RU")),
-                "not-found.webp",
-                404));
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error_page");
         modelAndView.addObject("error", new ErrorController.ErrorModel(
