@@ -622,7 +622,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                                    imgfield="li_img__1716410714439" alt="">
                     <div class="t490__wrappercenter">
                         <div class="t-card__title t-heading t-heading_md" field="li_title__1716410714439"><a
-                                href="/anastasia/securities" class="t-card__link"
+                                href="/anastasia/market/stocks" class="t-card__link"
                                 id="cardtitle2_752807230">Список бумаг</a></div>
                     </div>
                 </div>
@@ -631,7 +631,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                                    imgfield="li_img__5139100788871" alt="">
                     <div class="t490__wrappercenter">
                         <div class="t-card__title t-heading t-heading_md" field="li_title__5139100788871"><a
-                                href="/anastasia/orders" class="t-card__link"
+                                href="/anastasia/trade/orders" class="t-card__link"
                                 id="cardtitle3_752807230"><span style="color: rgb(255, 255, 255);">Заявки</span></a>
                         </div>
                     </div>

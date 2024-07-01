@@ -12,13 +12,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Arrays;
 import java.util.Locale;
 
 @Slf4j
 @Controller
 public class ErrorController {
 
+    public static final String URL = "forward:/error/";
+
     private static final String ERROR = "error";
+    private static final String ERROR_PAGE = "error_page";
     private final MessageSource messageSource;
 
     @Autowired
@@ -64,7 +69,7 @@ public class ErrorController {
         };
         request.setAttribute(ERROR, em);
         response.setStatus(em.code);
-        return "error_page";
+        return ERROR_PAGE;
     }
 
     @GetMapping("/error/404")
@@ -74,7 +79,17 @@ public class ErrorController {
                         null,
                         Locale.of("RU")), Images.NOT_FOUND.file, 404);
         model.addAttribute(ERROR, errorModel);
-        return "error404";
+        return ERROR_PAGE;
+    }
+
+    @GetMapping("/error/500")
+    public String error500(Model model) {
+        ErrorModel errorModel = new ErrorModel(
+                messageSource.getMessage("500",
+                        null,
+                        Locale.of("RU")), Images.SERVER_ERROR.file, 500);
+        model.addAttribute(ERROR, errorModel);
+        return ERROR_PAGE;
     }
 
 

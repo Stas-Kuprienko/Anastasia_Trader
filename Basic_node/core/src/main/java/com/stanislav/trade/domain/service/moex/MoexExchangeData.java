@@ -1,6 +1,7 @@
 package com.stanislav.trade.domain.service.moex;
 
 import com.stanislav.trade.domain.service.ExchangeData;
+import com.stanislav.trade.domain.service.ExchangeDataStorage;
 import com.stanislav.trade.domain.service.moex.converters.FuturesConverter;
 import com.stanislav.trade.domain.service.moex.converters.MarketData;
 import com.stanislav.trade.domain.service.moex.converters.StocksConverter;
@@ -30,12 +31,15 @@ public class MoexExchangeData implements ExchangeData {
 
     private final ApiDataParser dataParser;
     private final RestConsumer restConsumer;
+    private final ExchangeDataStorage exchangeDataStorage;
 
 
-    public MoexExchangeData(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
-                            @Autowired RestConsumer restConsumer) {
+    @Autowired
+    public MoexExchangeData(@Qualifier("jsonParser") ApiDataParser dataParser,
+                            RestConsumer restConsumer, ExchangeDataStorage exchangeDataStorage) {
         this.dataParser = dataParser;
         this.restConsumer = restConsumer;
+        this.exchangeDataStorage = exchangeDataStorage;
         this.STOCK_URL = stockUrl();
         this.STOCKS_URL = stocksUrl();
         this.FUTURES_URL = futuresUrl();
@@ -45,6 +49,10 @@ public class MoexExchangeData implements ExchangeData {
 
     @Override
     public Optional<Stock> getStock(String ticker) {
+        Optional<Stock> stock = exchangeDataStorage.getStock(ticker);
+        if (stock.isPresent()) {
+            return stock;
+        }
         String uri = String.format(STOCK_URL, ticker);
         List<Object[]> dto = getSecurity(uri);
         if (dto.isEmpty()) {
@@ -56,6 +64,10 @@ public class MoexExchangeData implements ExchangeData {
 
     @Override
     public List<Stock> getStocks() {
+        List<Stock> stocks = exchangeDataStorage.getAllStocks();
+        if (!stocks.isEmpty()) {
+            return stocks;
+        }
         return getStocks(SortByColumn.NONE, null);
     }
 
@@ -66,7 +78,9 @@ public class MoexExchangeData implements ExchangeData {
         if (dto.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return StocksConverter.moexDtoToStocks(dto);
+            var list = StocksConverter.moexDtoToStocks(dto);
+            exchangeDataStorage.addStockList(list);
+            return list;
         }
     }
 

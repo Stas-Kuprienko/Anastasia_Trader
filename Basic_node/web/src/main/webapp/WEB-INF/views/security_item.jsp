@@ -6,14 +6,15 @@
 <html lang="ru">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--metatextblock--><title>Ошибкочка!</title>
-    <meta property="og:url" content="http://localhost8081.tilda.ws/page51253293.html">
-    <meta property="og:title" content="/error">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${secItem.ticker}</title>
+    <meta property="og:url" content="http://localhost8081.tilda.ws/page49542893.html">
+    <meta property="og:title" content="/accounts">
     <meta property="og:description" content="">
     <meta property="og:type" content="website">
     <meta property="og:image"
-          content="https://static.tildacdn.info/tild6130-3633-4234-b538-613934313931/-/resize/504x/trade_app_background.png">
-    <link rel="canonical" href="http://localhost8081.tilda.ws/page51253293.html"><!--/metatextblock-->
+          content="https://static.tildacdn.info/tild3439-6330-4032-a666-343436366666/-/resize/504x/-22111.png">
+    <link rel="canonical" href="http://localhost8081.tilda.ws/page49542893.html"><!--/metatextblock-->
     <meta name="format-detection" content="telephone=no">
     <meta http-equiv="x-dns-prefetch-control" content="on">
     <link rel="dns-prefetch" href="https://ws.tildacdn.com/">
@@ -24,7 +25,9 @@
     <script src="/anastasia/style/tilda-fallback-1.0.min.js" async="" charset="utf-8"></script>
     <link rel="stylesheet" href="/anastasia/style/tilda-grid-3.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
-    <link rel="stylesheet" href="/anastasia/style/tilda-blocks-page51253293.min.css" type="text/css" media="all"
+    <link rel="stylesheet" href="/anastasia/style/tilda-blocks-page49542893.min.css" type="text/css" media="all"
+          onerror="this.loaderr=&#39;y&#39;;">
+    <link rel="stylesheet" href="/anastasia/style/tilda-animation-2.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
     <link rel="stylesheet" href="/anastasia/style/tilda-cover-1.0.min.css" type="text/css" media="all"
           onerror="this.loaderr=&#39;y&#39;;">
@@ -49,9 +52,11 @@
     }</script>
     <script src="/anastasia/style/tilda-scripts-3.0.min.js" charset="utf-8" defer=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
-    <script src="/anastasia/style/tilda-blocks-page51253293.min.js" charset="utf-8" async=""
+    <script src="/anastasia/style/tilda-blocks-page49542893.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
     <script src="/anastasia/style/tilda-lazyload-1.0.min.js" charset="utf-8" async=""
+            onerror="this.loaderr=&#39;y&#39;;"></script>
+    <script src="/anastasia/style/tilda-animation-2.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
     <script src="/anastasia/style/tilda-menu-1.0.min.js" charset="utf-8" async=""
             onerror="this.loaderr=&#39;y&#39;;"></script>
@@ -87,25 +92,24 @@
 </head>
 <body class="t-body" style="margin:0;"><!--allrecords-->
 <div id="allrecords" class="t-records t-records_animated t-records_visible" data-hook="blocks-collection-content-node"
-     data-tilda-project-id="9588603" data-tilda-page-id="51253293"
+     data-tilda-project-id="9588603" data-tilda-page-id="49542893"
      data-tilda-formskey="c760884931208f612fcce878e9588603" data-tilda-cookie="no" data-tilda-lazy="yes"
      data-tilda-root-zone="com">
-    <div id="rec767254499" class="r t-rec t-rec_pb_0 r_showed r_anim"
-         style="padding-bottom:0px;background-image:linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%); "
-         data-record-type="456"
-         data-bg-color="linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%)">
-        <!-- T456 -->
-        <div id="nav767254499marker"></div>
+    <div id="rec759806950" class="r t-rec t-rec_pb_0" style="padding-bottom:0px; " data-animationappear="off"
+         data-record-type="456"><!-- T456 -->
+        <div id="nav759806950marker"></div>
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
-                <div class="tmenu-mobile__burgerlogo"><a href="/anastasia/user">
-                        <img src="/anastasia/style/img-back-1.png">
-                    <div class="tmenu-mobile__burgerlogo__title t-title" field="title">&lt;&lt;</div>
-                </a></div>
-                <button type="button" class="t-menuburger t-menuburger_first t-menuburger__small"
-                        aria-label="Навигационное меню" aria-expanded="false"><span
+                <div class="tmenu-mobile__burgerlogo"><a href="https://t.me/anastasia_tradebot" target="_blank"
+                                                         rel="noopener"><img src="/anastasia/style/-22111.png"
+                                                                             class="tmenu-mobile__imglogo"
+                                                                             imgfield="img"
+                                                                             style="max-width: 80px; width: 80px;"
+                                                                             alt="Телеграм-бот"></a></div>
+                <button type="button" class="t-menuburger t-menuburger_first " aria-label="Навигационное меню"
+                        aria-expanded="false"><span style="background-color:#fff;"></span><span
                         style="background-color:#fff;"></span><span style="background-color:#fff;"></span><span
-                        style="background-color:#fff;"></span><span style="background-color:#fff;"></span></button>
+                        style="background-color:#fff;"></span></button>
                 <script>function t_menuburger_init(recid) {
                     var rec = document.querySelector('#rec' + recid);
                     if (!rec) return;
@@ -155,7 +159,7 @@
                     });
                 }
                 t_onReady(function() {
-                    t_onFuncLoad('t_menuburger_init', function(){t_menuburger_init('767254499');});
+                    t_onFuncLoad('t_menuburger_init', function(){t_menuburger_init('759806950');});
                 });</script>
                 <style>.t-menuburger {
                     position: relative;
@@ -460,137 +464,229 @@
             }
         }
         @media screen and (max-width: 980px) {
-            #rec767254499 .tmenu-mobile {
+            #rec759806950 .tmenu-mobile {
                 background-color: #8f6482;
             }
-            #rec767254499 .tmenu-mobile__menucontent_fixed {
+            #rec759806950 .tmenu-mobile__menucontent_fixed {
                 position: fixed;
                 top: 64px;
             }
-            #rec767254499 .t-menuburger {
+            #rec759806950 .t-menuburger {
                 -webkit-order: 1;
                 -ms-flex-order: 1;
                 order: 1;
             }
         }</style>
-        <style> #rec767254499 .tmenu-mobile__burgerlogo a { font-size: 22px; color: #ffffff; font-weight: 600; }</style>
-        <style> #rec767254499 .tmenu-mobile__burgerlogo__title { font-size: 22px; color: #ffffff; font-weight: 600; }</style>
-        <div id="nav767254499"
-             class="t456 t456__positionfixed tmenu-mobile__menucontent_hidden tmenu-mobile__menucontent_fixed" style=" "
-             data-bgcolor-hex="" data-bgcolor-rgba="" data-navmarker="nav767254499marker" data-appearoffset=""
-             data-bgopacity-two="" data-menushadow="" data-menushadow-css="" data-bgopacity="1"
-             data-menu-items-align="right" data-menu="yes">
+        <style> #rec759806950 .tmenu-mobile__burgerlogo a { color: #ffffff; }</style>
+        <style> #rec759806950 .tmenu-mobile__burgerlogo__title { color: #ffffff; }</style>
+        <div id="nav759806950" class="t456 tmenu-mobile__menucontent_hidden tmenu-mobile__menucontent_fixed"
+             style="background-color: rgba(220,58,170,0.10); " data-bgcolor-hex="#dc3aaa"
+             data-bgcolor-rgba="rgba(220,58,170,0.10)" data-navmarker="nav759806950marker" data-appearoffset=""
+             data-bgopacity-two="30" data-menushadow="" data-menushadow-css="0px 2px 3px rgba(0,11,48,0.25)"
+             data-bgopacity="0.10" data-bgcolor-rgba-afterscroll="rgba(220,58,170,0.30)" data-menu-items-align="right"
+             data-menu="yes">
             <div class="t456__maincontainer " style="">
-                <div class="t456__leftwrapper" style="min-width:70px;width:70px;">
-                    <div class="t456__logowrapper">
-                        <c:if test="${sessionScope.id != null}">
-                            <a href="/anastasia/user">
-                                <img src="/anastasia/style/img-back-1.png">
-                            </a>
-                        </c:if>
-                        <c:if test="${sessionScope.id == null}">
-                            <a href="/anastasia">
-                                <img src="/anastasia/style/img-back-1.png">
-                            </a>
-                        </c:if>
-                    </div>
+                <div class="t456__leftwrapper" style="min-width:80px;width:80px;">
+                    <div class="t456__logowrapper" style="display: block;"><a href="https://t.me/anastasia_tradebot"
+                                                                              target="_blank" rel="noopener"><img
+                            class="t456__imglogo t456__imglogomobile" src="/anastasia/style/-22111.png" imgfield="img"
+                            style="max-width: 80px; width: 80px;" alt="Телеграм-бот"></a></div>
                 </div>
+                <nav class="t456__rightwrapper t456__menualign_right" style="">
+                    <ul role="list" class="t456__list t-menu__list">
+                        <li class="t456__list_item" style="padding:0 15px 0 0;"><a class="t-menu__link-item"
+                                                                                   href="/anastasia/"
+                                                                                   data-menu-submenu-hook=""
+                                                                                   data-menu-item-number="1">Торговля</a>
+                        </li>
+                        <li class="t456__list_item" style="padding:0 15px;"><a class="t-menu__link-item"
+                                                                               href="/anastasia/"
+                                                                               data-menu-submenu-hook=""
+                                                                               data-menu-item-number="2">Информация</a>
+                        </li>
+                        <li class="t456__list_item" style="padding:0 15px;"><a class="t-menu__link-item"
+                                                                               href="/anastasia/"
+                                                                               data-menu-submenu-hook=""
+                                                                               data-menu-item-number="3">Личный
+                            кабинет</a></li>
+                        <li class="t456__list_item" style="padding:0 0 0 15px;"><a class="t-menu__link-item"
+                                                                                   href="/anastasia/logout"
+                                                                                   data-menu-submenu-hook=""
+                                                                                   data-menu-item-number="4">Выход</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-    </div>
-    <style>@media screen and (max-width: 980px) {
-        #rec767254499 .t456__logowrapper{
-            display: none!important;
+        </div>
+        <style>@media screen and (max-width: 980px) {
+            #rec759806950 .t456__logowrapper{
+                display: none!important;
+            }
+            #rec759806950 .t456__mobile-text{
+                display: none;
+            }
+            #rec759806950 .t456__imglogo{
+                padding: 0;
+            }
+        }</style>
+        <style>@media screen and (max-width: 980px) {
+            #rec759806950 .t456__leftcontainer{
+                padding: 20px;
+            }
         }
-        #rec767254499 .t456__mobile-text{
-            display: none;
-        }
-        #rec767254499 .t456__imglogo{
-            padding: 0;
-        }
-    }</style>
-    <style>@media screen and (max-width: 980px) {
-        #rec767254499 .t456__leftcontainer{
-            padding: 20px;
-        }
-    }
-    @media screen and (max-width: 980px) {
-        #rec767254499 .t456__imglogo{
-            padding: 20px 0;
-        }
-    }</style>
-    <script type="text/javascript">t_onReady(function() {
-        t_onFuncLoad('t_menu__highlightActiveLinks', function () {
-            t_menu__highlightActiveLinks('.t456__list_item a');
-        });
-        t_onFuncLoad('t_menu__findAnchorLinks', function () {
-            t_menu__findAnchorLinks('767254499', '.t456__list_item a');
-        });
-    });
-    t_onReady(function () {
-        t_onFuncLoad('t_menu__setBGcolor', function () {
-            t_menu__setBGcolor('767254499', '.t456');
-            window.addEventListener('resize', function () {
-                t_menu__setBGcolor('767254499', '.t456');
+        @media screen and (max-width: 980px) {
+            #rec759806950 .t456__imglogo{
+                padding: 20px 0;
+            }
+        }</style>
+        <script type="text/javascript">t_onReady(function() {
+            t_onFuncLoad('t_menu__highlightActiveLinks', function () {
+                t_menu__highlightActiveLinks('.t456__list_item a');
+            });
+            t_onFuncLoad('t_menu__findAnchorLinks', function () {
+                t_menu__findAnchorLinks('759806950', '.t456__list_item a');
             });
         });
-        t_onFuncLoad('t_menu__interactFromKeyboard', function () {
-            t_menu__interactFromKeyboard('767254499');
-        });
-    });</script>
-    <script type="text/javascript">t_onReady(function () {
-        t_onFuncLoad('t_menu__createMobileMenu', function () {
-            t_menu__createMobileMenu('767254499', '.t456');
-        });
-    });</script>
-    <style>#rec767254499 .t-menu__link-item{
-        -webkit-transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out;
-        transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    }
-    #rec767254499 .t-menu__link-item:not(.t-active):not(.tooltipstered):hover {
-        color: #ddcee4 !important; }
-    #rec767254499 .t-menu__link-item:not(.t-active):not(.tooltipstered):focus-visible{
-        color: #ddcee4 !important; }
-    @supports (overflow:-webkit-marquee) and (justify-content:inherit)
-    {
-        #rec767254499 .t-menu__link-item,
-        #rec767254499 .t-menu__link-item.t-active {
-            opacity: 1 !important;
+        t_onReady(function () {
+            t_onFuncLoad('t_menu__setBGcolor', function () {
+                t_menu__setBGcolor('759806950', '.t456');
+                window.addEventListener('resize', function () {
+                    t_menu__setBGcolor('759806950', '.t456');
+                });
+            });
+            t_onFuncLoad('t_menu__interactFromKeyboard', function () {
+                t_menu__interactFromKeyboard('759806950');
+            });
+        });</script>
+        <script type="text/javascript">t_onReady(function () {
+            t_onFuncLoad('t_menu__createMobileMenu', function () {
+                t_menu__createMobileMenu('759806950', '.t456');
+            });
+        });</script>
+        <style>#rec759806950 .t-menu__link-item{
+            -webkit-transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
-    }</style>
-    <style> #rec767254499 .t456__logowrapper a { font-size: 22px; color: #ffffff; font-weight: 600; } #rec767254499 a.t-menu__link-item { font-size: 20px; color: #ffffff; font-weight: 600; text-transform: uppercase; }</style>
-    <style> #rec767254499 .t456__logo { font-size: 22px; color: #ffffff; font-weight: 600; }</style>
-</div>
-<div id="rec767253305" class="r t-rec r_showed r_anim" style=" " data-record-type="18"><!-- cover -->
-    <div class="t-cover" id="recorddiv767253305" bgimgfield="img"
-         style="background-image: url(&quot;https://static.tildacdn.info/tild6130-3633-4234-b538-613934313931/-/resize/20x/trade_app_background.png&quot;); height: 859px;">
-        <div class="t-cover__carrier loaded" id="coverCarry767253305" data-content-cover-id="767253305"
-             data-content-cover-bg="https://static.tildacdn.info/tild6130-3633-4234-b538-613934313931/trade_app_background.png"
-             data-display-changed="true" data-content-cover-height="100vh" data-content-cover-parallax="fixed"
-             style="height: 859px; background-image: url(&quot;https://optim.tildacdn.pub/tild6130-3633-4234-b538-613934313931/-/format/webp/trade_app_background.png&quot;);"
-             itemscope="" itemtype="http://schema.org/ImageObject" data-content-cover-updated-height="859px">
-            <meta itemprop="image"
-                  content="https://static.tildacdn.info/tild6130-3633-4234-b538-613934313931/trade_app_background.png">
+        #rec759806950 .t-menu__link-item.t-active:not(.t978__menu-link){
+            color:#7e058c !important; }
+        #rec759806950 .t-menu__link-item:not(.t-active):not(.tooltipstered):hover {
+            color: #6135d2 !important; }
+        #rec759806950 .t-menu__link-item:not(.t-active):not(.tooltipstered):focus-visible{
+            color: #6135d2 !important; }
+        @supports (overflow:-webkit-marquee) and (justify-content:inherit)
+        {
+            #rec759806950 .t-menu__link-item,
+            #rec759806950 .t-menu__link-item.t-active {
+                opacity: 1 !important;
+            }
+        }</style>
+        <style> #rec759806950 .t456__logowrapper a { color: #ffffff; } #rec759806950 a.t-menu__link-item { font-size: 28px; color: #ffffff; font-weight: 600; }</style>
+        <style> #rec759806950 .t456__logo { color: #ffffff; }</style>
+        <!--[if IE 8]>
+        <style>#rec759806950 .t456 {
+filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', endColorstr='#D9dc3aaa');
+}
+        </style><![endif]-->
+        <style>#rec759806950 .t456 {box-shadow: 0px 2px 3px rgba(0,11,48,0.25);}</style>
+    </div>
+    <div id="rec766761820" class="r t-rec t-rec_pt_165 t-rec_pb_120 r_showed r_anim"
+         style="padding-top:165px;padding-bottom:120px;background-image:linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%); "
+         data-record-type="508"
+         data-bg-color="linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%)">
+        <!-- t508 -->
+        <div class="t508">
+            <div class="t-section__container t-container t-container_flex">
+                <div class="t-col t-col_10 t-prefix_1">
+                    <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">
+                        ${secItem.name}
+                    </div>
+                </div>
+            </div>
+            <style>.t-section__descr {max-width: 560px;}#rec766761820 .t-section__title {margin-bottom: 90px;}#rec766761820 .t-section__descr {}@media screen and (max-width: 960px) {#rec766761820 .t-section__title {margin-bottom: 45px;}}</style>
+            <div class="t508__container t-container">
+                <div class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
+                    <div class="t-cell t-valign_top">
+                    </div>
+                    <div class="t508__textwrapper t-cell t-valign_top" style="">
+                        <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
+                            ${secItem.price.price}
+                        </div>
+                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                            ${secItem.ticker}
+                        </div><br>
+                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                            ${secItem.currency}
+                        </div><br>
+                        <c:if test="${type == futures}">
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                ${secItem.minStep}
+                            </div><br>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                ${secItem.stepPrice}
+                            </div><br>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                ${secItem.asset}
+                            </div><br>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                ${secItem.expiration}
+                            </div><br>
+                        </c:if>
+                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                            ${secItem.market}
+                        </div><br>
+                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                            ${secItem.board}
+                        </div>
+                    </div>
+                </div><br>
+            </div>
+            <div class="t-section__container t-container">
+                <div class="t-col t-col_12">
+                    <div class="t-section__bottomwrapper t-clear t-align_center">
+                    <a href="/anastasia/trade/order/${secItem.ticker}" target="" class="t-btn t-btn_md"
+                       style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                       data-buttonfieldset="bbutton">
+                        <table style="width:100%; height:100%;">
+                            <tbody>
+                            <tr>
+                                <td data-field="bbuttontitle">Сделка</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </a>
+                    </div>
+                </div>
+            </div>
+            <style>#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) {position: relative;overflow: hidden;z-index: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) * {-webkit-backface-visibility: hidden;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover)::after {content: '';position: absolute;top: 0;left: 0;right: 0;bottom: 0;z-index: -1;width: 100%;height: 100%;opacity: 0;transition: opacity 0.2s ease-in-out;background-image: linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%);}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover::after {opacity: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible::after {opacity: 1;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: 0.2s;animation-timing-function: linear;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: s;animation-timing-function: linear;}}@keyframes rec_766761820_btnanim {to {background-image: none;background-color: transparent;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}}</style>
         </div>
-        <div class="t-cover__filter"
-             style="height: 859px; background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));"></div>
-        <div class="t-container">
-            <div class="t-col t-col_12 ">
-                <div class="t-cover__wrapper t-valign_middle" style="height: 859px;">
-                    <div class="t001 t-align_center">
-                        <div class="t001__wrapper" data-hook-content="covercontent">
-                            <img src="/anastasia/style/not-found.webp" height="128px" width="128">
-                            <div class="t001__uptitle t-uptitle t-uptitle_sm" field="subtitle" >Ой... Что-то пошло не так.</div>
-                            <div class="t001__descr t-descr t-descr_xl t001__descr_center" field="descr">
-                            К сожалению, по данному запросу ничего не найдено.
+        <style> #rec766761820 .t-name { font-weight: 600; }</style>
+    </div>
+    <div id="rec759807303" class="r t-rec" style=" " data-animationappear="off" data-record-type="18"><!-- cover -->
+        <div class="t-cover" id="recorddiv759807303" bgimgfield="img"
+             style="background-image: url(&quot;https://static.tildacdn.info/tild3861-6236-4038-b964-313232653439/-/resize/20x/trade_app_background.png&quot;); height: 429.5px;">
+            <div class="t-cover__carrier loaded" id="coverCarry759807303" data-content-cover-id="759807303"
+                 data-content-cover-bg="https://static.tildacdn.info/tild3861-6236-4038-b964-313232653439/trade_app_background.png"
+                 data-display-changed="true" data-content-cover-height="50vh" data-content-cover-parallax="fixed"
+                 style="height: 429.5px; background-image: url(&quot;https://optim.tildacdn.pub/tild3861-6236-4038-b964-313232653439/-/format/webp/trade_app_background.png&quot;);"
+                 itemscope="" itemtype="http://schema.org/ImageObject" data-content-cover-updated-height="429.5px">
+                <meta itemprop="image"
+                      content="https://static.tildacdn.info/tild3861-6236-4038-b964-313232653439/trade_app_background.png">
+            </div>
+            <div class="t-cover__filter"
+                 style="height: 429.5px; background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));"></div>
+            <div class="t-container">
+                <div class="t-col t-col_12 ">
+                    <div class="t-cover__wrapper t-valign_middle" style="height: 429.5px;">
+                        <div class="t001 t-align_center">
+                            <div class="t001__wrapper" data-hook-content="covercontent"><span class="space"></span>
                             </div>
-                            <span class="space"></span></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <style> #rec759807303 .t001__uptitle { text-transform: uppercase; }</style>
     </div>
-    <style> #rec767253305 .t001__uptitle { text-transform: uppercase; }</style>
-</div>
 </div>
 <script type="text/javascript">if (! window.mainTracker) { window.mainTracker = 'tilda'; }
 window.tildastatcookie='no';
