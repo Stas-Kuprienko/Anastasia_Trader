@@ -18,6 +18,4 @@ public interface ApiDataParser {
     <T> List<T> parseObjectsList(String source, Class<T> clas, String... layers);
 
     Map<String, Object> getJsonMap(String source, String... layers);
-
-    String toJson(Object o);
 }

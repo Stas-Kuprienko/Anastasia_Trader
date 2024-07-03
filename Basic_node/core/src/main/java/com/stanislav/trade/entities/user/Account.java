@@ -23,7 +23,7 @@ public final class Account implements Serializable {
     @Column(nullable = false)
     private String clientId;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
     @JsonIgnore
     private User user;

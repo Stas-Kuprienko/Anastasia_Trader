@@ -5,22 +5,19 @@
 package com.stanislav.trade.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RestConsumer {
 
-    // TODO troubles with scope!
-
     private final RestTemplate restTemplate;
-    private final ApiDataParser dataParser;
 
     private Authorization authorization;
 
@@ -28,10 +25,10 @@ public class RestConsumer {
 
     private String token;
 
-    public RestConsumer(@Autowired RestTemplate restTemplate,
-                        @Autowired @Qualifier("jsonParser") ApiDataParser dataParser) {
+
+    @Autowired
+    public RestConsumer(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.dataParser = dataParser;
         this.resource = "";
     }
 
@@ -64,16 +61,19 @@ public class RestConsumer {
         return response.getBody();
     }
 
-    public String doPostJson(String uri, Object object, String token) {
-        String json = dataParser.toJson(object);
+    public String doPostJson(String uri, String json, String token) throws RestClientException {
         HttpHeaders headers = new HttpHeaders();
-        if (authorization != null) {
+        if (authorization != null && token != null) {
             headers.add(authorization.value, token);
         }
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         uri = resource + uri;
         return restTemplate.postForObject(uri, request, String.class);
+    }
+
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
     }
 
     public Authorization getAuthorization() {
@@ -99,6 +99,7 @@ public class RestConsumer {
     public void setToken(String token) {
         this.token = token;
     }
+
 
     public enum Authorization {
 

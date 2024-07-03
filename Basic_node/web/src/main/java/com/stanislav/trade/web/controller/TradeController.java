@@ -51,7 +51,7 @@ public final class TradeController {
     }
 
 
-    @GetMapping(value = "/orders")
+    @GetMapping("/orders")
     public String getOrders(@AuthenticationPrincipal UserDetails userDetails,
                             @RequestParam String clientId,
                             @RequestParam boolean includeMatched,
@@ -71,13 +71,26 @@ public final class TradeController {
                     .orElseThrow();
             TradingService tradingService;
             tradingService = tradingServiceMap.get(account.getBroker());
-            var orders = tradingService.getOrders(account, includeMatched, includeCanceled, includeActive);
+            var orders = tradingService.getOrders(
+                    account.getClientId(),
+                    accountService.decodeToken(account),
+                    includeMatched,
+                    includeCanceled,
+                    includeActive);
             model.addAttribute("orders", orders);
             return "orders";
         } catch (IllegalArgumentException | NullPointerException | NoSuchElementException e) {
             log.error(e.getMessage());
             return ErrorController.URL + ErrorCase.BAD_REQUEST;
         }
+    }
+
+    @GetMapping("/order")
+    public String getOrder(@AuthenticationPrincipal UserDetails userDetails,
+                           @RequestParam String clientId,
+                           @RequestParam int orderId) {
+
+        return "order";
     }
 
     @PostMapping("/order")

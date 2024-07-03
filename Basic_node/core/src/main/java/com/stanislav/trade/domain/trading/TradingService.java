@@ -16,17 +16,17 @@ public interface TradingService {
 
     Broker getBroker();
 
-    Portfolio getPortfolio(String clientId);
+    Portfolio getPortfolio(String clientId, String token);
 
-    List<Order> getOrders(Account account, boolean matched, boolean canceled, boolean active);
+    List<Order> getOrders(String clientId, String token, boolean matched, boolean canceled, boolean active);
 
     void makeOrder(Order order, TradeCriteria tradeCriteria);
 
-    void cancelOrder(Account account, int orderId);
+    void cancelOrder(String clientId, String token, int orderId);
 
-    List<Stop> getStops(Account account, boolean matched, boolean canceled, boolean active);
+    List<Stop> getStops(String clientId, String token, boolean matched, boolean canceled, boolean active);
 
     void makeStop(Stop stop);
 
-    void cancelStop(Account account, int stopId);
+    void cancelStop(String clientId, String token, int stopId);
 }

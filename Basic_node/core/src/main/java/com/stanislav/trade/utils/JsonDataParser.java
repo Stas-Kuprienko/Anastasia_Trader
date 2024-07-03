@@ -9,12 +9,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component("jsonParser")
 public class JsonDataParser implements ApiDataParser {
 
@@ -32,9 +34,8 @@ public class JsonDataParser implements ApiDataParser {
             String json = extract(source);
             return objectMapper.readValue(json, clas);
         } catch (JsonProcessingException e) {
-            //TODO
-            e.printStackTrace();
-            return null;
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -44,9 +45,8 @@ public class JsonDataParser implements ApiDataParser {
             String json = extract(source, layers);
             return objectMapper.readValue(json, clas);
         } catch (JsonProcessingException e) {
-            //TODO
-            e.printStackTrace();
-            return null;
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -91,17 +91,6 @@ public class JsonDataParser implements ApiDataParser {
         }
     }
 
-    @Override
-    public String toJson(Object o) {
-        try {
-            return objectMapper.writer().writeValueAsString(o);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            //TODO
-            return null;
-        }
-    }
-
     private String extract(String source) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(source);
         return jsonNode.toString();
@@ -113,5 +102,9 @@ public class JsonDataParser implements ApiDataParser {
             jsonNode = jsonNode.get(s);
         }
         return jsonNode.toString();
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 }

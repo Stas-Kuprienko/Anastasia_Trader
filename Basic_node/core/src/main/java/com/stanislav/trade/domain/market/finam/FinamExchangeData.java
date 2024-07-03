@@ -5,7 +5,7 @@
 package com.stanislav.trade.domain.market.finam;
 
 import com.stanislav.trade.domain.market.ExchangeData;
-import com.stanislav.trade.domain.market.securities_dto.FinamSecuritiesResponse;
+import com.stanislav.trade.domain.market.finam.dto.FinamSecuritiesResponseDto;
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
@@ -52,7 +52,7 @@ public class FinamExchangeData implements ExchangeData {
         try {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
             String[] layers = {"data", "securities"};
-            List<FinamSecuritiesResponse> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponse.class, layers);
+            List<FinamSecuritiesResponseDto> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponseDto.class, layers);
             if (dtoList.isEmpty()) {
                 return Optional.empty();
             } else {
@@ -72,11 +72,11 @@ public class FinamExchangeData implements ExchangeData {
         try {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
             String[] layers = {"data", "securities"};
-            List<FinamSecuritiesResponse> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponse.class, layers);
+            List<FinamSecuritiesResponseDto> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponseDto.class, layers);
             if (dtoList.isEmpty()) {
                 return Collections.emptyList();
             } else {
-                return dtoList.stream().map(FinamSecuritiesResponse::toStockClass).toList();
+                return dtoList.stream().map(FinamSecuritiesResponseDto::toStockClass).toList();
             }
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();

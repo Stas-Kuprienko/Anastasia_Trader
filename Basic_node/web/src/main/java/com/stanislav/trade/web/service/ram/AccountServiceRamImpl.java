@@ -10,9 +10,9 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -50,26 +50,31 @@ public class AccountServiceRamImpl implements AccountService {
         account.setClientId(clientId);
         account.setToken(jwtBuilder.claim("token", token).compact());
         account.setBroker(Broker.valueOf(broker));
-        //TODO get balance
-        account.setBalance(BigDecimal.valueOf(0));
-//        tradingService.getPortfolio(clientId);
+        var balance = tradingService.getPortfolio(clientId, decodeToken(account)).getBalance();
+        account.setBalance(balance);
         account = accountDao.save(account);
         ram.putIfAbsent(account.getId(), account);
         return account;
     }
 
     @Override
-    public Set<Account> findByUser(Long userId) {
-        return new HashSet<>(accountDao.findAllByUser(userId));
-    }
-
-    public Optional<Account> findById(Long id) {
+    public Optional<Account> findById(Long id, String login) throws AccessDeniedException {
         Optional<Account> account = Optional.ofNullable(ram.get(id));
         if (account.isEmpty()) {
             account = accountDao.findById(id);
             account.ifPresent(a -> ram.put(a.getId(), a));
         }
+        if (account.isPresent() && !account.get().getUser().getLogin().equals(login)) {
+            throw new AccessDeniedException(
+                    "the user '%s' tried to access someone else's account ''%d"
+                            .formatted(login, account.get().getId()));
+        }
         return account;
+    }
+
+    @Override
+    public Set<Account> findByUser(Long userId) {
+        return new HashSet<>(accountDao.findAllByUser(userId));
     }
 
     @Override

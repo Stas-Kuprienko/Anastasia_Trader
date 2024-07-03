@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.domain.market.securities_dto;
+package com.stanislav.trade.domain.market.finam.dto;
 
 import com.stanislav.trade.entities.Currency;
 import com.stanislav.trade.entities.Market;
@@ -10,7 +10,7 @@ import com.stanislav.trade.entities.markets.Stock;
 import lombok.Builder;
 
 @Builder
-public final class FinamSecuritiesResponse {
+public final class FinamSecuritiesResponseDto {
 
     private String code;
     private String board;
@@ -29,11 +29,11 @@ public final class FinamSecuritiesResponse {
     private int lotDivider;
 
 
-    public FinamSecuritiesResponse(String code, String board, Market market,
-                                   int decimals, int lotSize, int minStep,
-                                   String currency, String shortName, int properties,
-                                   String timeZoneName, int bpCost, int accruedInterest,
-                                   PriceSign priceSign, String ticker, int lotDivider) {
+    public FinamSecuritiesResponseDto(String code, String board, Market market,
+                                      int decimals, int lotSize, int minStep,
+                                      String currency, String shortName, int properties,
+                                      String timeZoneName, int bpCost, int accruedInterest,
+                                      PriceSign priceSign, String ticker, int lotDivider) {
         this.code = code;
         this.board = board;
         this.market = market;
@@ -51,7 +51,7 @@ public final class FinamSecuritiesResponse {
         this.lotDivider = lotDivider;
     }
 
-    public FinamSecuritiesResponse() {}
+    public FinamSecuritiesResponseDto() {}
 
 
     public Stock toStockClass() {
@@ -189,7 +189,7 @@ public final class FinamSecuritiesResponse {
 
     @Override
     public String toString() {
-        return "FinamSecuritiesResponse{" +
+        return "FinamSecuritiesResponseDto{" +
                 "code='" + code + '\'' +
                 ", board='" + board + '\'' +
                 ", market=" + market +

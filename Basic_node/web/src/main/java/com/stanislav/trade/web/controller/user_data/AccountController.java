@@ -1,7 +1,9 @@
 package com.stanislav.trade.web.controller.user_data;
 
+import com.stanislav.trade.domain.trading.TradingService;
 import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
+import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.service.AccountService;
@@ -10,6 +12,10 @@ import com.stanislav.trade.web.service.UserDataService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +32,14 @@ public class AccountController {
     private final UserDataService userDataService;
     private final AccountService accountService;
 
+    private final TradingService tradingService;
+
     @Autowired
-    public AccountController(UserDataService userDataService, AccountService accountService) {
+    public AccountController(UserDataService userDataService, AccountService accountService,
+                             @Qualifier("finamTradingService") TradingService tradingService) {
         this.userDataService = userDataService;
         this.accountService = accountService;
+        this.tradingService = tradingService;
     }
 
     @GetMapping("/new-account")
@@ -39,33 +49,27 @@ public class AccountController {
     }
 
     @GetMapping("/account/{account}")
-    public String getAccount(@PathVariable("account") String accountId,
-                             HttpSession session, Model model) {
-        Long id = (Long) session.getAttribute("id");
-        if (id == null) {
-            log.error("User ID is lost");
-            return "redirect:/login";
-        }
-        long accId;
+    public String getAccount(@AuthenticationPrincipal UserDetails userDetails,
+                             @PathVariable("account") String accountId, Model model) {
+        long id;
+        Optional<Account> account;
         try {
-            accId = Long.parseLong(accountId);
+            id = Long.parseLong(accountId);
+            account = accountService.findById(id, userDetails.getUsername());
         } catch (NumberFormatException | NullPointerException e) {
             log.info(e.getMessage());
-            return "forward:/error/" + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+        } catch (AccessDeniedException e) {
+            log.warn(e.getMessage());
+            return ErrorController.URL + ErrorCase.ACCESS_DENIED;
         }
-        var optionalUser = userDataService.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            Optional<Account> account = accountService.findById(user, accId);
-            if (account.isPresent()) {
-                model.addAttribute("account", account.get());
-                return "account";
-            } else {
-                return "forward:/error/" + ErrorCase.NOT_FOUND;
-            }
+        if (account.isPresent()) {
+            model.addAttribute("account", account.get());
+            return "account";
+        } else {
+            log.info("account is not found, id=" + id);
+            return ErrorController.URL + ErrorCase.NOT_FOUND;
         }
-        log.error("User not found: " + id);
-        return "redirect:/login";
     }
 
     @PostMapping("/account")
@@ -122,22 +126,44 @@ public class AccountController {
     }
 
     @DeleteMapping("/account/{account}")
-    public String deleteAccount(@PathVariable("account") String accountId, HttpSession session, Model model) {
-        Long id = (Long) session.getAttribute("id");
-        if (id == null) {
-            log.error("User ID is lost");
-            return "redirect:/login";
-        }
-        long accId;
+    public String deleteAccount(@PathVariable("account") String accountId, Model model) {
+        long id;
         try {
-            accId = Long.parseLong(accountId);
+            id = Long.parseLong(accountId);
         } catch (NumberFormatException | NullPointerException e) {
             log.info(e.getMessage());
-            return "forward:/error/" + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL + ErrorCase.BAD_REQUEST;
         }
-        accountService.delete(accId);
+        accountService.delete(id);
         var accounts = accountService.findByUser(id);
         model.addAttribute("accounts", accounts);
         return "accounts";
+    }
+
+    @GetMapping("/account/{accountId}/portfolio")
+    public String portfolio(@AuthenticationPrincipal UserDetails userDetails,
+                            @PathVariable("accountId") String accountId, Model model) {
+        long id;
+        Optional<Account> account;
+        try {
+            id = Long.parseLong(accountId);
+            account = accountService.findById(id, userDetails.getUsername());
+        } catch (NumberFormatException | NullPointerException e) {
+            log.info(e.getMessage());
+            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+        } catch (AccessDeniedException e) {
+            log.warn(e.getMessage());
+            return ErrorController.URL + ErrorCase.ACCESS_DENIED;
+        }
+        if (account.isPresent()) {
+            Account a = account.get();
+            Portfolio portfolio = tradingService.getPortfolio(a.getClientId(), accountService.decodeToken(a));
+            model.addAttribute("portfolio", portfolio);
+            //TODO to create page
+            return "portfolio";
+        } else {
+            log.info("account is not found, id=" + id);
+            return ErrorController.URL + ErrorCase.NOT_FOUND;
+        }
     }
 }
