@@ -131,9 +131,13 @@ public class MoexExchangeData implements ExchangeData {
                 case null, default -> throw new IllegalArgumentException(sortByColumn.toString());
             };
             query.add(sort_column.toString(), sortColumn.toLowerCase());
-            query.add(sort_order.toString(), sortOrder);
+            if (sortOrder != null) {
+                query.add(sort_order.toString(), sortOrder);
+            }
         }
-        String response = restConsumer.doRequest(query.build(), HttpMethod.GET);
+        String url = query.build();
+        System.out.println(url);
+        String response = restConsumer.doRequest(url, HttpMethod.GET);
         String[] layers = {"securities", "data"};
         return dataParser.parseObjectsList(response, Object[].class, layers);
     }

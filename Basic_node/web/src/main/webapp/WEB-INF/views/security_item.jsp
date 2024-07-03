@@ -615,27 +615,27 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                             ${secItem.ticker}
                         </div><br>
                         <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                            ${secItem.currency}
+                            валюта: ${secItem.currency}
                         </div><br>
-                        <c:if test="${type == futures}">
+                        <c:if test="${type.equals('futures')}">
                             <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                                ${secItem.minStep}
+                                шаг цены: ${secItem.minStep}
                             </div><br>
                             <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                                ${secItem.stepPrice}
+                                цена шага цены: ${secItem.stepPrice}
                             </div><br>
                             <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                                ${secItem.asset}
+                                актив: ${secItem.asset}
                             </div><br>
                             <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                                ${secItem.expiration}
+                                дата экспирации: ${secItem.expiration}
                             </div><br>
                         </c:if>
                         <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                            ${secItem.market}
+                            рынок: ${secItem.market}
                         </div><br>
                         <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                            ${secItem.board}
+                            торговый режим: ${secItem.board}
                         </div>
                     </div>
                 </div><br>

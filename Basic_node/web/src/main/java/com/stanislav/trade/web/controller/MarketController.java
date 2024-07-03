@@ -2,13 +2,10 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-/*
- * Stanislav Kuprienko *** Omsk, Russia
- */
-
 package com.stanislav.trade.web.controller;
 
 import com.stanislav.trade.domain.service.ExchangeData;
+import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.service.ErrorCase;
@@ -58,12 +55,64 @@ public final class MarketController {
     }
 
     @GetMapping("/stocks")
-    public String getStocks(Model model, HttpServletRequest request) {
-        List<Stock> stocks = exchangeData.getStocks(ExchangeData.SortByColumn.TRADE_VOLUME, ExchangeData.SortOrder.desc);
+    public String getStocks(Model model,
+                            @RequestParam(value = "sort-by", required = false) String sortByParam,
+                            @RequestParam(value = "sort-order", required = false) String sortOrderParam) {
+        List<Stock> stocks;
+        if (sortByParam != null) {
+            ExchangeData.SortByColumn sortByColumn;
+            ExchangeData.SortOrder sortOrder;
+            try {
+                sortByColumn = ExchangeData.SortByColumn.valueOf(sortByParam);
+                sortOrder = ExchangeData.SortOrder.valueOf(sortOrderParam);
+            } catch (IllegalArgumentException e) {
+                log.warn(e.getMessage());
+                sortByColumn = ExchangeData.SortByColumn.NONE;
+                sortOrder = ExchangeData.SortOrder.asc;
+            }
+            stocks = exchangeData.getStocks(sortByColumn, sortOrder);
+        } else {
+            stocks = exchangeData.getStocks();
+        }
         model.addAttribute(SEC_LIST, stocks);
         model.addAttribute("type", STOCK_URI);
         return LIST_PAGE;
     }
 
+    @GetMapping("/futures/{ticker}")
+    public String getFutures(@PathVariable("ticker") String ticker, Model model) {
+        Optional<Futures> futures = exchangeData.getFutures(ticker);
+        if (futures.isEmpty()) {
+            log.info(ticker + " is not found");
+            return ErrorController.URL + ErrorCase.NOT_FOUND;
+        }
+        model.addAttribute(SEC_ITEM, futures.get());
+        model.addAttribute("type", FUTURES_URI);
+        return ITEM_PAGE;
+    }
 
+    @GetMapping("/futures")
+    public String getFuturesList(Model model,
+                                 @RequestParam(value = "sort-by", required = false) String sortByParam,
+                                 @RequestParam(value = "sort-order", required = false) String sortOrderParam) {
+        List<Futures> futuresList;
+        if (sortByParam != null) {
+            ExchangeData.SortByColumn sortByColumn;
+            ExchangeData.SortOrder sortOrder;
+            try {
+                sortByColumn = ExchangeData.SortByColumn.valueOf(sortByParam);
+                sortOrder = ExchangeData.SortOrder.valueOf(sortOrderParam);
+            } catch (IllegalArgumentException e) {
+                log.warn(e.getMessage());
+                sortByColumn = ExchangeData.SortByColumn.NONE;
+                sortOrder = ExchangeData.SortOrder.asc;
+            }
+            futuresList = exchangeData.getFuturesList(sortByColumn, sortOrder);
+        } else {
+            futuresList = exchangeData.getFuturesList();
+        }
+        model.addAttribute(SEC_LIST, futuresList);
+        model.addAttribute("type", FUTURES_URI);
+        return LIST_PAGE;
+    }
 }

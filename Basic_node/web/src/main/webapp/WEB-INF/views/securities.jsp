@@ -599,8 +599,10 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                 </div>
             </div>
             <style>.t-section__descr {max-width: 560px;}#rec759807384 .t-section__title {margin-bottom: 90px;}#rec759807384 .t-section__descr {}@media screen and (max-width: 960px) {#rec759807384 .t-section__title {margin-bottom: 60px;}}</style>
+            <style> .t-container .my-class {} .my-class:hover {background-color:rgba(143,100,130,0.5)}</style>
             <div class="t-container">
                 <c:forEach items="${secList}" var="item" begin="0" end="20">
+                <div class="my-class">
                     <div class="t681__row t-row" style="margin-bottom:8vh;"><a href="/anastasia/market/${type}/${item.ticker}">
                         <div class="t-col t-col_1 t-prefix_2">
                             <div class="t681__title t-heading t-heading_sm" field="li_title__1493289538895">${item.ticker}</div>
@@ -622,12 +624,13 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                             </div>
                         </div></a>
                     </div>
+                </div>
                 </c:forEach>
             </div>
             <div class="t-section__container t-container">
                 <div class="t-col t-col_12">
                     <div class="t-section__bottomwrapper t-clear t-align_center">
-                        <a href="/anastasia/market/stocks" target=""
+                        <a href="/anastasia/market/stocks?sort-by=TRADE_VOLUME&sort-order=desc" target=""
                            class="t-btn t-btn_md"
                            style="color:#ffffff;background-color:#9b5a88;border-radius:30px; -moz-border-radius:30px; -webkit-border-radius:30px;"
                            data-buttonfieldset="bbutton">
@@ -639,7 +642,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                 </tbody>
                             </table>
                         </a>
-                        <a href="/anastasia/market/securities?type=futures" target=""
+                        <a href="/anastasia/market/futures?sort-by=TRADE_VOLUME&sort-order=desc" target=""
                            class="t-btn t-btn_md"
                            style="color:#ffffff;background-color:#9b5a88;border-radius:30px; -moz-border-radius:30px; -webkit-border-radius:30px;"
                            data-buttonfieldset="bbutton">

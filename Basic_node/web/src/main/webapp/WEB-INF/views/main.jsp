@@ -622,7 +622,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                                    imgfield="li_img__1716410714439" alt="">
                     <div class="t490__wrappercenter">
                         <div class="t-card__title t-heading t-heading_md" field="li_title__1716410714439"><a
-                                href="/anastasia/market/stocks" class="t-card__link"
+                                href="/anastasia/market/stocks?sort-by=TRADE_VOLUME&sort-order=desc" class="t-card__link"
                                 id="cardtitle2_752807230">Список бумаг</a></div>
                     </div>
                 </div>

@@ -12,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Arrays;
 import java.util.Locale;
 
 @Slf4j
@@ -21,9 +19,9 @@ import java.util.Locale;
 public class ErrorController {
 
     public static final String URL = "forward:/error/";
+    public static final String ERROR_PAGE = "error_page";
+    public static final String ERROR_KEY = "error";
 
-    private static final String ERROR = "error";
-    private static final String ERROR_PAGE = "error_page";
     private final MessageSource messageSource;
 
     @Autowired
@@ -67,7 +65,7 @@ public class ErrorController {
             default -> new ErrorModel(messageSource.getMessage("500", null, locale),
                     Images.SERVER_ERROR.file, 500);
         };
-        request.setAttribute(ERROR, em);
+        request.setAttribute(ERROR_KEY, em);
         response.setStatus(em.code);
         return ERROR_PAGE;
     }
@@ -78,7 +76,7 @@ public class ErrorController {
                 messageSource.getMessage(ErrorCase.NOT_FOUND.toString(),
                         null,
                         Locale.of("RU")), Images.NOT_FOUND.file, 404);
-        model.addAttribute(ERROR, errorModel);
+        model.addAttribute(ERROR_KEY, errorModel);
         return ERROR_PAGE;
     }
 
@@ -88,7 +86,7 @@ public class ErrorController {
                 messageSource.getMessage("500",
                         null,
                         Locale.of("RU")), Images.SERVER_ERROR.file, 500);
-        model.addAttribute(ERROR, errorModel);
+        model.addAttribute(ERROR_KEY, errorModel);
         return ERROR_PAGE;
     }
 

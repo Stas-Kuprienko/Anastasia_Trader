@@ -76,6 +76,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jasper</artifactId>
+            <version>11.0.0-M20</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.stanislav</groupId>
             <artifactId>core</artifactId>
             <version>1.0</version>
@@ -83,8 +90,27 @@
 
     </dependencies>
 
-<!--    <build>-->
-<!--        <directory>${pom.basedir}/../local-tomcat/apache-tomcat-11.0.0/webapps</directory>-->
-<!--    </build>-->
-
+    <build>
+        <finalName>anastasia</finalName>
+        <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+<!--                    <outputDirectory>${pom.basedir}/../local-tomcat/apache-tomcat-11.0.0/webapps</outputDirectory>-->
+                </configuration>
+            </plugin>
+        </plugins>
+        </pluginManagement>
+    </build>
 </project>
