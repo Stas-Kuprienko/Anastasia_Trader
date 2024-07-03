@@ -1,10 +1,10 @@
-package com.stanislav.trade.domain.service.moex;
+package com.stanislav.trade.domain.market.moex;
 
-import com.stanislav.trade.domain.service.ExchangeData;
-import com.stanislav.trade.domain.service.ExchangeDataStorage;
-import com.stanislav.trade.domain.service.moex.converters.FuturesConverter;
-import com.stanislav.trade.domain.service.moex.converters.MarketData;
-import com.stanislav.trade.domain.service.moex.converters.StocksConverter;
+import com.stanislav.trade.domain.market.ExchangeData;
+import com.stanislav.trade.domain.market.ExchangeDataStorage;
+import com.stanislav.trade.domain.market.moex.converters.FuturesConverter;
+import com.stanislav.trade.domain.market.moex.converters.MarketData;
+import com.stanislav.trade.domain.market.moex.converters.StocksConverter;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.utils.ApiDataParser;
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import static com.stanislav.trade.domain.service.moex.MoexApiClient.Engine;
-import static com.stanislav.trade.domain.service.moex.MoexApiClient.Market;
-import static com.stanislav.trade.domain.service.moex.MoexExchangeData.Args.*;
+import static com.stanislav.trade.domain.market.moex.MoexApiClient.Engine;
+import static com.stanislav.trade.domain.market.moex.MoexApiClient.Market;
+import static com.stanislav.trade.domain.market.moex.MoexExchangeData.Args.*;
 
 @Service("moexExchangeData")
 public class MoexExchangeData implements ExchangeData {

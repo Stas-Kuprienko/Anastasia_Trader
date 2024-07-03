@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.domain.service.securities_dto;
+package com.stanislav.trade.domain.market.securities_dto;
 
 import com.stanislav.trade.entities.Currency;
 import com.stanislav.trade.entities.Market;

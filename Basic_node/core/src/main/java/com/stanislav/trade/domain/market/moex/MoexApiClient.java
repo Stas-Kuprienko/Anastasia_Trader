@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.domain.service.moex;
+package com.stanislav.trade.domain.market.moex;
 
 import com.stanislav.trade.utils.GetQueryBuilder;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.stanislav.trade.domain.service;
+package com.stanislav.trade.domain.market;
 
 import java.time.LocalDate;
 

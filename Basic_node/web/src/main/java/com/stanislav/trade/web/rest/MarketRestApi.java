@@ -1,6 +1,6 @@
 package com.stanislav.trade.web.rest;
 
-import com.stanislav.trade.domain.service.ExchangeData;
+import com.stanislav.trade.domain.market.ExchangeData;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import org.springframework.beans.factory.annotation.Autowired;

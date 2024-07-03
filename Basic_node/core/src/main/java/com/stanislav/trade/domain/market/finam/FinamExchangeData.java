@@ -2,10 +2,10 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.domain.service.finam;
+package com.stanislav.trade.domain.market.finam;
 
-import com.stanislav.trade.domain.service.ExchangeData;
-import com.stanislav.trade.domain.service.securities_dto.FinamSecuritiesResponse;
+import com.stanislav.trade.domain.market.ExchangeData;
+import com.stanislav.trade.domain.market.securities_dto.FinamSecuritiesResponse;
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
@@ -16,15 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Args.*;
-import static com.stanislav.trade.domain.service.finam.FinamExchangeData.Resource.*;
+import static com.stanislav.trade.domain.market.finam.FinamExchangeData.Args.*;
+import static com.stanislav.trade.domain.market.finam.FinamExchangeData.Resource.*;
 
 //@Service("finamExchangeData")
 public class FinamExchangeData implements ExchangeData {

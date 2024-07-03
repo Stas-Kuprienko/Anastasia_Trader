@@ -5,12 +5,11 @@
 package com.stanislav.trade.domain.smart.impl;
 
 import com.stanislav.trade.domain.smart.SmartAutoTradeService;
-import com.stanislav.trade.domain.service.grpc.Authentication;
-import com.stanislav.trade.domain.service.grpc.GRpcConnection;
+import com.stanislav.trade.domain.market.grpc.Authentication;
+import com.stanislav.trade.domain.market.grpc.GRpcConnection;
 import com.stanislav.trade.domain.smart.strategy.TradeStrategy;
 import com.stanislav.trade.entities.Board;
 import io.grpc.stub.StreamObserver;
-import io.jsonwebtoken.JwtBuilder;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
 import stanislav.anastasia.trade.Strategies;

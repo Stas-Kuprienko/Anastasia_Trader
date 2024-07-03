@@ -1,6 +1,6 @@
-package com.stanislav.trade.domain.service.ram;
+package com.stanislav.trade.domain.market.ram;
 
-import com.stanislav.trade.domain.service.ExchangeDataStorage;
+import com.stanislav.trade.domain.market.ExchangeDataStorage;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
-package com.stanislav.trade.domain.service.moex;
+package com.stanislav.trade.domain.market.moex;
 
-import com.stanislav.trade.domain.service.FuturesDecoder;
+import com.stanislav.trade.domain.market.FuturesDecoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

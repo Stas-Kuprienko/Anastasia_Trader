@@ -1,4 +1,4 @@
-package com.stanislav.trade.domain.service.moex.converters;
+package com.stanislav.trade.domain.market.moex.converters;
 
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.Currency;

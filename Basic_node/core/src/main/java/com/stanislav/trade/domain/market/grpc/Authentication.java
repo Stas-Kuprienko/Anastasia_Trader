@@ -2,15 +2,11 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.domain.service.grpc;
+package com.stanislav.trade.domain.market.grpc;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 
-import javax.crypto.SecretKey;
 import java.util.concurrent.Executor;
 
 public class Authentication extends CallCredentials {
