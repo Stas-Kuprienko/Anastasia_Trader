@@ -17,7 +17,7 @@ public class UserDataServiceRamImpl implements UserDataService {
 
     //TODO   TEMPORARY SOLUTION. NEED TO REPLACE BY REDIS   !!!!!!!!!!!
 
-    private final ConcurrentHashMap<Long, User> ram;
+    private final ConcurrentHashMap<String, User> ram;
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
 
@@ -39,29 +39,29 @@ public class UserDataServiceRamImpl implements UserDataService {
                 User.Role.USER,
                 name != null ? name : "");
         userDao.save(user);
-        ram.put(user.getId(), user);
+        ram.put(user.getLogin(), user);
         return user;
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        Optional<User> user = Optional.ofNullable(ram.get(id));
-        if (user.isEmpty()) {
-            user = userDao.findById(id);
-            user.ifPresent(u -> ram.put(id, u));
+        for (Map.Entry<?,User> e : ram.entrySet()) {
+            if (e.getValue().getId().equals(id)) {
+                return Optional.of(e.getValue());
+            }
         }
+        var user = userDao.findById(id);
+        user.ifPresent(u -> ram.put(u.getLogin(), u));
         return user;
     }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        for (Map.Entry<?,User> e : ram.entrySet()) {
-            if (e.getValue().getLogin().equals(login)) {
-                return Optional.of(e.getValue());
-            }
+        var user = Optional.ofNullable(ram.get(login));
+        if (user.isEmpty()) {
+            user = userDao.findByLogin(login);
+            user.ifPresent(u -> ram.put(u.getLogin(), u));
         }
-        var user = userDao.findByLogin(login);
-        user.ifPresent(u -> ram.put(u.getId(), u));
         return user;
     }
 

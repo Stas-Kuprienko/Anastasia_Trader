@@ -5,6 +5,7 @@
 package com.stanislav.trade.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.stanislav.trade.entities.Broker;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -27,7 +28,8 @@ public final class Account implements Serializable {
     @JsonIgnore
     private User user;
 
-    private String broker;
+    @Enumerated(EnumType.STRING)
+    private Broker broker;
 
     private String token;
 
@@ -38,7 +40,7 @@ public final class Account implements Serializable {
     private BigDecimal balance;
 
 
-    public Account(long id, String clientId, User user, String broker, String token, RiskProfile riskProfile, BigDecimal balance) {
+    public Account(long id, String clientId, User user, Broker broker, String token, RiskProfile riskProfile, BigDecimal balance) {
         this.id = id;
         this.clientId = clientId;
         this.user = user;
@@ -75,11 +77,11 @@ public final class Account implements Serializable {
         this.user = user;
     }
 
-    public String getBroker() {
+    public Broker getBroker() {
         return broker;
     }
 
-    public void setBroker(String broker) {
+    public void setBroker(Broker broker) {
         this.broker = broker;
     }
 

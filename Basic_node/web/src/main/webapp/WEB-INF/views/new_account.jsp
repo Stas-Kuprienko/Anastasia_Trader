@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page isELIgnored = "false" %>
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -615,8 +617,9 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                                                                 class="t-select js-tilda-rule "
                                                                                 data-tilda-req="1" aria-required="true"
                                                                                 style="border:1px solid #000;font-weight:600;">
-                                            <option value="Финам" style="">Финам</option>
-                                            <option value="Тинькофф" style="">Тинькофф</option>
+                                        <c:forEach items="${brokers}" var = "item">
+                                            <option value="${item}" style="">${item.title}</option>
+                                        </c:forEach>
                                         </select></div>
                                         <div class="t-input-error" aria-live="polite" id="error_5527479220180"></div>
                                     </div>

@@ -1,7 +1,9 @@
 package com.stanislav.trade.web.controller.user_data;
 
+import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.service.AccountService;
 import com.stanislav.trade.web.service.ErrorCase;
 import com.stanislav.trade.web.service.UserDataService;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,7 +33,8 @@ public class AccountController {
     }
 
     @GetMapping("/new-account")
-    public String newAccount() {
+    public String newAccount(Model model) {
+        model.addAttribute("brokers", List.of(Broker.values()));
         return "new_account";
     }
 
@@ -77,11 +81,16 @@ public class AccountController {
         }
         Optional<User> user = userDataService.findById(id);
         if (user.isPresent()) {
-            Account account = accountService.create(user.get(), clientId, token, broker);
-            var accounts = user.get().getAccounts();
-            accounts.add(account);
-            model.addAttribute("accounts", accounts);
-            return "accounts";
+            try {
+                Account account = accountService.create(user.get(), clientId, token, broker);
+                var accounts = user.get().getAccounts();
+                accounts.add(account);
+                model.addAttribute("accounts", accounts);
+                return "accounts";
+            } catch (IllegalArgumentException e) {
+                log.error(e.getMessage());
+                return ErrorController.URL + ErrorCase.BAD_REQUEST;
+            }
         } else {
             log.error("User not found: " + id);
             return "redirect:/login";

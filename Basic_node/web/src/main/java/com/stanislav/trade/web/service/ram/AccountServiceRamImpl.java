@@ -2,6 +2,7 @@ package com.stanislav.trade.web.service.ram;
 
 import com.stanislav.trade.datasource.AccountDao;
 import com.stanislav.trade.domain.trading.TradingService;
+import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.service.AccountService;
@@ -48,7 +49,7 @@ public class AccountServiceRamImpl implements AccountService {
         account.setUser(user);
         account.setClientId(clientId);
         account.setToken(jwtBuilder.claim("token", token).compact());
-        account.setBroker(broker);
+        account.setBroker(Broker.valueOf(broker));
         //TODO get balance
         account.setBalance(BigDecimal.valueOf(0));
 //        tradingService.getPortfolio(clientId);

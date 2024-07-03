@@ -135,9 +135,7 @@ public class MoexExchangeData implements ExchangeData {
                 query.add(sort_order.toString(), sortOrder);
             }
         }
-        String url = query.build();
-        System.out.println(url);
-        String response = restConsumer.doRequest(url, HttpMethod.GET);
+        String response = restConsumer.doRequest(query.build(), HttpMethod.GET);
         String[] layers = {"securities", "data"};
         return dataParser.parseObjectsList(response, Object[].class, layers);
     }
