@@ -24,7 +24,7 @@ public final class Order implements Serializable {
     private int orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "account", nullable = false)
     @JsonIgnore
     private Account account;
 

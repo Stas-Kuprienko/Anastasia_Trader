@@ -76,7 +76,6 @@ public class JsonDataParser implements ApiDataParser {
         }
     }
 
-    @Override
     public Map<String, Object> getJsonMap(String source, String... layers) {
         try {
             if (layers != null && layers.length != 0) {
@@ -91,6 +90,11 @@ public class JsonDataParser implements ApiDataParser {
         }
     }
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+
     private String extract(String source) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(source);
         return jsonNode.toString();
@@ -102,9 +106,5 @@ public class JsonDataParser implements ApiDataParser {
             jsonNode = jsonNode.get(s);
         }
         return jsonNode.toString();
-    }
-
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
     }
 }

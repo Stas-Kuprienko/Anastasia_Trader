@@ -50,7 +50,7 @@ public class AccountServiceRamImpl implements AccountService {
         account.setClientId(clientId);
         account.setToken(jwtBuilder.claim("token", token).compact());
         account.setBroker(Broker.valueOf(broker));
-        var balance = tradingService.getPortfolio(clientId, decodeToken(account)).getBalance();
+        var balance = tradingService.getPortfolio(clientId, decodeToken(account), false).getBalance();
         account.setBalance(balance);
         account = accountDao.save(account);
         ram.putIfAbsent(account.getId(), account);
@@ -87,9 +87,9 @@ public class AccountServiceRamImpl implements AccountService {
     }
 
     @Override
-    public String decodeToken(Account account) throws ClassCastException, NullPointerException {
+    public String decodeToken(String token) throws ClassCastException, NullPointerException {
         return (String) jwtParser
-                .parseSignedClaims(account.getToken())
+                .parseSignedClaims(token)
                 .getPayload()
                 .get("token");
     }

@@ -63,8 +63,6 @@ public final class FinamOrderResponse {
     public Order toOrderClass() {
         return Order.builder()
                 .id(transactionId)
-                //TODO!
-                .account(null)
                 .ticker(securityCode)
                 .price(BigDecimal.valueOf(price))
                 .quantity(quantity)

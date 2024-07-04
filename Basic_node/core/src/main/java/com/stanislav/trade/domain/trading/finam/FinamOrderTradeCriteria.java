@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public record FinamOrderTradeCriteria(FinamOrderValidBefore validBefore,
                                       FinamOrderCondition condition,
                                       FinamOrderRequest.Property property,
-                                      boolean useCredit) implements TradeCriteria {
+                                      boolean useCredit) {
 
     public static FinamOrderTradeCriteria simpleOrderAtMarketPrice(Direction direction) {
         String time = LocalDateTime.now().toString();
@@ -29,5 +29,8 @@ public record FinamOrderTradeCriteria(FinamOrderValidBefore validBefore,
         return new FinamOrderTradeCriteria(validBefore, condition, property, false);
     }
 
+    public static FinamOrderTradeCriteria parse(TradeCriteria tradeCriteria) {
 
+        return null;
+    }
 }

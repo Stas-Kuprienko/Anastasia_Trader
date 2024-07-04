@@ -157,7 +157,8 @@ public class AccountController {
         }
         if (account.isPresent()) {
             Account a = account.get();
-            Portfolio portfolio = tradingService.getPortfolio(a.getClientId(), accountService.decodeToken(a));
+            String token = accountService.decodeToken(a.getToken());
+            Portfolio portfolio = tradingService.getPortfolio(a.getClientId(), token, true);
             model.addAttribute("portfolio", portfolio);
             //TODO to create page
             return "portfolio";

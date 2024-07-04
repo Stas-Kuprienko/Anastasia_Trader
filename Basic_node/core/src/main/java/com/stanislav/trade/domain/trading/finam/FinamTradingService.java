@@ -7,6 +7,7 @@ package com.stanislav.trade.domain.trading.finam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.stanislav.trade.datasource.OrderDao;
 import com.stanislav.trade.domain.market.finam.dto.FinamPortfolioDto;
+import com.stanislav.trade.domain.trading.OrderCriteria;
 import com.stanislav.trade.domain.trading.TradeCriteria;
 import com.stanislav.trade.domain.trading.TradingService;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamBuySell;
@@ -39,14 +40,15 @@ public class FinamTradingService implements TradingService {
 
     private final JsonDataParser dataParser;
     private final RestConsumer restConsumer;
-    private OrderDao orderDao;  //TODO !!!
+    private final OrderRequestAdaptor requestAdaptor;
 
 
     @Autowired
     public FinamTradingService(@Qualifier("jsonParser") ApiDataParser dataParser, RestConsumer restConsumer,
-                               @Value("${api.finam}") String resource) {
+                               @Value("${api.finam}") String resource, OrderRequestAdaptor requestAdaptor) {
         this.dataParser = (JsonDataParser) dataParser;
         this.restConsumer = restConsumer;
+        this.requestAdaptor = requestAdaptor;
         this.restConsumer.setAuthorization(RestConsumer.Authorization.API_KEY);
         this.restConsumer.setResource(resource);
     }
@@ -58,10 +60,10 @@ public class FinamTradingService implements TradingService {
     }
 
     @Override
-    public Portfolio getPortfolio(String clientId, String token) {
+    public Portfolio getPortfolio(String clientId, String token, boolean withPositions) {
         GetQueryBuilder query = new GetQueryBuilder(Resource.PORTFOLIO.value);
         query.add(CLIENT.value, clientId)
-                .add(POSITIONS.value, true)
+                .add(POSITIONS.value, withPositions)
                 .add(CURRENCIES.value, true)
                 .add(MONEY.value, false);
         try {
@@ -93,30 +95,13 @@ public class FinamTradingService implements TradingService {
     }
 
     @Override
-    public void makeOrder(Order order, TradeCriteria tradeCriteria) {
-        FinamOrderTradeCriteria finamOrderCriteria = (FinamOrderTradeCriteria) tradeCriteria;
-        FinamBuySell buySell = FinamBuySell.convert(order.getDirection());
-        Account account = order.getAccount();
-        FinamOrderRequest finamOrder = FinamOrderRequest.builder()
-                .clientId(account.getClientId())
-                .securityBoard(order.getBoard().toString())
-                .securityCode(order.getTicker())
-                .buySell(buySell)
-                .quantity(order.getQuantity())
-                .useCredit(finamOrderCriteria.useCredit())
-                .price(order.getPrice().doubleValue())
-                .property(finamOrderCriteria.property())
-                .condition(finamOrderCriteria.condition())
-                .validBefore(finamOrderCriteria.validBefore())
-                .build();
-        orderCriteria(finamOrder);
-
+    public Order makeOrder(OrderCriteria criteria, String token) {
+        FinamOrderRequest finamOrder = requestAdaptor.parse(criteria);
         try {
             String json = dataParser.getObjectMapper().writer().writeValueAsString(finamOrder);
-            String response = restConsumer.doPostJson(Resource.ORDERS.value, json, account.getToken());
-            int id = (int) dataParser.getJsonMap(response, "data").get("transactionId");
-            order.setOrderId(id);
-            orderDao.save(order);
+            String response = restConsumer.doPostJson(Resource.ORDERS.value, json, token);
+            FinamOrderResponse dto = dataParser.parseObject(response, FinamOrderResponse.class, "data");
+            return dto.toOrderClass();
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
@@ -143,8 +128,21 @@ public class FinamTradingService implements TradingService {
 
     }
 
-    private void orderCriteria(FinamOrderRequest order) {
 
+    private static FinamOrderRequest buildOrder(Order order, String clientId, FinamOrderTradeCriteria finamOrderCriteria) {
+        FinamBuySell buySell = FinamBuySell.convert(order.getDirection());
+        return FinamOrderRequest.builder()
+                .clientId(clientId)
+                .securityBoard(order.getBoard().toString())
+                .securityCode(order.getTicker())
+                .buySell(buySell)
+                .quantity(order.getQuantity())
+                .useCredit(finamOrderCriteria.useCredit())
+                .price(order.getPrice().doubleValue())
+                .property(finamOrderCriteria.property())
+                .condition(finamOrderCriteria.condition())
+                .validBefore(finamOrderCriteria.validBefore())
+                .build();
     }
 
     enum Args {

@@ -13,7 +13,7 @@ public final class FinamOrderRequest {
     private String securityBoard;
     private String securityCode;
     private FinamBuySell buySell;
-    private int quantity;
+    private long quantity;
     private boolean useCredit;
     private double price;
     private Property property;
@@ -21,7 +21,7 @@ public final class FinamOrderRequest {
     private FinamOrderValidBefore validBefore;
 
     public FinamOrderRequest(String clientId, String securityBoard, String securityCode,
-                             FinamBuySell buySell, int quantity, boolean useCredit, double price,
+                             FinamBuySell buySell, long quantity, boolean useCredit, double price,
                              Property property, FinamOrderCondition condition, FinamOrderValidBefore validBefore) {
         this.clientId = clientId;
         this.securityBoard = securityBoard;
@@ -68,11 +68,11 @@ public final class FinamOrderRequest {
         this.buySell = buySell;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 
