@@ -24,8 +24,8 @@ import java.util.Optional;
 @RequestMapping("/market")
 public final class MarketController {
 
-    private static final String STOCK_URI = "stock";
-    private static final String FUTURES_URI = "futures";
+    public static final String STOCK_URI = "stock";
+    public static final String FUTURES_URI = "futures";
 
     private static final String LIST_PAGE = "securities";
     private static final String ITEM_PAGE = "security_item";

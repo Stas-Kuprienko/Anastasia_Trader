@@ -9,7 +9,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 public class OrderCriteria implements TradeCriteria {
 
     private Broker broker;
@@ -28,6 +27,22 @@ public class OrderCriteria implements TradeCriteria {
 
     public OrderCriteria() {}
 
+    @Builder
+    public OrderCriteria(Broker broker, String clientId, String ticker, Board board, long quantity, double price, Direction direction, PriceType priceType, LocalDateTime delayTime, FulFillProperty fulFillProperty, ValidBefore validBefore, LocalDateTime beforeTime, boolean isMargin) {
+        this.broker = broker;
+        this.clientId = clientId;
+        this.ticker = ticker;
+        this.board = board;
+        this.quantity = quantity;
+        this.price = price;
+        this.direction = direction;
+        this.priceType = priceType;
+        this.delayTime = delayTime;
+        this.fulFillProperty = fulFillProperty;
+        this.validBefore = validBefore;
+        this.beforeTime = beforeTime;
+        this.isMargin = isMargin;
+    }
 
     public enum PriceType {
         MarketPrice,

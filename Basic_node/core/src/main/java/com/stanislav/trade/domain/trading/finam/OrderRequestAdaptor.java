@@ -6,9 +6,11 @@ import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderCondition;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderRequest;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderValidBefore;
 import com.stanislav.trade.entities.Direction;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Component
 public class OrderRequestAdaptor {
 
 

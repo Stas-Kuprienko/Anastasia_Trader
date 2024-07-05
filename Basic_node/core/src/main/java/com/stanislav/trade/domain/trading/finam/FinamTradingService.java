@@ -5,10 +5,8 @@
 package com.stanislav.trade.domain.trading.finam;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.stanislav.trade.datasource.OrderDao;
 import com.stanislav.trade.domain.market.finam.dto.FinamPortfolioDto;
 import com.stanislav.trade.domain.trading.OrderCriteria;
-import com.stanislav.trade.domain.trading.TradeCriteria;
 import com.stanislav.trade.domain.trading.TradingService;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamBuySell;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderRequest;
@@ -16,7 +14,6 @@ import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderResponse;
 import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.orders.Stop;
-import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.utils.ApiDataParser;
 import com.stanislav.trade.utils.GetQueryBuilder;
@@ -31,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import java.util.List;
-
 import static com.stanislav.trade.domain.trading.finam.FinamTradingService.Args.*;
 
 @Slf4j

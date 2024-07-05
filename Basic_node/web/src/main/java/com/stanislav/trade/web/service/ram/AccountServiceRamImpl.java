@@ -7,8 +7,10 @@ import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.service.AccountService;
 import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service("accountService")
 public class AccountServiceRamImpl implements AccountService {
 
@@ -50,7 +53,8 @@ public class AccountServiceRamImpl implements AccountService {
         account.setClientId(clientId);
         account.setToken(jwtBuilder.claim("token", token).compact());
         account.setBroker(Broker.valueOf(broker));
-        var balance = tradingService.getPortfolio(clientId, decodeToken(account), false).getBalance();
+        var balance = tradingService
+                .getPortfolio(clientId, decodeToken(account.getToken()), false).getBalance();
         account.setBalance(balance);
         account = accountDao.save(account);
         ram.putIfAbsent(account.getId(), account);
@@ -87,11 +91,16 @@ public class AccountServiceRamImpl implements AccountService {
     }
 
     @Override
-    public String decodeToken(String token) throws ClassCastException, NullPointerException {
-        return (String) jwtParser
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("token");
+    public String decodeToken(String token) throws IllegalArgumentException, ClassCastException {
+        try {
+            return (String) jwtParser
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get("token");
+        } catch (JwtException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override

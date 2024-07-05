@@ -139,7 +139,7 @@ public final class Order implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Order order)) return false;
-        return id == order.id;
+        return Objects.equals(id, order.id);
     }
 
     @Override
