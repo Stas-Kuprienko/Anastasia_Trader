@@ -12,17 +12,17 @@ public final class FinamOrderRequest {
     private String clientId;
     private String securityBoard;
     private String securityCode;
-    private FinamBuySell buySell;
+    private BuySell buySell;
     private long quantity;
     private boolean useCredit;
     private double price;
     private Property property;
-    private FinamOrderCondition condition;
-    private FinamOrderValidBefore validBefore;
+    private OrderCondition condition;
+    private OrderValidBefore validBefore;
 
     public FinamOrderRequest(String clientId, String securityBoard, String securityCode,
-                             FinamBuySell buySell, long quantity, boolean useCredit, double price,
-                             Property property, FinamOrderCondition condition, FinamOrderValidBefore validBefore) {
+                             BuySell buySell, long quantity, boolean useCredit, double price,
+                             Property property, OrderCondition condition, OrderValidBefore validBefore) {
         this.clientId = clientId;
         this.securityBoard = securityBoard;
         this.securityCode = securityCode;
@@ -60,11 +60,11 @@ public final class FinamOrderRequest {
         this.securityCode = securityCode;
     }
 
-    public FinamBuySell getBuySell() {
+    public BuySell getBuySell() {
         return buySell;
     }
 
-    public void setBuySell(FinamBuySell buySell) {
+    public void setBuySell(BuySell buySell) {
         this.buySell = buySell;
     }
 
@@ -100,19 +100,19 @@ public final class FinamOrderRequest {
         this.property = property;
     }
 
-    public FinamOrderCondition getCondition() {
+    public OrderCondition getCondition() {
         return condition;
     }
 
-    public void setCondition(FinamOrderCondition condition) {
+    public void setCondition(OrderCondition condition) {
         this.condition = condition;
     }
 
-    public FinamOrderValidBefore getValidBefore() {
+    public OrderValidBefore getValidBefore() {
         return validBefore;
     }
 
-    public void setValidBefore(FinamOrderValidBefore validBefore) {
+    public void setValidBefore(OrderValidBefore validBefore) {
         this.validBefore = validBefore;
     }
 

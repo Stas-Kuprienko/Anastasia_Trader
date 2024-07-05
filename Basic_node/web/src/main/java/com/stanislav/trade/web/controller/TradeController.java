@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -95,7 +94,7 @@ public final class TradeController {
             return "orders";
         } catch (IllegalArgumentException | NullPointerException | NoSuchElementException e) {
             log.error(e.getMessage());
-            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         }
     }
 
@@ -110,20 +109,17 @@ public final class TradeController {
     @PostMapping("/order/{ticker}")
     public String newOrderHandle(@AuthenticationPrincipal UserDetails userDetails,
                                  @PathVariable("ticker") String ticker,
-                                 @RequestParam String accountId,
-                                 @RequestParam String board,
-                                 @RequestParam double price,
-                                 @RequestParam long quantity,
-                                 @RequestParam String direction,
-                                 @RequestParam(required = false) Boolean cancelUnfulfilled,
-                                 @RequestParam Boolean isTillCancel,
-                                 @RequestParam(required = false) String delayTime,
+                                 @RequestParam("accountId") long accountId,
+                                 @RequestParam("board") String board,
+                                 @RequestParam("price") double price,
+                                 @RequestParam("quantity") long quantity,
+                                 @RequestParam("direction") String direction,
+                                 @RequestParam(name = "cancelUnfulfilled", required = false) Boolean cancelUnfulfilled,
+                                 @RequestParam(name = "isTillCancel", required = false) Boolean isTillCancel,
+                                 @RequestParam(name = "delayTime", required = false) LocalDateTime delayTime,
                                  Model model) {
-        long id;
-        Account account;
         try {
-            id = Long.parseLong(accountId);
-            account = accountService.findById(id, userDetails.getUsername()).orElseThrow();
+            Account account = accountService.findById(accountId, userDetails.getUsername()).orElseThrow();
             OrderCriteria criteria = OrderCriteria.builder()
                     .broker(account.getBroker())
                     .clientId(account.getClientId())
@@ -139,9 +135,7 @@ public final class TradeController {
                     OrderCriteria.PriceType.MarketPrice;
             criteria.setPriceType(priceType);
             if (delayTime != null) {
-                var formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-                LocalDateTime time = LocalDateTime.parse(delayTime, formatter);
-                criteria.setDelayTime(time);
+                criteria.setDelayTime(delayTime);
                 criteria.setPriceType(OrderCriteria.PriceType.Delayed);
             }
             if (cancelUnfulfilled != null && cancelUnfulfilled) {
@@ -157,18 +151,16 @@ public final class TradeController {
             String token = accountService.decodeToken(account.getToken());
             TradingService tradingService = tradingServiceMap.get(account.getBroker());
             Order order = tradingService.makeOrder(criteria, token);
+            order.setAccount(account);
             orderService.save(order);
             model.addAttribute("order", order);
             return "order";
         } catch (NullPointerException | NoSuchElementException | IllegalArgumentException e) {
             log.warn(e.getMessage());
-            return ErrorController.URL + ErrorCase.BAD_REQUEST;
-        } catch (DateTimeException e) {
-            log.error(e.getMessage());
-            return ErrorController.URL + ErrorCase.DEFAULT;
+            return ErrorController.URL_REDIRECT + ErrorCase.BAD_REQUEST;
         } catch (AccessDeniedException e) {
             log.warn(e.getMessage());
-            return ErrorController.URL + ErrorCase.ACCESS_DENIED;
+            return ErrorController.URL_REDIRECT + ErrorCase.ACCESS_DENIED;
         }
     }
 
@@ -191,11 +183,11 @@ public final class TradeController {
             futures.ifPresent(f -> model.addAttribute(ITEM, f));
         } else {
             log.error("type of security = " + type);
-            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         }
         if (model.getAttribute(ITEM) == null) {
             log.info("ticker=" + ticker + " is not found");
-            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         }
         return "new_order";
     }

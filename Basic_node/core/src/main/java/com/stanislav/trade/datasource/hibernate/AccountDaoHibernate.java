@@ -47,8 +47,8 @@ public class AccountDaoHibernate implements AccountDao {
     }
 
     @Override
-    public Optional<Account> findById(Long aLong) {
-        return Optional.empty();
+    public Optional<Account> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(Account.class, id));
     }
 
     @Override

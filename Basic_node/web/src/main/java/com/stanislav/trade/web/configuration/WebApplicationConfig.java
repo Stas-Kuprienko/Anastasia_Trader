@@ -124,7 +124,7 @@ public class WebApplicationConfig extends AbstractSecurityWebApplicationInitiali
 
     enum Requests {
 
-        PERMIT_ALL("/*", "/WEB-INF/views/**", "/telegram-bot/*"),
+        PERMIT_ALL("/*", "/WEB-INF/views/**", "/telegram-bot/*", "/error/*"),
         ANONYMOUS("/login/*", "/sing-up/*"),
         AUTHENTICATED("/market/**", "/logout"),
         USER("/trade/**", "/user/**", "/smart/**"),

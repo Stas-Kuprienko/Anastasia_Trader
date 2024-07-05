@@ -18,7 +18,8 @@ import java.util.Locale;
 @Controller
 public class ErrorController {
 
-    public static final String URL = "forward:/error/";
+    public static final String URL_FORWARD = "forward:/error/";
+    public static final String URL_REDIRECT = "redirect:/error/";
     public static final String ERROR_PAGE = "error_page";
     public static final String ERROR_KEY = "error";
 
@@ -56,11 +57,11 @@ public class ErrorController {
 
             case TELEGRAM_ID_LOST -> new ErrorModel(
                     messageSource.getMessage(errorCase, null, locale),
-                    Images.DEFAULT.file, 400);
+                    Images.NOT_FOUND.file, 400);
 
             case BAD_REQUEST -> new ErrorModel(
                     messageSource.getMessage(errorCase, null, locale),
-                    Images.ACCESS_DENIED.file, 400);
+                    Images.DEFAULT.file, 400);
 
             default -> new ErrorModel(messageSource.getMessage("500", null, locale),
                     Images.SERVER_ERROR.file, 500);

@@ -70,7 +70,7 @@ public class AccountServiceRamImpl implements AccountService {
         }
         if (account.isPresent() && !account.get().getUser().getLogin().equals(login)) {
             throw new AccessDeniedException(
-                    "the user '%s' tried to access someone else's account ''%d"
+                    "the user '%s' tried to access someone else's account '%d'"
                             .formatted(login, account.get().getId()));
         }
         return account;

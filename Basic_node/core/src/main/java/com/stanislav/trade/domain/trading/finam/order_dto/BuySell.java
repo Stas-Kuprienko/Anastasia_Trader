@@ -7,16 +7,16 @@ package com.stanislav.trade.domain.trading.finam.order_dto;
 import com.stanislav.trade.entities.Direction;
 import org.springframework.lang.NonNull;
 
-public enum FinamBuySell {
+public enum BuySell {
 
     Buy, Sell;
 
-    public static FinamBuySell convert(@NonNull Direction direction) {
-        for (FinamBuySell e : FinamBuySell.values()) {
+    public static BuySell convert(@NonNull Direction direction) {
+        for (BuySell e : BuySell.values()) {
             if (e.toString().equalsIgnoreCase(direction.toString())) {
                 return e;
             }
         }
-        throw new EnumConstantNotPresentException(FinamBuySell.class, direction.toString());
+        throw new EnumConstantNotPresentException(BuySell.class, direction.toString());
     }
 }

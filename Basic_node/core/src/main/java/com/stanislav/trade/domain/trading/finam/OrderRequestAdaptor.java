@@ -1,10 +1,10 @@
 package com.stanislav.trade.domain.trading.finam;
 
 import com.stanislav.trade.domain.trading.OrderCriteria;
-import com.stanislav.trade.domain.trading.finam.order_dto.FinamBuySell;
-import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderCondition;
+import com.stanislav.trade.domain.trading.finam.order_dto.BuySell;
+import com.stanislav.trade.domain.trading.finam.order_dto.OrderCondition;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderRequest;
-import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderValidBefore;
+import com.stanislav.trade.domain.trading.finam.order_dto.OrderValidBefore;
 import com.stanislav.trade.entities.Direction;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +19,14 @@ public class OrderRequestAdaptor {
             case PutInQueue -> FinamOrderRequest.Property.PutInQueue;
             case CancelUnfulfilled -> FinamOrderRequest.Property.CancelBalance;
         };
-        FinamBuySell buySell = switch (criteria.getDirection()) {
-            case Buy -> FinamBuySell.Buy;
-            case Sell -> FinamBuySell.Sell;
+        BuySell buySell = switch (criteria.getDirection()) {
+            case Buy -> BuySell.Buy;
+            case Sell -> BuySell.Sell;
             case null, default ->
                     throw new IllegalArgumentException("direction=" + criteria.getDirection() + " in " + criteria);
         };
-        FinamOrderCondition orderCond = parserOrderCondition(criteria);
-        FinamOrderValidBefore orderValid = parseOrderValidBefore(criteria);
+        OrderCondition orderCond = parserOrderCondition(criteria);
+        OrderValidBefore orderValid = parseOrderValidBefore(criteria);
         return new FinamOrderRequest(
                 criteria.getClientId(),
                 criteria.getBoard().name(),
@@ -42,33 +42,33 @@ public class OrderRequestAdaptor {
     }
 
 
-    private FinamOrderValidBefore parseOrderValidBefore(OrderCriteria criteria) {
-        FinamOrderValidBefore.Type validBeforeType;
+    private OrderValidBefore parseOrderValidBefore(OrderCriteria criteria) {
+        OrderValidBefore.Type validBeforeType;
         String time;
         switch (criteria.getValidBefore()) {
             case TillCancelled -> {
-                validBeforeType = FinamOrderValidBefore.Type.TillCancelled;
+                validBeforeType = OrderValidBefore.Type.TillCancelled;
                 time = null;
             }
             case TillEndSession -> {
-                validBeforeType = FinamOrderValidBefore.Type.TillEndSession;
+                validBeforeType = OrderValidBefore.Type.TillEndSession;
                 time = null;
             }
             case ExactTime -> {
                 if (criteria.getBeforeTime() == null) {
                     throw new IllegalArgumentException("beforeTime is null in " + criteria);
                 }
-                validBeforeType = FinamOrderValidBefore.Type.ExactTime;
+                validBeforeType = OrderValidBefore.Type.ExactTime;
                 time = criteria.getBeforeTime().toString();
             }
             case null, default ->
                     throw new IllegalArgumentException("validBefore=" + criteria.getValidBefore() + " in " + criteria);
         }
-        return new FinamOrderValidBefore(validBeforeType, time);
+        return new OrderValidBefore(validBeforeType, time);
     }
 
-    private FinamOrderCondition parserOrderCondition(OrderCriteria criteria) {
-        FinamOrderCondition.Type condType;
+    private OrderCondition parserOrderCondition(OrderCriteria criteria) {
+        OrderCondition.Type condType;
         BigDecimal price;
         String time;
         switch (criteria.getPriceType()) {
@@ -96,23 +96,23 @@ public class OrderRequestAdaptor {
             }
             case null, default -> throw new IllegalArgumentException("priceType=" + criteria.getPriceType() + " in " + criteria);
         }
-        return new FinamOrderCondition(condType, price, time);
+        return new OrderCondition(condType, price, time);
     }
 
-    private FinamOrderCondition.Type marketPriceCondition(Direction direction) {
-        FinamOrderCondition.Type condType = direction.equals(Direction.Buy) ?
-                FinamOrderCondition.Type.Ask : direction.equals(Direction.Sell) ?
-                FinamOrderCondition.Type.Bid : null;
+    private OrderCondition.Type marketPriceCondition(Direction direction) {
+        OrderCondition.Type condType = direction.equals(Direction.Buy) ?
+                OrderCondition.Type.Ask : direction.equals(Direction.Sell) ?
+                OrderCondition.Type.Bid : null;
         if (condType == null) {
             throw new IllegalArgumentException("direction=" + direction.name());
         }
         return condType;
     }
 
-    private FinamOrderCondition.Type limitCondition(Direction direction) {
-        FinamOrderCondition.Type condType = direction.equals(Direction.Buy) ?
-                FinamOrderCondition.Type.LastDown : direction.equals(Direction.Sell) ?
-                FinamOrderCondition.Type.LastUp : null;
+    private OrderCondition.Type limitCondition(Direction direction) {
+        OrderCondition.Type condType = direction.equals(Direction.Buy) ?
+                OrderCondition.Type.LastDown : direction.equals(Direction.Sell) ?
+                OrderCondition.Type.LastUp : null;
         if (condType == null) {
             throw new IllegalArgumentException("direction=" + direction.name());
         }

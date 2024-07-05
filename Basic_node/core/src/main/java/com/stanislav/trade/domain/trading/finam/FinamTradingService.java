@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.stanislav.trade.domain.market.finam.dto.FinamPortfolioDto;
 import com.stanislav.trade.domain.trading.OrderCriteria;
 import com.stanislav.trade.domain.trading.TradingService;
-import com.stanislav.trade.domain.trading.finam.order_dto.FinamBuySell;
+import com.stanislav.trade.domain.trading.finam.order_dto.BuySell;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderRequest;
 import com.stanislav.trade.domain.trading.finam.order_dto.FinamOrderResponse;
 import com.stanislav.trade.entities.Broker;
@@ -27,6 +27,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import static com.stanislav.trade.domain.trading.finam.FinamTradingService.Args.*;
 
@@ -34,6 +37,8 @@ import static com.stanislav.trade.domain.trading.finam.FinamTradingService.Args.
 @Service("finamTradingService")
 public class FinamTradingService implements TradingService {
 
+    private static final String TRANSACTION_ID = "transactionId";
+    private static final String DATA = "data";
     private final JsonDataParser dataParser;
     private final RestConsumer restConsumer;
     private final OrderRequestAdaptor requestAdaptor;
@@ -64,7 +69,7 @@ public class FinamTradingService implements TradingService {
                 .add(MONEY.value, false);
         try {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
-            var dto = dataParser.parseObject(response, FinamPortfolioDto.class, "data");
+            var dto = dataParser.parseObject(response, FinamPortfolioDto.class, DATA);
             return dto.toPortfolio();
         } catch (HttpStatusCodeException e) {
             log.error(e.getMessage());
@@ -81,7 +86,7 @@ public class FinamTradingService implements TradingService {
                 .add(ACTIVE.value, active);
         try {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
-            String[] layers = {"data", "orders"};
+            String[] layers = {DATA, "orders"};
             List<FinamOrderResponse> dtoList = dataParser.parseObjectsList(response, FinamOrderResponse.class, layers);
             return dtoList.stream().map(FinamOrderResponse::toOrderClass).toList();
         } catch (HttpClientErrorException e) {
@@ -96,8 +101,17 @@ public class FinamTradingService implements TradingService {
         try {
             String json = dataParser.getObjectMapper().writer().writeValueAsString(finamOrder);
             String response = restConsumer.doPostJson(Resource.ORDERS.value, json, token);
-            FinamOrderResponse dto = dataParser.parseObject(response, FinamOrderResponse.class, "data");
-            return dto.toOrderClass();
+            response = dataParser.getObjectMapper().readTree(response).get(DATA).toString();
+            int transactionId = (int) dataParser.getObjectMapper().readValue(response, HashMap.class).get(TRANSACTION_ID);
+            return Order.builder()
+                    .orderId(transactionId)
+                    .ticker(criteria.getTicker())
+                    .price(BigDecimal.valueOf(criteria.getPrice()))
+                    .quantity(criteria.getQuantity())
+                    .direction(criteria.getDirection())
+                    .board(criteria.getBoard())
+                    .status(FinamOrderResponse.OrderStatus.Active.toString())
+                    .build();
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
@@ -126,7 +140,7 @@ public class FinamTradingService implements TradingService {
 
 
     private static FinamOrderRequest buildOrder(Order order, String clientId, FinamOrderTradeCriteria finamOrderCriteria) {
-        FinamBuySell buySell = FinamBuySell.convert(order.getDirection());
+        BuySell buySell = BuySell.convert(order.getDirection());
         return FinamOrderRequest.builder()
                 .clientId(clientId)
                 .securityBoard(order.getBoard().toString())

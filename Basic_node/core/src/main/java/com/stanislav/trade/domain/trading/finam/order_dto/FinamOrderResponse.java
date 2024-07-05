@@ -19,24 +19,24 @@ public final class FinamOrderResponse {
     private String securityCode;
     private String clientId;
     private OrderStatus status;
-    private FinamBuySell buySell;
+    private BuySell buySell;
     private String createdAt;
     private double price;
     private int quantity;
     private int balance;
     private String message;
     private String currency;
-    private FinamOrderCondition condition;
-    private FinamOrderValidBefore validBefore;
+    private OrderCondition condition;
+    private OrderValidBefore validBefore;
     private String acceptedAt;
     private String securityBoard;
     private Market market;
 
 
     public FinamOrderResponse(int orderNo, int transactionId, String securityCode, String clientId,
-                              OrderStatus status, FinamBuySell buySell, String createdAt,
+                              OrderStatus status, BuySell buySell, String createdAt,
                               double price, int quantity, int balance, String message, String currency,
-                              FinamOrderCondition condition, FinamOrderValidBefore validBefore,
+                              OrderCondition condition, OrderValidBefore validBefore,
                               String acceptedAt, String securityBoard, Market market) {
         this.orderNo = orderNo;
         this.transactionId = transactionId;
@@ -67,7 +67,7 @@ public final class FinamOrderResponse {
                 .price(BigDecimal.valueOf(price))
                 .quantity(quantity)
                 .direction(Direction.parse(buySell))
-                .status(status.toString())
+                .status(status == null ? null : status.toString())
                 .build();
     }
 
@@ -111,11 +111,11 @@ public final class FinamOrderResponse {
         this.status = status;
     }
 
-    public FinamBuySell getBuySell() {
+    public BuySell getBuySell() {
         return buySell;
     }
 
-    public void setBuySell(FinamBuySell buySell) {
+    public void setBuySell(BuySell buySell) {
         this.buySell = buySell;
     }
 
@@ -167,19 +167,19 @@ public final class FinamOrderResponse {
         this.currency = currency;
     }
 
-    public FinamOrderCondition getCondition() {
+    public OrderCondition getCondition() {
         return condition;
     }
 
-    public void setCondition(FinamOrderCondition condition) {
+    public void setCondition(OrderCondition condition) {
         this.condition = condition;
     }
 
-    public FinamOrderValidBefore getValidBefore() {
+    public OrderValidBefore getValidBefore() {
         return validBefore;
     }
 
-    public void setValidBefore(FinamOrderValidBefore validBefore) {
+    public void setValidBefore(OrderValidBefore validBefore) {
         this.validBefore = validBefore;
     }
 

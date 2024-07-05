@@ -35,7 +35,7 @@ public final class Order implements Serializable {
 
     private BigDecimal price;
 
-    private int quantity;
+    private long quantity;
 
     @Enumerated(EnumType.STRING)
     private Direction direction;
@@ -44,7 +44,7 @@ public final class Order implements Serializable {
 
 
     public Order(long id, int orderId, Account account, String ticker, Board board,
-                 BigDecimal price, int quantity, Direction direction, String status) {
+                 BigDecimal price, long quantity, Direction direction, String status) {
         this.id = id;
         this.orderId = orderId;
         this.account = account;
@@ -111,11 +111,11 @@ public final class Order implements Serializable {
         this.price = price;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 
@@ -169,6 +169,11 @@ public final class Order implements Serializable {
             return this;
         }
 
+        public OrderBuilder orderId(int orderId) {
+            Order.this.setOrderId(orderId);
+            return this;
+        }
+
         public OrderBuilder account(Account account) {
             Order.this.setAccount(account);
             return this;
@@ -184,7 +189,7 @@ public final class Order implements Serializable {
             return this;
         }
 
-        public OrderBuilder quantity(int quantity) {
+        public OrderBuilder quantity(long quantity) {
             Order.this.setQuantity(quantity);
             return this;
         }
@@ -196,6 +201,11 @@ public final class Order implements Serializable {
 
         public OrderBuilder status(String status) {
             Order.this.setStatus(status);
+            return this;
+        }
+
+        public OrderBuilder board(Board board) {
+            Order.this.setBoard(board);
             return this;
         }
 

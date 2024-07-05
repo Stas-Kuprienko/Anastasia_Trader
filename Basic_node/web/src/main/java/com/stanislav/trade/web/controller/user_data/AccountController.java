@@ -58,17 +58,17 @@ public class AccountController {
             account = accountService.findById(id, userDetails.getUsername());
         } catch (NumberFormatException | NullPointerException e) {
             log.info(e.getMessage());
-            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         } catch (AccessDeniedException e) {
             log.warn(e.getMessage());
-            return ErrorController.URL + ErrorCase.ACCESS_DENIED;
+            return ErrorController.URL_FORWARD + ErrorCase.ACCESS_DENIED;
         }
         if (account.isPresent()) {
             model.addAttribute("account", account.get());
             return "account";
         } else {
             log.info("account is not found, id=" + id);
-            return ErrorController.URL + ErrorCase.NOT_FOUND;
+            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
         }
     }
 
@@ -93,7 +93,7 @@ public class AccountController {
                 return "accounts";
             } catch (IllegalArgumentException e) {
                 log.error(e.getMessage());
-                return ErrorController.URL + ErrorCase.BAD_REQUEST;
+                return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
             }
         } else {
             log.error("User not found: " + id);
@@ -132,7 +132,7 @@ public class AccountController {
             id = Long.parseLong(accountId);
         } catch (NumberFormatException | NullPointerException e) {
             log.info(e.getMessage());
-            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         }
         accountService.delete(id);
         var accounts = accountService.findByUser(id);
@@ -150,10 +150,10 @@ public class AccountController {
             account = accountService.findById(id, userDetails.getUsername());
         } catch (NumberFormatException | NullPointerException e) {
             log.info(e.getMessage());
-            return ErrorController.URL + ErrorCase.BAD_REQUEST;
+            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         } catch (AccessDeniedException e) {
             log.warn(e.getMessage());
-            return ErrorController.URL + ErrorCase.ACCESS_DENIED;
+            return ErrorController.URL_FORWARD + ErrorCase.ACCESS_DENIED;
         }
         if (account.isPresent()) {
             Account a = account.get();
@@ -164,7 +164,7 @@ public class AccountController {
             return "portfolio";
         } else {
             log.info("account is not found, id=" + id);
-            return ErrorController.URL + ErrorCase.NOT_FOUND;
+            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
         }
     }
 }

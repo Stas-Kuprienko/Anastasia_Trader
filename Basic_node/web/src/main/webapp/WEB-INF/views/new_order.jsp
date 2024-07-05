@@ -658,7 +658,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                             </select></div>
                                         <div class="t-input-error" aria-live="polite" id="error_1720158663216"></div>
                                     </div>
-                                </div>
+                                </div><br><br>
                                 <div class="t-input-group t-input-group_sb t-input-group_width50 t-input-group_inrow t-input-group_inrow-last"
                                      data-input-lid="1494858943227" data-field-type="sb">
                                     <div class="t-input-subtitle t-descr t-descr_xxs t-opacity_70"
@@ -672,16 +672,16 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                                                                                         class="t-select js-tilda-rule t-select_bbonly"
                                                                                                         data-tilda-req="1"
                                                                                                         aria-required="true"
-                                                                                                        style="color:#ffffff;border:1px solid #000000;background-color:#000000;font-weight:600;font-size:22px;">
-                                            <option value="Buy" style="color:#ffffff;background-color:#000000;">
+                                                                                                        style="color:#ffffff;border:1px solid #000000;background-color:#382D6E;font-weight:600;font-size:22px;">
+                                            <option value="Buy" style="color:#ffffff;background-color:#382D6E;">
                                                 Купить
                                             </option>
-                                            <option value="Sell" style="color:#ffffff;background-color:#000000;">
+                                            <option value="Sell" style="color:#ffffff;background-color:#382D6E;">
                                                 Продать
                                             </option>
                                         </select></div>
                                         <div class="t-input-error" aria-live="polite" id="error_1494858943227"></div>
-                                    </div>
+                                    </div><br><br>
                                 </div>
                                 <div class="t-input-group t-input-group_qn t-input-group_width33 t-input-group_inrow t-input-group_inonerow t-input-group_inrow-withsibling"
                                      data-input-lid="1495040492013" data-field-type="qn"><label
@@ -824,17 +824,17 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                     <div class="t-input-block t-input-block_rd-flex">
                                         <div class="t-radio__wrapper"><label
                                                 class="t-radio__item t-radio__control t-text t-text_xs" style="color: "><input
-                                                type="radio" name="order-type" value="Сделка"
+                                                type="radio" name="order-type" value="order" checked
                                                 class="t-radio js-tilda-rule" data-tilda-req="1" aria-required="true">
                                             <div class="t-radio__indicator"></div>
                                             <span>Сделка</span></label><label
                                                 class="t-radio__item t-radio__control t-text t-text_xs" style="color: "><input
-                                                type="radio" name="order-type" value="Стоп-лосс"
+                                                type="radio" name="order-type" value="stop"
                                                 class="t-radio js-tilda-rule" data-tilda-req="1" aria-required="true">
                                             <div class="t-radio__indicator"></div>
                                             <span>Стоп-лосс</span></label><label
                                                 class="t-radio__item t-radio__control t-text t-text_xs" style="color: "><input
-                                                type="radio" name="order-type" value="Тейк-профит"
+                                                type="radio" name="order-type" value="take-profit"
                                                 class="t-radio js-tilda-rule" data-tilda-req="1" aria-required="true">
                                             <div class="t-radio__indicator"></div>
                                             <span>Тейк-профит</span></label>
@@ -856,12 +856,12 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                     <div class="t-input-block t-input-block_rd-flex">
                                         <div class="t-radio__wrapper"><label
                                                 class="t-radio__item t-radio__control t-text t-text_xs" style="color: "><input
-                                                type="radio" name="isTillCancel" value="До конца сессии"
-                                                class="t-radio js-tilda-rule" data-tilda-req="1" aria-required="true">
+                                                type="radio" name="isTillCancel" value="false"
+                                                class="t-radio js-tilda-rule" data-tilda-req="1" aria-required="true" checked>
                                             <div class="t-radio__indicator"></div>
                                             <span>До конца сессии</span></label><label
                                                 class="t-radio__item t-radio__control t-text t-text_xs" style="color: "><input
-                                                type="radio" name="isTillCancel" value="До отмены"
+                                                type="radio" name="isTillCancel" value="true"
                                                 class="t-radio js-tilda-rule" data-tilda-req="1" aria-required="true">
                                             <div class="t-radio__indicator"></div>
                                             <span>До отмены</span></label>
@@ -936,7 +936,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                     <div class="t-input-block "><label class="t-checkbox__control t-text t-text_xs"
                                                                        style="color: "><input type="checkbox"
                                                                                               name="cancelUnfulfilled"
-                                                                                              value="yes"
+                                                                                              value="true"
                                                                                               class="t-checkbox js-tilda-rule">
                                         <div class="t-checkbox__indicator"></div>
                                         отменить неисполненную часть сделки</label>
