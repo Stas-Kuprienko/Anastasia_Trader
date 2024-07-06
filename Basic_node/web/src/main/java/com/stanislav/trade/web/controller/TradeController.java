@@ -15,11 +15,12 @@ import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.configuration.WebApplicationConfig;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.controller.service.MVC;
 import com.stanislav.trade.web.service.AccountService;
 import com.stanislav.trade.web.controller.service.ErrorCase;
-import com.stanislav.trade.web.service.OrderService;
+import com.stanislav.trade.web.service.TradeOrderService;
 import com.stanislav.trade.web.service.UserDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,19 +48,19 @@ public final class TradeController {
 
     private final UserDataService userDataService;
     private final AccountService accountService;
-    private final OrderService orderService;
+    private final TradeOrderService tradeOrderService;
     private final ExchangeData exchangeData;
     private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
 
 
     @Autowired
     public TradeController(List<TradingService> tradingServices, UserDataService userDataService,
-                           AccountService accountService, OrderService orderService,
+                           AccountService accountService, TradeOrderService tradeOrderService,
                            @Qualifier("moexExchangeData") ExchangeData exchangeData) {
         this.tradingServiceMap = initTradingServiceMap(tradingServices);
         this.userDataService = userDataService;
         this.accountService = accountService;
-        this.orderService = orderService;
+        this.tradeOrderService = tradeOrderService;
         this.exchangeData = exchangeData;
     }
 
@@ -100,10 +101,22 @@ public final class TradeController {
 
     @GetMapping("/order/{orderId}")
     public String getOrder(@AuthenticationPrincipal UserDetails userDetails,
-                           @PathVariable("orderId") long id,
-                           @RequestParam String clientId, Model model) {
-
-        return "order";
+                           @PathVariable("orderId") int orderId,
+                           @RequestParam("accountId") long accountId, Model model) {
+        try {
+            Optional<Account> account = accountService.findById(accountId, userDetails.getUsername());
+            if (account.isPresent()) {
+                Optional<Order> order = tradeOrderService.findByOrderId(orderId, account.get());
+                if (order.isPresent()) {
+                    model.addAttribute("order", order.get());
+                    return "order_item";
+                }
+            }
+            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
+        } catch (AccessDeniedException e) {
+            log.warn(e.getMessage());
+            return ErrorController.URL_FORWARD + ErrorCase.ACCESS_DENIED;
+        }
     }
 
     @PostMapping("/order/{ticker}")
@@ -152,9 +165,11 @@ public final class TradeController {
             TradingService tradingService = tradingServiceMap.get(account.getBroker());
             Order order = tradingService.makeOrder(criteria, token);
             order.setAccount(account);
-            orderService.save(order);
+            tradeOrderService.save(order);
             model.addAttribute("order", order);
-            return MVC.REDIRECT + "/order/" + order.getId();
+            //TODO safe
+            String path = "trade/order/" + order.getOrderId() + "?accountId=" + account.getId();
+            return MVC.REDIRECT + WebApplicationConfig.resource + path;
         } catch (NullPointerException | NoSuchElementException | IllegalArgumentException e) {
             log.warn(e.getMessage());
             return ErrorController.URL_REDIRECT + ErrorCase.BAD_REQUEST;
@@ -164,7 +179,7 @@ public final class TradeController {
         }
     }
 
-    @GetMapping("/order/{ticker}")
+    @GetMapping("/new-order/{ticker}")
     public String newOrder(@AuthenticationPrincipal UserDetails userDetails,
                            @PathVariable("ticker") String ticker,
                            @RequestParam("type") String type, Model model) {

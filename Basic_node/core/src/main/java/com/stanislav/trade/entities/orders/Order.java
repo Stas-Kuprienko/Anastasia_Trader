@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "trade_order")
 public final class Order implements Serializable {
 
     @Id
@@ -23,7 +23,7 @@ public final class Order implements Serializable {
 
     private int orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "account", nullable = false)
     @JsonIgnore
     private Account account;

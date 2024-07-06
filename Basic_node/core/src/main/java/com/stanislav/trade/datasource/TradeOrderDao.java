@@ -10,7 +10,7 @@ import com.stanislav.trade.entities.user.Account;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderDao extends EntityDao<Order, Long> {
+public interface TradeOrderDao extends EntityDao<Order, Long> {
 
     List<Order> findAllByAccount(Account account);
 

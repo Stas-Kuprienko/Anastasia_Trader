@@ -4,7 +4,7 @@
 
 package com.stanislav.trade.datasource.hibernate;
 
-import com.stanislav.trade.datasource.OrderDao;
+import com.stanislav.trade.datasource.TradeOrderDao;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
 import jakarta.persistence.EntityManager;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 @Slf4j
 @Component("orderDao")
-public class OrderDaoHibernate implements OrderDao {
+public class TradeOrderDaoHibernate implements TradeOrderDao {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -27,7 +27,7 @@ public class OrderDaoHibernate implements OrderDao {
     private final QueryGenerator jpQuery;
 
 
-    public OrderDaoHibernate() {
+    public TradeOrderDaoHibernate() {
         jpQuery = new QueryGenerator();
     }
 

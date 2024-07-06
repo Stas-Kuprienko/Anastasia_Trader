@@ -68,10 +68,14 @@ public class QueryGenerator {
                     .append(KeyWord.WHERE).append(' ');
             for (var param : parameters) {
                 strBuilder.append(tableAlias).append('.')
-                        .append(param).append(' ')
-                        .append('=').append(' ')
-                        .append(':').append(param);
+                        .append(param).append('=')
+                        .append(':').append(param)
+                        .append(' ')
+                        .append(KeyWord.AND).append(' ');
             }
+            int iToDelete = strBuilder.length() - (KeyWord.AND.name().length() + 2);
+            strBuilder.delete(iToDelete, strBuilder.length());
+            System.out.println(strBuilder);
         }
         return this;
     }
@@ -91,7 +95,7 @@ public class QueryGenerator {
     }
 
     enum KeyWord {
-        INSERT, SELECT, FROM, UPDATE, WHERE, SET, DELETE
+        INSERT, SELECT, FROM, UPDATE, WHERE, SET, DELETE, AND
     }
 
     enum Native {

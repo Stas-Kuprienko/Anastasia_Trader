@@ -101,6 +101,7 @@ public class FinamTradingService implements TradingService {
         try {
             String json = dataParser.getObjectMapper().writer().writeValueAsString(finamOrder);
             String response = restConsumer.doPostJson(Resource.ORDERS.value, json, token);
+            //TODO error handling
             response = dataParser.getObjectMapper().readTree(response).get(DATA).toString();
             int transactionId = (int) dataParser.getObjectMapper().readValue(response, HashMap.class).get(TRANSACTION_ID);
             return Order.builder()

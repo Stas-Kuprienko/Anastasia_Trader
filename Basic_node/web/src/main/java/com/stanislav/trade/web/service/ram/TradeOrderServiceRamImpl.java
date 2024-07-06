@@ -1,8 +1,9 @@
 package com.stanislav.trade.web.service.ram;
 
-import com.stanislav.trade.datasource.OrderDao;
+import com.stanislav.trade.datasource.TradeOrderDao;
 import com.stanislav.trade.entities.orders.Order;
-import com.stanislav.trade.web.service.OrderService;
+import com.stanislav.trade.entities.user.Account;
+import com.stanislav.trade.web.service.TradeOrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,15 +11,15 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service("orderService")
-public class OrderServiceRamImpl implements OrderService {
+public class TradeOrderServiceRamImpl implements TradeOrderService {
 
-    private final OrderDao orderDao;
+    private final TradeOrderDao tradeOrderDao;
     private final ConcurrentHashMap<Long, Order> ram;
 
 
     @Autowired
-    public OrderServiceRamImpl(OrderDao orderDao) {
-        this.orderDao = orderDao;
+    public TradeOrderServiceRamImpl(TradeOrderDao tradeOrderDao) {
+        this.tradeOrderDao = tradeOrderDao;
         ram = new ConcurrentHashMap<>();
     }
 
@@ -26,7 +27,7 @@ public class OrderServiceRamImpl implements OrderService {
     @Transactional
     @Override
     public void save(Order order) {
-        order = orderDao.save(order);
+        order = tradeOrderDao.save(order);
         ram.put(order.getId(), order);
     }
 
@@ -34,10 +35,15 @@ public class OrderServiceRamImpl implements OrderService {
     public Optional<Order> findById(long id) {
         Optional<Order> order = Optional.ofNullable(ram.get(id));
         if (order.isEmpty()) {
-            order = orderDao.findById(id);
+            order = tradeOrderDao.findById(id);
             order.ifPresent(o -> ram.put(o.getId(), o));
         }
         return order;
+    }
+
+    @Override
+    public Optional<Order> findByOrderId(int orderId, Account account) {
+        return tradeOrderDao.findByOrderIdAndAccountId(orderId, account);
     }
 
     @Override
