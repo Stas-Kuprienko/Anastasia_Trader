@@ -106,6 +106,8 @@ public class FinamTradingService implements TradingService {
             int transactionId = (int) dataParser.getObjectMapper().readValue(response, HashMap.class).get(TRANSACTION_ID);
             return Order.builder()
                     .orderId(transactionId)
+                    .clientId(criteria.getClientId())
+                    .broker(Broker.Finam)
                     .ticker(criteria.getTicker())
                     .price(BigDecimal.valueOf(criteria.getPrice()))
                     .quantity(criteria.getQuantity())
@@ -139,22 +141,6 @@ public class FinamTradingService implements TradingService {
 
     }
 
-
-    private static FinamOrderRequest buildOrder(Order order, String clientId, FinamOrderTradeCriteria finamOrderCriteria) {
-        BuySell buySell = BuySell.convert(order.getDirection());
-        return FinamOrderRequest.builder()
-                .clientId(clientId)
-                .securityBoard(order.getBoard().toString())
-                .securityCode(order.getTicker())
-                .buySell(buySell)
-                .quantity(order.getQuantity())
-                .useCredit(finamOrderCriteria.useCredit())
-                .price(order.getPrice().doubleValue())
-                .property(finamOrderCriteria.property())
-                .condition(finamOrderCriteria.condition())
-                .validBefore(finamOrderCriteria.validBefore())
-                .build();
-    }
 
     enum Args {
         CLIENT("ClientId"),

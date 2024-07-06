@@ -91,13 +91,21 @@ public class AccountServiceRamImpl implements AccountService {
     }
 
     @Override
-    public String decodeToken(String token) throws IllegalArgumentException, ClassCastException {
+    public Optional<Account> findByClientId(String clientId, User user) {
+        return user.getAccounts()
+                .stream()
+                .filter(e -> e.getClientId().equals(clientId))
+                .findFirst();
+    }
+
+    @Override
+    public String decodeToken(String token) throws IllegalArgumentException {
         try {
             return (String) jwtParser
                     .parseSignedClaims(token)
                     .getPayload()
                     .get("token");
-        } catch (JwtException e) {
+        } catch (JwtException | ClassCastException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
         }

@@ -5,55 +5,48 @@
 package com.stanislav.trade.entities.orders;
 
 import com.stanislav.trade.entities.Board;
+import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.Direction;
-import com.stanislav.trade.entities.user.Account;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
-@Table(name = "trade_order")
 public final class Order implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long orderId;
 
-    private int orderId;
+    private String clientId;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "account", nullable = false)
-    @JsonIgnore
-    private Account account;
+    private Broker broker;
 
     private String ticker;
 
-    @Enumerated(EnumType.STRING)
     private Board board;
 
     private BigDecimal price;
 
     private long quantity;
 
-    @Enumerated(EnumType.STRING)
     private Direction direction;
 
     private String status;
 
+    private LocalDateTime created;
 
-    public Order(long id, int orderId, Account account, String ticker, Board board,
-                 BigDecimal price, long quantity, Direction direction, String status) {
-        this.id = id;
+
+    public Order(long orderId, String clientId, Broker broker, String ticker, Board board,
+                 BigDecimal price, long quantity, Direction direction, String status, LocalDateTime created) {
         this.orderId = orderId;
-        this.account = account;
+        this.clientId = clientId;
+        this.broker = broker;
         this.ticker = ticker;
         this.board = board;
         this.price = price;
         this.quantity = quantity;
         this.direction = direction;
         this.status = status;
+        this.created = created;
     }
 
     public Order() {}
@@ -63,28 +56,28 @@ public final class Order implements Serializable {
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public Broker getBroker() {
+        return broker;
+    }
+
+    public void setBroker(Broker broker) {
+        this.broker = broker;
     }
 
     public String getTicker() {
@@ -135,47 +128,61 @@ public final class Order implements Serializable {
         this.status = status;
     }
 
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Order order)) return false;
-        return Objects.equals(id, order.id);
+        return Objects.equals(orderId, order.orderId) &&
+                Objects.equals(clientId, order.clientId) &&
+                broker == order.broker &&
+                Objects.equals(ticker, order.ticker) &&
+                board == order.board;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(orderId, clientId, broker, ticker, board);
     }
 
     @Override
     public String toString() {
         return "Order{" +
-                "id=" + orderId +
-                ", account='" + account.getClientId() + '\'' +
+                ", orderId=" + orderId +
+                ", clientId='" + clientId + '\'' +
+                ", broker=" + broker +
                 ", ticker='" + ticker + '\'' +
+                ", board=" + board +
                 ", price=" + price +
                 ", quantity=" + quantity +
                 ", direction=" + direction +
+                ", status='" + status + '\'' +
                 '}';
     }
-
 
     public final class OrderBuilder {
 
         private OrderBuilder() {}
 
-        public OrderBuilder id(int id) {
-            Order.this.setOrderId(id);
-            return this;
-        }
-
-        public OrderBuilder orderId(int orderId) {
+        public OrderBuilder orderId(long orderId) {
             Order.this.setOrderId(orderId);
             return this;
         }
 
-        public OrderBuilder account(Account account) {
-            Order.this.setAccount(account);
+        public OrderBuilder clientId(String clientId) {
+            Order.this.setClientId(clientId);
+            return this;
+        }
+
+        public OrderBuilder broker(Broker broker) {
+            Order.this.setBroker(broker);
             return this;
         }
 
@@ -206,6 +213,11 @@ public final class Order implements Serializable {
 
         public OrderBuilder board(Board board) {
             Order.this.setBoard(board);
+            return this;
+        }
+
+        public OrderBuilder created(LocalDateTime created) {
+            Order.this.setCreated(created);
             return this;
         }
 

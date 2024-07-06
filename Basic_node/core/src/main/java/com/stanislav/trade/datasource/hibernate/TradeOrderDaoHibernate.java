@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Slf4j
-@Component("orderDao")
+//@Component("orderDao")
 public class TradeOrderDaoHibernate implements TradeOrderDao {
 
     @PersistenceContext
@@ -69,7 +69,7 @@ public class TradeOrderDaoHibernate implements TradeOrderDao {
 
     @Override
     public Optional<Order> findByOrderIdAndAccountId(int orderId, Account account) {
-        String[] parameters = {"orderId", "account"};
+        String[] parameters = {"orderId", "clientId"};
         String jpql = jpQuery
                 .initSelect()
                 .fullyFrom()
@@ -78,7 +78,7 @@ public class TradeOrderDaoHibernate implements TradeOrderDao {
                 .build();
         var query = entityManager.createQuery(jpql, Order.class);
         query.setParameter(parameters[0], orderId)
-                .setParameter(parameters[1], account);
+                .setParameter(parameters[1], account.getClientId());
         try {
             return Optional.ofNullable(query.getSingleResult());
         } catch (NoResultException e) {

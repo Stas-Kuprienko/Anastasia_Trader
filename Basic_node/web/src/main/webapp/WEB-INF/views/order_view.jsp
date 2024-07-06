@@ -7,7 +7,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${order.orderId}</title>
+    <title>${order.ticker}</title>
     <meta property="og:url" content="http://localhost8081.tilda.ws/page49542893.html">
     <meta property="og:title" content="/accounts">
     <meta property="og:description" content="">
@@ -595,59 +595,91 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
          data-bg-color="linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%)">
         <!-- t508 -->
         <div class="t508">
-            <div class="t-section__container t-container t-container_flex">
-                <div class="t-col t-col_10 t-prefix_1">
-                    <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">
-                        ${order.ticker}
-                    </div>
-                </div>
-            </div>
             <style>.t-section__descr {max-width: 560px;}#rec766761820 .t-section__title {margin-bottom: 50px;}#rec766761820 .t-section__descr {}@media screen and (max-width: 960px) {#rec766761820 .t-section__title {margin-bottom: 45px;}}</style>
-            <div class="t508__container t-container">
-                <div class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
-                    <div class="t-cell t-valign_top">
-                    </div>
-                    <div class="t508__textwrapper t-cell t-valign_top" style="">
-                        <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
-                            Цена: ${order.price}
+            <style> .t-container .my-class {} .my-class:hover {background-color:rgba(143,100,130,0.5)}</style>
+
+            <c:if test="${orders != null}">
+                <div class="t508__container t-container">
+                    <c:forEach items="${orders}" var="order" begin="0" end="20">
+                        <div class="my-class"><a href="/anastasia/trade/order/${order.orderId}?accountId=${accountId}">
+                            <div class="t-col t-col_6 t-prefix_3 t-item t-list__item ">
+                                <div class="t508__textwrapper t-cell t-valign_top" style="">
+                                    <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
+                                        ${order.ticker}
+                                    </div>
+                                    <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
+                                        Цена: ${order.price} - Количество: ${order.quantity}
+                                    </div>
+                                    <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                        ${order.broker}: ${order.clientId}
+                                    </div>
+                                    <br>
+                                    <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                        заявка №${order.orderId} - статус: ${order.status}
+                                    </div>
+                                    <br>
+                                </div>
+                            </div></a>
                         </div>
-                        <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
-                            Количество: ${order.quantity}
-                        </div><br>
-                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                            ${order.account.broker}: ${order.account.clientId}
-                        </div><br>
-                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                            ${order.orderId}
-                        </div><br>
-                        <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                            ${order.status}
-                        </div><br>
-<!--                        <c:if test="${type.equals('futures')}">-->
-<!--                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">-->
-<!--                                шаг цены: ${secItem.minStep}-->
-<!--                            </div><br>-->
-<!--                        </c:if>-->
-                    </div>
-                </div><br>
-            </div>
-            <div class="t-section__container t-container">
-                <div class="t-col t-col_12">
-                    <div class="t-section__bottomwrapper t-clear t-align_center">
-                        <a href="/anastasia/trade/order/${order.id}"  methods="DELETE" target="" class="t-btn t-btn_md"
-                           style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
-                           data-buttonfieldset="bbutton">
-                            <table style="width:100%; height:100%;">
-                                <tbody>
-                                <tr>
-                                    <td data-field="bbuttontitle">Отменить</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </a>
+                        <br>
+                    </c:forEach>
+                </div>
+            </c:if>
+
+            <c:if test="${order != null}">
+                <div class="t-section__container t-container t-container_flex">
+                    <div class="t-col t-col_10 t-prefix_1">
+                        <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">
+                            ${order.ticker}
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="t508__container t-container">
+                    <div class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
+                        <div class="t-cell t-valign_top">
+                        </div>
+                        <div class="t508__textwrapper t-cell t-valign_top" style="">
+                            <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
+                                Цена: ${order.price}
+                            </div>
+                            <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
+                                Количество: ${order.quantity}
+                            </div><br>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                ${order.broker}: ${order.clientId}
+                            </div><br>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                Заявка №${order.orderId}
+                            </div><br>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                статус: ${order.status}
+                            </div><br>
+                            <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
+                                создано: ${order.created.toLocalDate()} ${order.created.toLocalTime()}
+                            </div><br>
+                        </div>
+                    </div><br>
+                </div>
+                <div class="t-section__container t-container">
+                    <div class="t-col t-col_12">
+                        <div class="t-section__bottomwrapper t-clear t-align_center">
+                            <a href="/anastasia/trade/order/${order.orderId}" methods="DELETE" target=""
+                               class="t-btn t-btn_md"
+                               style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                               data-buttonfieldset="bbutton">
+                                <table style="width:100%; height:100%;">
+                                    <tbody>
+                                    <tr>
+                                        <td data-field="bbuttontitle">Отменить</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+
             <style>#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) {position: relative;overflow: hidden;z-index: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover) * {-webkit-backface-visibility: hidden;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover)::after {content: '';position: absolute;top: 0;left: 0;right: 0;bottom: 0;z-index: -1;width: 100%;height: 100%;opacity: 0;transition: opacity 0.2s ease-in-out;background-image: linear-gradient(0.75turn,rgba(56,45,110,1) 0%,rgba(143,100,130,1) 50%,rgba(56,45,110,1) 100%);}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover::after {opacity: 1;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible::after {opacity: 1;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: 0.2s;animation-timing-function: linear;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {animation-name: rec_766761820_btnanim;animation-duration: 0s;animation-fill-mode: forwards;animation-delay: s;animation-timing-function: linear;}}@keyframes rec_766761820_btnanim {to {background-image: none;background-color: transparent;}}@media (hover: hover), (min-width: 0\0) {#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):hover {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}#rec766761820 .t-section__bottomwrapper .t-btn:not(.t-animate_no-hover):focus-visible {box-shadow: 0px 10px 40px -2px rgba(0,11,48,0.3) !important;}}</style>
         </div>
         <style> #rec766761820 .t-name { font-weight: 600; }</style>

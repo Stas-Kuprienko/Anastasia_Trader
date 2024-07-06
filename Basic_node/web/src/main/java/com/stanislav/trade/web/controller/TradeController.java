@@ -31,7 +31,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -43,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/trade")
 public final class TradeController {
 
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+    private static final String ORDER_VIEW = "order_view";
     private static final String ITEM = "item";
 
     private final UserDataService userDataService;
@@ -65,35 +64,39 @@ public final class TradeController {
     }
 
 
-    @GetMapping("/orders")
+    @GetMapping("/orders/{clientId}")
     public String getOrders(@AuthenticationPrincipal UserDetails userDetails,
-                            @RequestParam String clientId,
-                            @RequestParam boolean includeMatched,
-                            @RequestParam boolean includeCanceled,
-                            @RequestParam boolean includeActive,
+                            @PathVariable("clientId") String clientId,
+                            @RequestParam("matches") boolean includeMatched,
+                            @RequestParam("canceled") boolean includeCanceled,
+                            @RequestParam("active") boolean includeActive,
                             Model model) {
         Optional<User> user = userDataService.findByLogin(userDetails.getUsername());
         if (user.isEmpty()) {
             log.error(userDetails.getUsername() + " is not found");
             return "login";
         }
+        Optional<Account> optionalAccount = accountService.findByClientId(clientId, user.get());
+        if (optionalAccount.isEmpty()) {
+            log.info("account=" + clientId + " is not found");
+            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
+        }
+        Account account = optionalAccount.get();
         try {
-            Account account = user.get().getAccounts()
-                    .stream()
-                    .filter(e -> e.getClientId().equals(clientId))
-                    .findFirst()
-                    .orElseThrow();
             TradingService tradingService;
             tradingService = tradingServiceMap.get(account.getBroker());
+            String token = accountService.decodeToken(account.getToken());
             var orders = tradingService.getOrders(
                     account.getClientId(),
-                    accountService.decodeToken(account.getToken()),
+                    token,
                     includeMatched,
                     includeCanceled,
                     includeActive);
+            tradeOrderService.caching(orders);
             model.addAttribute("orders", orders);
-            return "orders";
-        } catch (IllegalArgumentException | NullPointerException | NoSuchElementException e) {
+            model.addAttribute("accountId", account.getId());
+            return ORDER_VIEW;
+        } catch (IllegalArgumentException | NullPointerException e) {
             log.error(e.getMessage());
             return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         }
@@ -101,15 +104,26 @@ public final class TradeController {
 
     @GetMapping("/order/{orderId}")
     public String getOrder(@AuthenticationPrincipal UserDetails userDetails,
-                           @PathVariable("orderId") int orderId,
+                           @PathVariable("orderId") long orderId,
                            @RequestParam("accountId") long accountId, Model model) {
         try {
             Optional<Account> account = accountService.findById(accountId, userDetails.getUsername());
             if (account.isPresent()) {
                 Optional<Order> order = tradeOrderService.findByOrderId(orderId, account.get());
+                if (order.isEmpty()) {
+                    Account a = account.get();
+                    TradingService tradingService = tradingServiceMap.get(a.getBroker());
+                    List<Order> orders = tradingService.getOrders(
+                            a.getClientId(),
+                            accountService.decodeToken(a.getToken()),
+                            true, true, true);
+                    order = orders.stream()
+                            .filter(o -> o.getOrderId().equals(orderId) && o.getClientId().equals(a.getClientId()))
+                            .findFirst();
+                }
                 if (order.isPresent()) {
                     model.addAttribute("order", order.get());
-                    return "order_item";
+                    return ORDER_VIEW;
                 }
             }
             return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
@@ -164,8 +178,7 @@ public final class TradeController {
             String token = accountService.decodeToken(account.getToken());
             TradingService tradingService = tradingServiceMap.get(account.getBroker());
             Order order = tradingService.makeOrder(criteria, token);
-            order.setAccount(account);
-            tradeOrderService.save(order);
+            tradeOrderService.caching(order);
             model.addAttribute("order", order);
             //TODO safe
             String path = "trade/order/" + order.getOrderId() + "?accountId=" + account.getId();

@@ -4,12 +4,17 @@
 
 package com.stanislav.trade.domain.trading.finam.order_dto;
 
+import com.stanislav.trade.entities.Board;
+import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.Direction;
 import com.stanislav.trade.entities.Market;
 import com.stanislav.trade.entities.orders.Order;
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Builder
 public final class FinamOrderResponse {
@@ -61,13 +66,18 @@ public final class FinamOrderResponse {
 
 
     public Order toOrderClass() {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME.withLocale(Locale.of("ru"));
         return Order.builder()
-                .id(transactionId)
+                .orderId(transactionId)
+                .clientId(clientId)
+                .broker(Broker.Finam)
                 .ticker(securityCode)
+                .board(Board.valueOf(securityBoard))
                 .price(BigDecimal.valueOf(price))
                 .quantity(quantity)
                 .direction(Direction.parse(buySell))
                 .status(status == null ? null : status.toString())
+                .created(LocalDateTime.parse(acceptedAt, formatter))
                 .build();
     }
 

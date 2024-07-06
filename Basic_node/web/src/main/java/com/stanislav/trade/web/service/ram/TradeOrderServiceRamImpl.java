@@ -7,43 +7,63 @@ import com.stanislav.trade.web.service.TradeOrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service("orderService")
 public class TradeOrderServiceRamImpl implements TradeOrderService {
 
-    private final TradeOrderDao tradeOrderDao;
+//    private final TradeOrderDao tradeOrderDao;
     private final ConcurrentHashMap<Long, Order> ram;
 
 
     @Autowired
-    public TradeOrderServiceRamImpl(TradeOrderDao tradeOrderDao) {
-        this.tradeOrderDao = tradeOrderDao;
+    public TradeOrderServiceRamImpl() {
+//        this.tradeOrderDao = tradeOrderDao;
         ram = new ConcurrentHashMap<>();
     }
 
 
-    @Transactional
+//    @Transactional
     @Override
     public void save(Order order) {
-        order = tradeOrderDao.save(order);
-        ram.put(order.getId(), order);
+//        order = tradeOrderDao.save(order);
+        ram.put(order.getOrderId(), order);
     }
 
     @Override
-    public Optional<Order> findById(long id) {
-        Optional<Order> order = Optional.ofNullable(ram.get(id));
+    public void caching(Order order) {
+        ram.put(order.getOrderId(), order);
+    }
+
+    @Override
+    public void caching(List<Order> orders) {
+        for (Order o : orders) {
+            ram.put(o.getOrderId(), o);
+        }
+    }
+
+    @Override
+    public Optional<Order> get(long orderId) {
+        return Optional.ofNullable(ram.get(orderId));
+    }
+
+    @Override
+    public Optional<Order> findByOrderId(long orderId) {
+        Optional<Order> order = Optional.ofNullable(ram.get(orderId));
         if (order.isEmpty()) {
-            order = tradeOrderDao.findById(id);
-            order.ifPresent(o -> ram.put(o.getId(), o));
+//            order = tradeOrderDao.findById(orderId);
+            order.ifPresent(o -> ram.put(o.getOrderId(), o));
         }
         return order;
     }
 
     @Override
-    public Optional<Order> findByOrderId(int orderId, Account account) {
-        return tradeOrderDao.findByOrderIdAndAccountId(orderId, account);
+    public Optional<Order> findByOrderId(long orderId, Account account) {
+        return Optional.ofNullable(ram.get(orderId));
+//        return tradeOrderDao.findByOrderIdAndAccountId(orderId, account);
     }
 
     @Override

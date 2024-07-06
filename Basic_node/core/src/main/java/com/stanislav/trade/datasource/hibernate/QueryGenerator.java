@@ -75,7 +75,6 @@ public class QueryGenerator {
             }
             int iToDelete = strBuilder.length() - (KeyWord.AND.name().length() + 2);
             strBuilder.delete(iToDelete, strBuilder.length());
-            System.out.println(strBuilder);
         }
         return this;
     }

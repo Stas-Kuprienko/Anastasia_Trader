@@ -17,6 +17,8 @@ public interface AccountService {
 
     Optional<Account> findById(User user, Long id);
 
+    Optional<Account> findByClientId(String clientId, User user);
+
     String decodeToken(String token);
 
     void delete(Long id);

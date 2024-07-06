@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class OrderCriteria implements TradeCriteria {
+public class OrderCriteria {
 
     private Broker broker;
     private String clientId;
