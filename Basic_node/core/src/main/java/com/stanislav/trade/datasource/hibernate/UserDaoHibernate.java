@@ -13,7 +13,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import java.util.List;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -40,12 +40,6 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public List<User> findAll() {
-        String jpql = jpQuery.initSelect().fullyFrom().table(User.class).build();
-        return entityManager.createQuery(jpql, User.class).getResultList();
-    }
-
-    @Override
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
@@ -53,7 +47,12 @@ public class UserDaoHibernate implements UserDao {
     @Override
     public Optional<User> findByLogin(String login) {
         String param = "login";
-        String jpql = jpQuery.initSelect().fullyFrom().table(User.class).where(param).build();
+        String jpql = jpQuery
+                .initSelect()
+                .fullyFrom()
+                .table(User.class)
+                .where(param)
+                .build();
         try {
             return Optional.of(entityManager
                     .createQuery(jpql, User.class)

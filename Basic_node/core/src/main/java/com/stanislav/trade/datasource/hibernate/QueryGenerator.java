@@ -3,6 +3,8 @@ package com.stanislav.trade.datasource.hibernate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+import java.util.Map;
+
 public class QueryGenerator {
 
     private static final char tableAlias = 't';
@@ -57,6 +59,20 @@ public class QueryGenerator {
                 .append(param).append(' ')
                 .append('=').append(' ')
                 .append(':').append(param);
+        return this;
+    }
+
+    public QueryGenerator where(String... parameters) {
+        if (parameters.length != 0) {
+            strBuilder.append(' ')
+                    .append(KeyWord.WHERE).append(' ');
+            for (var param : parameters) {
+                strBuilder.append(tableAlias).append('.')
+                        .append(param).append(' ')
+                        .append('=').append(' ')
+                        .append(':').append(param);
+            }
+        }
         return this;
     }
 

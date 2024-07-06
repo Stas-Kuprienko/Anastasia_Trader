@@ -8,7 +8,7 @@ import com.stanislav.trade.domain.market.ExchangeData;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.web.controller.service.ErrorController;
-import com.stanislav.trade.web.service.ErrorCase;
+import com.stanislav.trade.web.controller.service.ErrorCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -16,8 +16,9 @@ import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.controller.service.ErrorController;
+import com.stanislav.trade.web.controller.service.MVC;
 import com.stanislav.trade.web.service.AccountService;
-import com.stanislav.trade.web.service.ErrorCase;
+import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.service.OrderService;
 import com.stanislav.trade.web.service.UserDataService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -98,10 +98,10 @@ public final class TradeController {
         }
     }
 
-    @GetMapping("/order")
+    @GetMapping("/order/{orderId}")
     public String getOrder(@AuthenticationPrincipal UserDetails userDetails,
-                           @RequestParam String clientId,
-                           @RequestParam int orderId) {
+                           @PathVariable("orderId") long id,
+                           @RequestParam String clientId, Model model) {
 
         return "order";
     }
@@ -154,7 +154,7 @@ public final class TradeController {
             order.setAccount(account);
             orderService.save(order);
             model.addAttribute("order", order);
-            return "order";
+            return MVC.REDIRECT + "/order/" + order.getId();
         } catch (NullPointerException | NoSuchElementException | IllegalArgumentException e) {
             log.warn(e.getMessage());
             return ErrorController.URL_REDIRECT + ErrorCase.BAD_REQUEST;

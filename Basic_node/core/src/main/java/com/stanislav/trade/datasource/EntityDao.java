@@ -12,8 +12,6 @@ public interface EntityDao<ENTITY, ID> {
 
     ENTITY save(ENTITY object);
 
-    List<ENTITY> findAll();
-
     Optional<ENTITY> findById(ID id);
 
     Optional<ENTITY> update(ID id, Consumer<ENTITY> updating);

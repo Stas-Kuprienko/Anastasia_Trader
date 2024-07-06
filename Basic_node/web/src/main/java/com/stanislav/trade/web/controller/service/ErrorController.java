@@ -1,6 +1,5 @@
 package com.stanislav.trade.web.controller.service;
 
-import com.stanislav.trade.web.service.ErrorCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

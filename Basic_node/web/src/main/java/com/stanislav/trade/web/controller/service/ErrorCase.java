@@ -1,4 +1,8 @@
-package com.stanislav.trade.web.service;
+/*
+ * Stanislav Kuprienko *** Omsk, Russia
+ */
+
+package com.stanislav.trade.web.controller.service;
 
 public enum ErrorCase {
 

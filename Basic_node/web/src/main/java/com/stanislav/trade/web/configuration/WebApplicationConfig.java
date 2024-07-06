@@ -2,7 +2,7 @@ package com.stanislav.trade.web.configuration;
 
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.authentication.rest.MyJwtFilter;
-import com.stanislav.trade.web.service.ErrorCase;
+import com.stanislav.trade.web.controller.service.ErrorCase;
 import jakarta.servlet.DispatcherType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

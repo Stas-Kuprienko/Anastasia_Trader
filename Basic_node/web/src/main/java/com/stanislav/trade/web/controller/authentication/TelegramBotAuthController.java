@@ -2,7 +2,7 @@ package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.authentication.rest.RestAuthService;
-import com.stanislav.trade.web.service.ErrorCase;
+import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.service.UserDataService;
 import io.jsonwebtoken.JwtParser;
 import jakarta.servlet.ServletException;

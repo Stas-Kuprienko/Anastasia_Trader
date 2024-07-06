@@ -18,7 +18,7 @@ import java.util.Locale;
 @Component("/start")
 public class StartResponseHandler implements ResponseHandler {
 
-    private static final String AUTH = "telegram/auth";
+    private static final String AUTH = "telegram-bot/auth";
     private static final String CHAT_ID = "chatId";
     private final String resource;
     private final MessageSource messageSource;

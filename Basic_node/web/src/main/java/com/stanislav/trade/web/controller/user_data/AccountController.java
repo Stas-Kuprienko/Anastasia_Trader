@@ -7,7 +7,7 @@ import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.service.AccountService;
-import com.stanislav.trade.web.service.ErrorCase;
+import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.service.UserDataService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;

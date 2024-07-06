@@ -2,7 +2,6 @@ package com.stanislav.trade.datasource.hibernate;
 
 import com.stanislav.trade.datasource.AccountDao;
 import com.stanislav.trade.entities.user.Account;
-import com.stanislav.trade.entities.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
@@ -38,12 +37,6 @@ public class AccountDaoHibernate implements AccountDao {
         entityManager.persist(account);
         entityManager.flush();
         return account;
-    }
-
-    @Override
-    public List<Account> findAll() {
-        //TODO make with Page
-        return null;
     }
 
     @Override
