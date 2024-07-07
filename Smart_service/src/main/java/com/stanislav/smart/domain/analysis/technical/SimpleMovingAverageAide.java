@@ -2,7 +2,7 @@ package com.stanislav.smart.domain.analysis.technical;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.Candles;
+import com.stanislav.smart.domain.entities.candles.PriceCandle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +11,13 @@ public class SimpleMovingAverageAide implements AnalysisAide {
 
     private final TimeFrame.Scope timeFrame;
     private final int period;
-    private final ArrayList<Candles.Candle> candlesList;
+    private final ArrayList<PriceCandle> candlesList;
     private final ArrayList<SMAValue> smaValues;
 
 
-    SimpleMovingAverageAide(TimeFrame.Scope timeFrame, Candles candles, int period) {
+    SimpleMovingAverageAide(TimeFrame.Scope timeFrame, List<? extends PriceCandle> candles, int period) {
         this.timeFrame = timeFrame;
-        this.candlesList = new ArrayList<>(List.of(candles.candles()));
+        this.candlesList = new ArrayList<>(candles);
         this.period = period;
         smaValues = new ArrayList<>();
         calculate();
@@ -33,7 +33,7 @@ public class SimpleMovingAverageAide implements AnalysisAide {
 
         // count first period sum of values
         for (; i < period; i++) {
-            sum += candlesList.get(i).close().toDouble();
+            sum += candlesList.get(i).close().doubleValue();
         }
 
         // to avoid counting all sum every time, keep var of sum
@@ -41,24 +41,24 @@ public class SimpleMovingAverageAide implements AnalysisAide {
         for (; i < candlesList.size(); i++) {
             double newValue = sum / period;
             smaValues.add(new SMAValue(candlesList.get(i).dateTime(), newValue));
-            sum -= candlesList.get(i - period).close().toDouble();
-            sum += candlesList.get(i).close().toDouble();
+            sum -= candlesList.get(i - period).close().doubleValue();
+            sum += candlesList.get(i).close().doubleValue();
         }
     }
 
-    public double update(Candles.Candle candle) {
+    public double update(PriceCandle candle) {
         if (smaValues.isEmpty()) {
             throw new IllegalStateException("SMA value list is empty");
         }
-        double price = candle.close().toDouble();
+        double price = candle.close().doubleValue();
 
         // take the last average value from the list and multiply by the period
         //to get the sum of the last period of values
-        double lastPeriodSumValue = (smaValues.get(smaValues.size() - 1).value) * period;
+        double lastPeriodSumValue = (smaValues.getLast().value) * period;
 
         // take the first intraDayCandle of the last period of values to subtract from the last sum
         //so as not to count everything over again
-        double firstCandleOfLastPeriodSum = candlesList.get((candlesList.size() - 1) - period).close().toDouble();
+        double firstCandleOfLastPeriodSum = candlesList.get((candlesList.size() - 1) - period).close().doubleValue();
         double newValue = lastPeriodSumValue - firstCandleOfLastPeriodSum;
         newValue += price;
         double result = newValue / period;
@@ -69,7 +69,7 @@ public class SimpleMovingAverageAide implements AnalysisAide {
 
     public double last() {
         if (!smaValues.isEmpty()) {
-            return smaValues.get(smaValues.size() - 1).value;
+            return smaValues.getLast().value;
         }
         return 0;
     }
@@ -82,7 +82,7 @@ public class SimpleMovingAverageAide implements AnalysisAide {
         return period;
     }
 
-    public ArrayList<Candles.Candle> getCandles() {
+    public ArrayList<PriceCandle> getCandles() {
         return candlesList;
     }
 

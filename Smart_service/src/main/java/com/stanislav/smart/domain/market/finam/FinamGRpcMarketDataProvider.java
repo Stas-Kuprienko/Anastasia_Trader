@@ -4,15 +4,17 @@ import com.google.protobuf.Timestamp;
 import com.google.type.Date;
 import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.DayCandles;
-import com.stanislav.smart.domain.entities.candles.IntraDayCandles;
-import com.stanislav.smart.domain.market.finam.candles.FinamDayCandlesProxy;
-import com.stanislav.smart.domain.market.finam.candles.FinamIntraDayCandlesProxy;
-import com.stanislav.smart.service.grpc_impl.GRpcClient;
+import com.stanislav.smart.domain.entities.candles.DayCandleBox;
+import com.stanislav.smart.domain.entities.candles.IntraDayCandleBox;
+import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
 import com.stanislav.smart.domain.market.MarketDataProvider;
+import com.stanislav.smart.domain.market.finam.candles.FinamDayCandleBoxProxy;
+import com.stanislav.smart.domain.market.finam.candles.FinamDayCandleProxy;
+import com.stanislav.smart.domain.market.finam.candles.FinamIntraDayCandleBoxProxy;
+import com.stanislav.smart.domain.market.finam.candles.FinamIntraDayCandleProxy;
+import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.CandlesGrpc;
 import proto.tradeapi.v1.Candles;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -29,88 +31,78 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
 
 
     @Override
-    public com.stanislav.smart.domain.entities.candles.Candles getLastNumberOfCandles(String ticker, Board board, TimeFrame.Scope timeFrame, Integer count) {
-        com.stanislav.smart.domain.entities.candles.Candles candles;
+    public PriceCandleBox getLastNumberOfCandles(String ticker, Board board, TimeFrame.Scope timeFrame, Integer count) {
 
         if (TimeFrame.Day.class.equals(timeFrame.getClass())) {
-            candles = getDayCandles(ticker, board, timeFrame, LocalDate.now(), count);
+            return getDayCandles(ticker, board, timeFrame, LocalDate.now(), count);
 
         } else if (TimeFrame.IntraDay.class.equals(timeFrame.getClass())) {
-            candles = getIntraDayCandles(ticker, board, timeFrame, LocalDateTime.now(), count);
+            return getIntraDayCandles(ticker, board, timeFrame, LocalDateTime.now(), count);
 
         } else {
             throw new IllegalArgumentException("time=" + timeFrame);
         }
-        return candles;
     }
 
     @Override
-    public DayCandles getDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDate to, Integer count) {
-        DayCandles candles;
+    public DayCandleBox getDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDate to, Integer count) {
         try {
-            switch (board) {
-                case TQBR -> candles = getStockDayCandles(ticker, (TimeFrame.Day) timeFrame, to, count);
-                case FUT -> candles = getFuturesDayCandles(ticker, (TimeFrame.Day) timeFrame, to, count);
-                default -> throw new IllegalArgumentException("board=" + board);
-            }
-        } catch (ClassCastException e) {
-            //TODO logger
-            throw new IllegalArgumentException("time_frame=" + timeFrame);
-        }
-        return candles;
-    }
-
-    @Override
-    public DayCandles getDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDate from, LocalDate to) {
-        DayCandles candles;
-        try {
-            switch (board) {
-                case TQBR -> candles = getStockDayCandles(ticker, (TimeFrame.Day) timeFrame, from, to);
-                case FUT -> candles = getFuturesDayCandles(ticker, (TimeFrame.Day) timeFrame, from, to);
-                default -> throw new IllegalArgumentException("board=" + board);
-            }
-        } catch (ClassCastException e) {
-            //TODO logger
-            throw new IllegalArgumentException("time_frame=" + timeFrame);
-        }
-        return candles;
-    }
-
-    @Override
-    public IntraDayCandles getIntraDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDateTime to, Integer count) {
-        IntraDayCandles candles;
-        try {
-            candles = switch (board) {
-                case TQBR -> getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
-                case FUT -> getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
-                default -> throw new IllegalArgumentException("board=" + board);
+            return switch (board) {
+                case TQBR -> getStockDayCandles(ticker, (TimeFrame.Day) timeFrame, to, count);
+                case FUT -> getFuturesDayCandles(ticker, (TimeFrame.Day) timeFrame, to, count);
+                case null, default -> throw new IllegalArgumentException("board=" + board);
             };
         } catch (ClassCastException e) {
             //TODO logger
             throw new IllegalArgumentException("time_frame=" + timeFrame);
         }
-        return candles;
     }
 
     @Override
-    public IntraDayCandles getIntraDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDateTime from, LocalDateTime to) {
-        IntraDayCandles candles;
+    public DayCandleBox getDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDate from, LocalDate to) {
         try {
-            switch (board) {
-                case TQBR -> candles = getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, from, to);
-                case FUT -> candles = getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, from, to);
-                default -> throw new IllegalArgumentException("board=" + board);
-            }
+            return switch (board) {
+                case TQBR -> getStockDayCandles(ticker, (TimeFrame.Day) timeFrame, from, to);
+                case FUT -> getFuturesDayCandles(ticker, (TimeFrame.Day) timeFrame, from, to);
+                case null, default -> throw new IllegalArgumentException("board=" + board);
+            };
         } catch (ClassCastException e) {
             //TODO logger
             throw new IllegalArgumentException("time_frame=" + timeFrame);
         }
-        return candles;
+    }
+
+    @Override
+    public IntraDayCandleBox getIntraDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDateTime to, Integer count) {
+        try {
+            return switch (board) {
+                case TQBR -> getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
+                case FUT -> getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, to, count);
+                case null, default -> throw new IllegalArgumentException("board=" + board);
+            };
+        } catch (ClassCastException e) {
+            //TODO logger
+            throw new IllegalArgumentException("time_frame=" + timeFrame);
+        }
+    }
+
+    @Override
+    public IntraDayCandleBox getIntraDayCandles(String ticker, Board board, TimeFrame.Scope timeFrame, LocalDateTime from, LocalDateTime to) {
+        try {
+            return switch (board) {
+                case TQBR -> getStockIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, from, to);
+                case FUT -> getFuturesIntraDayCandles(ticker, (TimeFrame.IntraDay) timeFrame, from, to);
+                case null, default -> throw new IllegalArgumentException("board=" + board);
+            };
+        } catch (ClassCastException e) {
+            //TODO logger
+            throw new IllegalArgumentException("time_frame=" + timeFrame);
+        }
     }
 
 
     @Override
-    public DayCandles getStockDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
+    public DayCandleBox getStockDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
         Date dateTo = Date.newBuilder()
                 .setDay(to.getDayOfMonth())
                 .setMonth(to.getMonthValue())
@@ -124,7 +116,7 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
     }
 
     @Override
-    public DayCandles getStockDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate from, LocalDate to) {
+    public DayCandleBox getStockDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate from, LocalDate to) {
         Date dateFrom = Date.newBuilder()
                 .setDay(from.getDayOfMonth())
                 .setMonth(from.getMonthValue())
@@ -143,8 +135,8 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
     }
 
     @Override
-    public IntraDayCandles getStockIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
-                                                   LocalDateTime to, Integer count) {
+    public IntraDayCandleBox getStockIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                  LocalDateTime to, Integer count) {
         //TODO need to mind the time format!
         Timestamp timeTo = Timestamp.newBuilder()
                 .setSeconds(to.toEpochSecond(ZoneOffset.UTC))
@@ -158,8 +150,8 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
     }
 
     @Override
-    public IntraDayCandles getStockIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
-                                                   LocalDateTime from, LocalDateTime to) {
+    public IntraDayCandleBox getStockIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                        LocalDateTime from, LocalDateTime to) {
         //TODO need to mind the time format!
         Timestamp timeFrom = Timestamp.newBuilder()
                 .setSeconds(from.toEpochSecond(ZoneOffset.UTC))
@@ -177,26 +169,26 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
     }
 
     @Override
-    public DayCandles getFuturesDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
+    public DayCandleBox getFuturesDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate to, Integer count) {
         //TODO
         getDayCandlesResult(ticker, Board.FUT, timeFrame, null);
         return null;
     }
 
     @Override
-    public DayCandles getFuturesDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate from, LocalDate to) {
+    public DayCandleBox getFuturesDayCandles(String ticker, TimeFrame.Day timeFrame, LocalDate from, LocalDate to) {
         return null;
     }
 
     @Override
-    public IntraDayCandles getFuturesIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
-                                                     LocalDateTime to, Integer count) {
+    public IntraDayCandleBox getFuturesIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                    LocalDateTime to, Integer count) {
         return null;
     }
 
     @Override
-    public IntraDayCandles getFuturesIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
-                                                     LocalDateTime from, LocalDateTime to) {
+    public IntraDayCandleBox getFuturesIntraDayCandles(String ticker, TimeFrame.IntraDay timeFrame,
+                                                    LocalDateTime from, LocalDateTime to) {
         return null;
     }
 
@@ -226,26 +218,18 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
         return stub.getIntradayCandles(request);
     }
 
-    private FinamDayCandlesProxy buildDayCandlesProxy(Candles.GetDayCandlesResult result) {
-
-        FinamDayCandlesProxy.FinamDayCandleProxy[] dayCandles = result
+    private FinamDayCandleBoxProxy buildDayCandlesProxy(Candles.GetDayCandlesResult result) {
+        return new FinamDayCandleBoxProxy(result
                 .getCandlesList()
                 .stream()
-                .map(FinamDayCandlesProxy.FinamDayCandleProxy::new)
-                .toList()
-                .toArray(new FinamDayCandlesProxy.FinamDayCandleProxy[]{});
-
-        return new FinamDayCandlesProxy(dayCandles);
+                .map(FinamDayCandleProxy::new)
+                .toList());
     }
 
-    private FinamIntraDayCandlesProxy buildIntraDayCandlesProxy(Candles.GetIntradayCandlesResult result) {
-
-        FinamIntraDayCandlesProxy.FinamIntraDayCandleProxy[] intraDayCandles = result
+    private FinamIntraDayCandleBoxProxy buildIntraDayCandlesProxy(Candles.GetIntradayCandlesResult result) {
+        return new FinamIntraDayCandleBoxProxy(result
                 .getCandlesList()
-                .stream().map(FinamIntraDayCandlesProxy.FinamIntraDayCandleProxy::new)
-                .toList()
-                .toArray(new FinamIntraDayCandlesProxy.FinamIntraDayCandleProxy[]{});
-
-        return new FinamIntraDayCandlesProxy(intraDayCandles);
+                .stream().map(FinamIntraDayCandleProxy::new)
+                .toList());
     }
 }

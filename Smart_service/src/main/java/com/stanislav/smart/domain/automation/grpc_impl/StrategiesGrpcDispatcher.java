@@ -6,7 +6,7 @@ package com.stanislav.smart.domain.automation.grpc_impl;
 
 import com.stanislav.smart.domain.analysis.technical.AnalysisAideSupplier;
 import com.stanislav.smart.domain.automation.TradingStrategy;
-import com.stanislav.smart.domain.automation.impl.MovingAverageCrossingStrategy;
+import com.stanislav.smart.domain.automation.strategies.MovingAverageCrossingStrategy;
 import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.Security;
 import com.stanislav.smart.domain.entities.TimeFrame;

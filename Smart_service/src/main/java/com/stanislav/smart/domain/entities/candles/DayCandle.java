@@ -1,3 +1,3 @@
 package com.stanislav.smart.domain.entities.candles;
 
-public interface IntraDayCandles extends Candles {}
+public interface DayCandle extends PriceCandle {}

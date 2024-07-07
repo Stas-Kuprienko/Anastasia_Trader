@@ -2,7 +2,7 @@ package com.stanislav.smart.domain.analysis.technical;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.Candles;
+import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -10,14 +10,14 @@ import java.util.HashMap;
 public class SupportResistanceLevelsAide implements AnalysisAide {
 
     private final String ticker;
-    private final Candles candles;
+    private final PriceCandleBox priceCandleBox;
     private final TimeFrame.Scope timeFrame;
     private final HashMap<PriceRange, Level> levels;
 
 
-    SupportResistanceLevelsAide(String ticker, Candles candles, TimeFrame.Scope timeFrame) {
+    SupportResistanceLevelsAide(String ticker, PriceCandleBox priceCandleBox, TimeFrame.Scope timeFrame) {
         this.ticker = ticker;
-        this.candles = candles;
+        this.priceCandleBox = priceCandleBox;
         this.timeFrame = timeFrame;
         this.levels = new HashMap<>();
         calculate();
@@ -35,8 +35,8 @@ public class SupportResistanceLevelsAide implements AnalysisAide {
         return ticker;
     }
 
-    public Candles getCandles() {
-        return candles;
+    public PriceCandleBox getCandles() {
+        return priceCandleBox;
     }
 
     public HashMap<PriceRange, Level> getLevels() {

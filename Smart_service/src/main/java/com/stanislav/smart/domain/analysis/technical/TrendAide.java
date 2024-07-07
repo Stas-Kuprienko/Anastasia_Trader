@@ -1,24 +1,23 @@
 package com.stanislav.smart.domain.analysis.technical;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
-import com.stanislav.smart.domain.entities.candles.Candles;
-import com.stanislav.smart.domain.entities.Decimal;
+import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class TrendAide implements AnalysisAide {
 
-    private final ArrayList<Decimal> maximums;
-    private final ArrayList<Decimal> minimums;
+    private final ArrayList<BigDecimal> maximums;
+    private final ArrayList<BigDecimal> minimums;
 
-    private final Candles candles;
+    private final PriceCandleBox priceCandleBox;
 
 
-    TrendAide(Candles candles) {
+    TrendAide(PriceCandleBox priceCandleBox) {
         maximums = new ArrayList<>();
         minimums = new ArrayList<>();
-        this.candles = candles;
+        this.priceCandleBox = priceCandleBox;
     }
 
     public void upTrendAnalysis(BigDecimal min1, BigDecimal min2) {
@@ -28,22 +27,22 @@ public class TrendAide implements AnalysisAide {
 
 
     public void addMaximum(BigDecimal value) {
-        maximums.add(new Decimal(value.intValue(), value.scale()));
+        maximums.add(value);
     }
 
     public void addMinimum(BigDecimal value) {
-        minimums.add(new Decimal(value.intValue(), value.scale()));
+        minimums.add(value);
     }
 
-    public ArrayList<Decimal> getMaximums() {
+    public ArrayList<BigDecimal> getMaximums() {
         return maximums;
     }
 
-    public ArrayList<Decimal> getMinimums() {
+    public ArrayList<BigDecimal> getMinimums() {
         return minimums;
     }
 
-    public Candles getCandles() {
-        return candles;
+    public PriceCandleBox getCandles() {
+        return priceCandleBox;
     }
 }

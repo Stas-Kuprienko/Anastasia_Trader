@@ -3,9 +3,8 @@ package com.stanislav.smart.domain.analysis.technical;
 import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.Candles;
+import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
 import com.stanislav.smart.domain.market.MarketDataProvider;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AnalysisAideSupplier {
@@ -32,8 +31,8 @@ public class AnalysisAideSupplier {
                 }
             }
         }
-        Candles candles = marketDataProvider.getLastNumberOfCandles(ticker, board, timeFrame, MOVING_AVERAGE_COUNT);
-        sma = new SimpleMovingAverageAide(timeFrame, candles, period);
+        PriceCandleBox candles = marketDataProvider.getLastNumberOfCandles(ticker, board, timeFrame, MOVING_AVERAGE_COUNT);
+        sma = new SimpleMovingAverageAide(timeFrame, candles.candles(), period);
         analyticsMap.put(ticker, sma);
         return sma;
     }

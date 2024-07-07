@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.smart.domain.automation.impl;
+package com.stanislav.smart.domain.automation.strategies;
 
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
 import com.stanislav.smart.domain.automation.TradingStrategy;
