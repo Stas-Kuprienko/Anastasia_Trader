@@ -1,6 +1,6 @@
 package com.stanislav.smart.domain.entities;
 
-import proto.tradeapi.v1.Candles;
+import stanislav.anastasia.trade.Smart;
 
 public final class TimeFrame {
 
@@ -14,49 +14,28 @@ public final class TimeFrame {
         D1, W1
     }
 
-    public static TimeFrame.IntraDay fromProto(Candles.IntradayCandleTimeFrame proto) {
-        IntraDay timeFrame;
-        switch (proto) {
-            case INTRADAYCANDLE_TIMEFRAME_M1 -> timeFrame = IntraDay.M1;
-            case INTRADAYCANDLE_TIMEFRAME_M5 -> timeFrame = IntraDay.M5;
-            case INTRADAYCANDLE_TIMEFRAME_M15 -> timeFrame = IntraDay.M15;
-            case INTRADAYCANDLE_TIMEFRAME_H1 -> timeFrame = IntraDay.H1;
-            default -> throw new EnumConstantNotPresentException(TimeFrame.IntraDay.class, proto.name());
-        }
-        return timeFrame;
-    }
-
-    public static TimeFrame.Day fromProto(Candles.DayCandleTimeFrame proto) {
-        Day timeFrame;
-        switch (proto) {
-            case DAYCANDLE_TIMEFRAME_D1 -> timeFrame = Day.D1;
-            case DAYCANDLE_TIMEFRAME_W1 -> timeFrame = Day.W1;
-            default -> throw new EnumConstantNotPresentException(TimeFrame.Day.class, proto.name());
-        }
-        return timeFrame;
-    }
-
-    public static Candles.IntradayCandleTimeFrame toProto(TimeFrame.IntraDay timeFrame) {
-        Candles.IntradayCandleTimeFrame proto;
-        switch (timeFrame) {
-            case M1 -> proto = Candles.IntradayCandleTimeFrame.INTRADAYCANDLE_TIMEFRAME_M1;
-            case M5 -> proto = Candles.IntradayCandleTimeFrame.INTRADAYCANDLE_TIMEFRAME_M5;
-            case M15 -> proto = Candles.IntradayCandleTimeFrame.INTRADAYCANDLE_TIMEFRAME_M15;
-            case H1 -> proto = Candles.IntradayCandleTimeFrame.INTRADAYCANDLE_TIMEFRAME_H1;
-            default -> throw new EnumConstantNotPresentException(Candles.IntradayCandleTimeFrame.class, timeFrame.name());
-        }
-        return proto;
-    }
-
-    public static Candles.DayCandleTimeFrame toProto(TimeFrame.Day timeFrame) {
-        Candles.DayCandleTimeFrame proto;
-        switch (timeFrame) {
-            case D1 -> proto = Candles.DayCandleTimeFrame.DAYCANDLE_TIMEFRAME_D1;
-            case W1 -> proto = Candles.DayCandleTimeFrame.DAYCANDLE_TIMEFRAME_W1;
-            default -> throw new EnumConstantNotPresentException(Candles.DayCandleTimeFrame.class, timeFrame.name());
-        }
-        return proto;
-    }
-
     public sealed interface Scope permits Day, IntraDay {}
+
+
+    public static TimeFrame.Scope parse(Smart.TimeFrame timeFrameProto) {
+        return switch (timeFrameProto) {
+            case D1 -> TimeFrame.Day.D1;
+            case W1 -> TimeFrame.Day.W1;
+            case H1 -> TimeFrame.IntraDay.H1;
+            case M15 -> TimeFrame.IntraDay.M15;
+            case M5 -> TimeFrame.IntraDay.M5;
+            case null, default -> throw new IllegalArgumentException("time_frame=" + timeFrameProto);
+        };
+    }
+
+    public static Smart.TimeFrame parse(TimeFrame.Scope timeFrame) {
+        return switch (timeFrame) {
+            case Day.D1 -> Smart.TimeFrame.D1;
+            case Day.W1 -> Smart.TimeFrame.W1;
+            case IntraDay.H1 -> Smart.TimeFrame.H1;
+            case IntraDay.M15 -> Smart.TimeFrame.M15;
+            case IntraDay.M5 -> Smart.TimeFrame.M5;
+            case null, default -> throw new IllegalArgumentException("time_frame=" + timeFrame);
+        };
+    }
 }

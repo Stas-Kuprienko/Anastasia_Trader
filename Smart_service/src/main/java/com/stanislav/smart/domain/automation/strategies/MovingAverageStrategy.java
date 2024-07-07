@@ -10,24 +10,19 @@ import com.stanislav.smart.domain.entities.Direction;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 
-public class MovingAverageCrossingStrategy implements TradingStrategy {
+public class MovingAverageStrategy implements TradingStrategy {
 
-    private static final int id = 0;
     private final SimpleMovingAverageAide smaAide;
     private final EventStreamListener.OrderBookCollector collector;
 
     private Direction direction;
 
 
-    public MovingAverageCrossingStrategy(SimpleMovingAverageAide smaAide, EventStreamListener.EventCollector collector) {
+    public MovingAverageStrategy(SimpleMovingAverageAide smaAide, EventStreamListener.EventCollector collector) {
         this.smaAide = smaAide;
         this.collector = (EventStreamListener.OrderBookCollector) collector;
     }
 
-    @Override
-    public int getId() {
-        return id;
-    }
 
     @Override
     public TimeFrame.Scope timeFrame() {
@@ -38,6 +33,7 @@ public class MovingAverageCrossingStrategy implements TradingStrategy {
     public byte analysing() {
         double lastAveragePrice = smaAide.last();
         double lastPrice = collector.lastAskPrice();
+        smaAide.update(lastPrice);
         double difference = lastAveragePrice - lastPrice;
         if (difference > 0) {
             direction = Direction.Buy;

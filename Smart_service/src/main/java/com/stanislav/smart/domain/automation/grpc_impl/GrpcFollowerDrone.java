@@ -2,7 +2,6 @@ package com.stanislav.smart.domain.automation.grpc_impl;
 
 import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.TradingStrategy;
-import com.stanislav.smart.domain.entities.Security;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 import java.time.Duration;
@@ -12,7 +11,7 @@ import static com.stanislav.smart.domain.entities.TimeFrame.*;
 
 public class GrpcFollowerDrone implements Drone {
 
-    private final Security security;
+    private final Smart.Security security;
     private final TradingStrategy strategy;
     private final Smart.SubscribeTradeRequest request;
     private final StreamObserver<Smart.SubscribeTradeResponse> responseObserver;
@@ -21,7 +20,7 @@ public class GrpcFollowerDrone implements Drone {
     private boolean isActive;
 
 
-    public GrpcFollowerDrone(Security security, TradingStrategy strategy,
+    public GrpcFollowerDrone(Smart.Security security, TradingStrategy strategy,
                              Smart.SubscribeTradeRequest request,
                              StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
         this.security = security;
@@ -81,7 +80,7 @@ public class GrpcFollowerDrone implements Drone {
     }
 
     @Override
-    public Security getSecurity() {
+    public Smart.Security getSecurity() {
         return security;
     }
 

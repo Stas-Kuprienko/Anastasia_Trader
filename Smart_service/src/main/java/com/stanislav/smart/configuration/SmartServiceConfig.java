@@ -1,17 +1,14 @@
 package com.stanislav.smart.configuration;
 
-import com.stanislav.smart.domain.analysis.technical.AnalysisAideSupplier;
-import com.stanislav.smart.domain.market.MarketDataProvider;
-import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
-import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
-import com.stanislav.smart.domain.market.finam.FinamGRpcMarketDataProvider;
+import com.stanislav.smart.domain.automation.grpc_impl.StrategiesDispatcher;
 import com.stanislav.smart.domain.controller.DroneLauncher;
-import com.stanislav.smart.service.grpc_impl.GRpcClient;
-import com.stanislav.smart.service.grpc_impl.GRpcFrame;
 import com.stanislav.smart.domain.controller.grpc_impl.GRpcDroneLauncher;
 import com.stanislav.smart.domain.controller.grpc_impl.SmartAutoTradeGRpcImpl;
+import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
+import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
+import com.stanislav.smart.service.grpc_impl.GRpcClient;
+import com.stanislav.smart.service.grpc_impl.GRpcFrame;
 import com.stanislav.smart.service.grpc_impl.security.ServerSecurityInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
@@ -59,31 +56,19 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public EventStreamKit eventStreamKit(@Autowired GRpcClient gRpcClient) {
+    public EventStreamKit eventStreamKit(GRpcClient gRpcClient) {
         return new FinamGrpcEventStreamKit(scheduledExecutorService, gRpcClient);
     }
 
     @Bean
-    public MarketDataProvider marketDataProvider(@Autowired GRpcClient gRpcClient) {
-        return new FinamGRpcMarketDataProvider(gRpcClient);
+    public DroneLauncher droneLauncher(ScheduledExecutorService scheduledExecutorService, StrategiesDispatcher strategiesDispatcher) {
+        return new GRpcDroneLauncher(scheduledExecutorService, strategiesDispatcher);
     }
 
     @Bean
-    public AnalysisAideSupplier analysisAideSupplier(@Autowired MarketDataProvider marketDataProvider) {
-        return new AnalysisAideSupplier(marketDataProvider);
-    }
-
-    @Bean
-    public DroneLauncher<?, ?> droneLauncher(@Autowired EventStreamKit eventStreamKit,
-                                             @Autowired AnalysisAideSupplier analysisAideSupplier,
-                                             @Autowired ScheduledExecutorService scheduledExecutorService) {
-        return new GRpcDroneLauncher(eventStreamKit.getOrderBookStreamService(), analysisAideSupplier, scheduledExecutorService);
-    }
-
-    @Bean
-    public GRpcFrame grpcFrame(@Autowired DroneLauncher<?, ?> droneLauncher) {
+    public GRpcFrame grpcFrame(StrategiesDispatcher dispatcher, DroneLauncher droneLauncher) {
         ServerSecurityInterceptor interceptor = new ServerSecurityInterceptor(appId, secretKey);
-        SmartAutoTradeGRpcImpl smartAutoTrade = new SmartAutoTradeGRpcImpl(droneLauncher);
+        SmartAutoTradeGRpcImpl smartAutoTrade = new SmartAutoTradeGRpcImpl(dispatcher, droneLauncher);
         return new GRpcFrame(port, List.of(interceptor), List.of(smartAutoTrade));
     }
 

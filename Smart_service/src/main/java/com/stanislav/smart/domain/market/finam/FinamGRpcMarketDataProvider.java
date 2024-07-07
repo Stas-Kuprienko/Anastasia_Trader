@@ -12,18 +12,22 @@ import com.stanislav.smart.domain.market.finam.candles.FinamDayCandleBoxProxy;
 import com.stanislav.smart.domain.market.finam.candles.FinamDayCandleProxy;
 import com.stanislav.smart.domain.market.finam.candles.FinamIntraDayCandleBoxProxy;
 import com.stanislav.smart.domain.market.finam.candles.FinamIntraDayCandleProxy;
+import com.stanislav.smart.domain.utils.FinamProtoParser;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.CandlesGrpc;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import proto.tradeapi.v1.Candles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+@Service("markerDataProvider")
 public class FinamGRpcMarketDataProvider implements MarketDataProvider {
 
     private final CandlesGrpc.CandlesBlockingStub stub;
 
-
+    @Autowired
     public FinamGRpcMarketDataProvider(GRpcClient client) {
         this.stub = CandlesGrpc.newBlockingStub(client.getChannel())
                 .withCallCredentials(client.getAuthenticator());
@@ -200,7 +204,7 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
                 .setSecurityCode(ticker)
                 .setSecurityBoard(board.name())
                 .setInterval(interval)
-                .setTimeFrame(TimeFrame.toProto(timeFrame))
+                .setTimeFrame(FinamProtoParser.toProto(timeFrame))
                 .build();
 
         return stub.getDayCandles(request);
@@ -212,7 +216,7 @@ public class FinamGRpcMarketDataProvider implements MarketDataProvider {
                 .setSecurityCode(ticker)
                 .setSecurityBoard(board.name())
                 .setInterval(interval)
-                .setTimeFrame(TimeFrame.toProto(timeFrame))
+                .setTimeFrame(FinamProtoParser.toProto(timeFrame))
                 .build();
 
         return stub.getIntradayCandles(request);

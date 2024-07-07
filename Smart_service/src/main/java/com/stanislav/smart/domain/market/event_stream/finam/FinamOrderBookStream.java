@@ -1,11 +1,11 @@
 package com.stanislav.smart.domain.market.event_stream.finam;
 
-import com.stanislav.smart.domain.entities.Security;
 import com.stanislav.smart.domain.market.event_stream.EventStream;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.Events;
+import stanislav.anastasia.trade.Smart;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ public class FinamOrderBookStream implements EventStream {
 
     private final ScheduledExecutorService scheduler;
     private final EventsGrpc.EventsStub stub;
-    private final ConcurrentHashMap<Security, OrderBookStreamListener> eventStreamMap;
+    private final ConcurrentHashMap<Smart.Security, OrderBookStreamListener> eventStreamMap;
 
 
     public FinamOrderBookStream(ScheduledExecutorService scheduler, GRpcClient rpcClient) {
@@ -27,7 +27,7 @@ public class FinamOrderBookStream implements EventStream {
 
 
     @Override
-    public EventStreamListener subscribe(Security security) {
+    public EventStreamListener subscribe(Smart.Security security) {
         var subscribe = buildSubscribeRequest(security);
         var unsubscribe = buildUnsubscribeRequest(security);
         OrderBookStreamListener listener = new OrderBookStreamListener(subscribe, unsubscribe, stub);
@@ -53,27 +53,27 @@ public class FinamOrderBookStream implements EventStream {
     }
 
     @Override
-    public OrderBookStreamListener getEventStream(Security security) {
+    public OrderBookStreamListener getEventStreamListener(Smart.Security security) {
         return eventStreamMap.get(security);
     }
 
 
-    private Events.SubscriptionRequest buildSubscribeRequest(Security security) {
+    private Events.SubscriptionRequest buildSubscribeRequest(Smart.Security security) {
         var orderBookSubscribeRequest = Events.OrderBookSubscribeRequest.newBuilder()
                 .setRequestId(ORDER_BOOK_REQUEST_ID)
-                .setSecurityCode(security.ticker())
-                .setSecurityBoard(security.board().toString())
+                .setSecurityCode(security.getTicker())
+                .setSecurityBoard(security.getBoard())
                 .build();
 
         return Events.SubscriptionRequest.newBuilder()
                 .setOrderBookSubscribeRequest(orderBookSubscribeRequest).build();
     }
 
-    private Events.SubscriptionRequest buildUnsubscribeRequest(Security security) {
+    private Events.SubscriptionRequest buildUnsubscribeRequest(Smart.Security security) {
         var orderBookUnsubscribeRequest = Events.OrderBookUnsubscribeRequest.newBuilder()
                 .setRequestId(ORDER_BOOK_REQUEST_ID)
-                .setSecurityCode(security.ticker())
-                .setSecurityBoard(security.board().toString())
+                .setSecurityCode(security.getTicker())
+                .setSecurityBoard(security.getBoard())
                 .build();
 
         return Events.SubscriptionRequest.newBuilder()

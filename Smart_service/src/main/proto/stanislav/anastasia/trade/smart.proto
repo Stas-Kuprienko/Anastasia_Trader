@@ -2,13 +2,14 @@ syntax = "proto3";
 
 package stanislav.anastasia.trade;
 
-import "stanislav/anastasia/trade/strategies.proto";
+import "google/protobuf/empty.proto";
 
 
 service SmartAutoTrade {
 
   rpc subscribe(SubscribeTradeRequest) returns (stream SubscribeTradeResponse);
   rpc unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+  rpc getStrategies(google.protobuf.Empty) returns (StrategiesList);
 
 }
 
@@ -68,6 +69,29 @@ message OrderNotification {
   double price = 3;
   Direction direction = 4;
   string dateTime = 5;
+
+}
+
+message StrategiesList {
+
+  repeated string item = 1;
+
+}
+
+enum TimeFrame {
+
+  M5 = 0;
+  M15 = 1;
+  H1 = 2;
+  D1 = 4;
+  W1 = 5;
+
+}
+
+message Strategy {
+
+  string name = 1;
+  TimeFrame timeFrame = 2;
 
 }
 

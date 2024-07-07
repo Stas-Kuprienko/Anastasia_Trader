@@ -12,8 +12,6 @@ import com.stanislav.smart.domain.entities.TimeFrame;
 
 public interface TradingStrategy {
 
-    int getId();
-
     TimeFrame.Scope timeFrame();
 
     byte analysing();

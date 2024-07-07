@@ -4,6 +4,8 @@ import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.entities.candles.PriceCandle;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +48,10 @@ public class SimpleMovingAverageAide implements AnalysisAide {
         }
     }
 
-    public double update(PriceCandle candle) {
+    public double update(double price) {
         if (smaValues.isEmpty()) {
             throw new IllegalStateException("SMA value list is empty");
         }
-        double price = candle.close().doubleValue();
-
         // take the last average value from the list and multiply by the period
         //to get the sum of the last period of values
         double lastPeriodSumValue = (smaValues.getLast().value) * period;
@@ -62,8 +62,15 @@ public class SimpleMovingAverageAide implements AnalysisAide {
         double newValue = lastPeriodSumValue - firstCandleOfLastPeriodSum;
         newValue += price;
         double result = newValue / period;
-        smaValues.add(new SMAValue(candle.dateTime(), result));
-        candlesList.add(candle);
+        String dateTime;
+        if (timeFrame.getClass().equals(TimeFrame.Day.class)) {
+            dateTime = LocalDate.now().toString();
+        } else if (timeFrame.getClass().equals(TimeFrame.IntraDay.class)) {
+            dateTime = LocalDateTime.now().toString();
+        } else {
+            throw new IllegalStateException("timeframe class is incorrect - " + timeFrame.getClass());
+        }
+        smaValues.add(new SMAValue(dateTime, result));
         return result;
     }
 

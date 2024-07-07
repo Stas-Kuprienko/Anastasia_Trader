@@ -1,14 +1,14 @@
 package com.stanislav.smart.domain.market.event_stream;
 
-import com.stanislav.smart.domain.entities.Security;
+import stanislav.anastasia.trade.Smart;
 
 public interface EventStream {
 
-    EventStreamListener subscribe(Security security);
+    EventStreamListener subscribe(Smart.Security security);
 
     void unsubscribe(EventStreamListener listener);
 
     void unsubscribe(EventStreamListener listener, boolean isForced);
 
-    EventStreamListener getEventStream(Security security);
+    EventStreamListener getEventStreamListener(Smart.Security security);
 }

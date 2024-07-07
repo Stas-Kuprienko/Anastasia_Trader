@@ -1,21 +1,22 @@
 package com.stanislav.smart.domain.controller.grpc_impl;
 
+import com.google.protobuf.Empty;
+import com.stanislav.smart.domain.automation.grpc_impl.StrategiesDispatcher;
 import com.stanislav.smart.domain.controller.DroneLauncher;
-import com.stanislav.smart.domain.entities.Board;
-import com.stanislav.smart.domain.entities.Security;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
+import java.util.NoSuchElementException;
 
 public class SmartAutoTradeGRpcImpl extends SmartAutoTradeGrpc.SmartAutoTradeImplBase {
 
-    private final DroneLauncher<Smart.SubscribeTradeRequest, StreamObserver<Smart.SubscribeTradeResponse>> droneLauncher;
+    private final StrategiesDispatcher dispatcher;
+    private final DroneLauncher droneLauncher;
 
 
-    @SuppressWarnings("unchecked")
-    public SmartAutoTradeGRpcImpl(DroneLauncher<?, ?> droneLauncher) {
-            this.droneLauncher = (DroneLauncher<Smart.SubscribeTradeRequest, StreamObserver<Smart.SubscribeTradeResponse>>) droneLauncher;
-            //strategyDispatcher ???
+    public SmartAutoTradeGRpcImpl(StrategiesDispatcher dispatcher, DroneLauncher droneLauncher) {
+        this.dispatcher = dispatcher;
+        this.droneLauncher = droneLauncher;
     }
 
 
@@ -26,8 +27,22 @@ public class SmartAutoTradeGRpcImpl extends SmartAutoTradeGrpc.SmartAutoTradeImp
 
     @Override
     public void unsubscribe(Smart.UnsubscribeRequest request, StreamObserver<Smart.UnsubscribeResponse> responseObserver) {
-        Security security = new Security(request.getSecurity().getTicker(), Board.valueOf(request.getSecurity().getBoard()));
         //TODO !!!
-        droneLauncher.stopDrone(security);
+        droneLauncher.stopDrone(request.getSecurity());
+    }
+
+    @Override
+    public void getStrategies(Empty request, StreamObserver<Smart.StrategiesList> responseObserver) {
+        var strategies = dispatcher.strategiesNameList();
+        if (strategies == null || strategies.isEmpty()) {
+            responseObserver.onError(new NoSuchElementException("strategies list is null or empty!"));
+            responseObserver.onCompleted();
+        } else {
+            Smart.StrategiesList list = Smart.StrategiesList.newBuilder()
+                    .addAllItem(strategies)
+                    .build();
+            responseObserver.onNext(list);
+            responseObserver.onCompleted();
+        }
     }
 }

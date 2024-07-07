@@ -1,15 +1,12 @@
 package com.stanislav.smart.domain.controller;
 
 import com.stanislav.smart.domain.automation.Drone;
-import com.stanislav.smart.domain.automation.TradingStrategy;
-import com.stanislav.smart.domain.entities.Security;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 
-public interface DroneLauncher <REQUEST, RESPONSE> {
+public interface DroneLauncher {
 
-    Drone launchDrone(REQUEST request, RESPONSE response);
+    Drone launchDrone(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> response);
 
-    //TODO
-    boolean stopDrone(Security security);
+    boolean stopDrone(Smart.Security security);
 }
