@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.stanislav.trade.domain.market.grpc.GRpcConnection;
 import com.stanislav.trade.domain.smart.SmartAutoTradeService;
-import com.stanislav.trade.domain.smart.impl.SmartAutoTradeImpl;
+import com.stanislav.trade.domain.smart.finam_grpc.SmartAutoTradeImpl;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

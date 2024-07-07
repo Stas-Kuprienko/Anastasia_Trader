@@ -111,13 +111,7 @@ public class AccountController {
         var optionalUser = userDataService.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            Set<Account> accounts;
-            if (user.getAccounts() == null) {
-                accounts = accountService.findByUser(user.getId());
-            } else {
-                accounts = new HashSet<>(user.getAccounts());
-            }
-            model.addAttribute("accounts", accounts);
+            model.addAttribute("accounts", user.getAccounts());
             return "accounts";
         } else {
             log.error("User not found: " + id);

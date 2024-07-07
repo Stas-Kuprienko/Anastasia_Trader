@@ -77,8 +77,8 @@ public class AccountServiceRamImpl implements AccountService {
     }
 
     @Override
-    public Set<Account> findByUser(Long userId) {
-        return new HashSet<>(accountDao.findAllByUser(userId));
+    public List<Account> findByUser(Long userId) {
+        return accountDao.findAllByUser(userId);
     }
 
     @Override

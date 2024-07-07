@@ -4,6 +4,7 @@ import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public interface AccountService {
 
     Optional<Account> findById(Long id, String login) throws AccessDeniedException;
 
-    Set<Account> findByUser(Long userId);
+    List<Account> findByUser(Long userId);
 
     Optional<Account> findById(User user, Long id);
 

@@ -4,10 +4,16 @@
 
 package com.stanislav.trade.domain.smart;
 
-import com.stanislav.trade.domain.smart.strategy.TradeStrategy;
 import com.stanislav.trade.entities.Board;
+import com.stanislav.trade.entities.TimeFrame;
+
+import java.util.Set;
 
 public interface SmartAutoTradeService {
 
-    void subscribe(String ticker, Board board, TradeStrategy strategy);
+    Set<String> getStrategies();
+
+    void subscribe(String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame);
+
+    void unsubscribe(String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame);
 }

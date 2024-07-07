@@ -106,6 +106,7 @@ public final class TradeController {
     public String getOrder(@AuthenticationPrincipal UserDetails userDetails,
                            @PathVariable("orderId") long orderId,
                            @RequestParam("accountId") long accountId, Model model) {
+        //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         try {
             Optional<Account> account = accountService.findById(accountId, userDetails.getUsername());
             if (account.isPresent()) {
