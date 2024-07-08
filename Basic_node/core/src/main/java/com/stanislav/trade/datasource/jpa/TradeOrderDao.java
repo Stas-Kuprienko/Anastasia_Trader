@@ -2,7 +2,7 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.datasource;
+package com.stanislav.trade.datasource.jpa;
 
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;

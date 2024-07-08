@@ -1,6 +1,6 @@
-package com.stanislav.trade.datasource.hibernate;
+package com.stanislav.trade.datasource.jpa.hibernate;
 
-import com.stanislav.trade.datasource.AccountDao;
+import com.stanislav.trade.datasource.jpa.AccountDao;
 import com.stanislav.trade.entities.user.Account;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -1,10 +1,8 @@
 package com.stanislav.trade.web.service.ram;
 
-import com.stanislav.trade.datasource.TradeOrderDao;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.web.service.TradeOrderService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,9 +2,8 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.datasource;
+package com.stanislav.trade.datasource.jpa;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 

@@ -2,9 +2,9 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.datasource.hibernate;
+package com.stanislav.trade.datasource.jpa.hibernate;
 
-import com.stanislav.trade.datasource.UserDao;
+import com.stanislav.trade.datasource.jpa.UserDao;
 import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
 import jakarta.persistence.EntityExistsException;

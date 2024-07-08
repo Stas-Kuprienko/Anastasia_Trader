@@ -24,6 +24,8 @@
         <spring.version>6.1.6</spring.version>
         <spring.security.version>6.2.4</spring.security.version>
         <hibernate.version>6.5.1.Final</hibernate.version>
+        <spring.redis.version>3.2.5</spring.redis.version>
+        <jedis.version>5.1.2</jedis.version>
     </properties>
 
     <dependencies>
@@ -61,11 +63,17 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>redis.clients</groupId>-->
-        <!--            <artifactId>jedis</artifactId>-->
-        <!--            <version>5.1.2</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>${spring.redis.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+        </dependency>
 
         <!--        <dependency>-->
         <!--            <groupId>org.apache.kafka</groupId>-->

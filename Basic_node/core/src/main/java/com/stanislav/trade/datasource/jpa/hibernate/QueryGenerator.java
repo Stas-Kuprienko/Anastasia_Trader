@@ -1,9 +1,7 @@
-package com.stanislav.trade.datasource.hibernate;
+package com.stanislav.trade.datasource.jpa.hibernate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-
-import java.util.Map;
 
 public class QueryGenerator {
 

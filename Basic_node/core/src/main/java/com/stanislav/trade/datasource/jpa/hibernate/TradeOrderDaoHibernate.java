@@ -2,16 +2,15 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.datasource.hibernate;
+package com.stanislav.trade.datasource.jpa.hibernate;
 
-import com.stanislav.trade.datasource.TradeOrderDao;
+import com.stanislav.trade.datasource.jpa.TradeOrderDao;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;

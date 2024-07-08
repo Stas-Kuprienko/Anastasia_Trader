@@ -1,6 +1,6 @@
 package com.stanislav.trade.web.service.ram;
 
-import com.stanislav.trade.datasource.AccountDao;
+import com.stanislav.trade.datasource.jpa.AccountDao;
 import com.stanislav.trade.domain.trading.TradingService;
 import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
@@ -15,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j

@@ -1,6 +1,6 @@
 package com.stanislav.trade.web.service.ram;
 
-import com.stanislav.trade.datasource.UserDao;
+import com.stanislav.trade.datasource.jpa.UserDao;
 import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.service.UserDataService;
