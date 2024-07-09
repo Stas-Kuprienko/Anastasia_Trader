@@ -7,6 +7,8 @@ import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Securities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +40,9 @@ public enum FuturesConverter {
     NEGOTIATEDFEE,
     EXERCISEFEE;
 
-    public static Futures moexDtoToFutures(Object[] dto) {
-        double price = Double.parseDouble(dto[PREVSETTLEPRICE.ordinal()].toString());
-        LocalDate date = LocalDate.parse(dto[IMTIME.ordinal()].toString().split(" ")[0]);
+    public static Futures moexDtoToFutures(Object[] dto, Object[] marketData) {
+        double price = Double.parseDouble(marketData[MarketData.LAST.ordinal()].toString());
+        LocalDateTime date = LocalDateTime.parse(marketData[MarketData.SYSTIME.ordinal()].toString(), DateTimeFormatter.ISO_DATE);
         LocalDate expiration = LocalDate.parse(dto[LASTDELDATE.ordinal()].toString());
         Securities.PriceAtTheDate priceAtTheDate = new Securities.PriceAtTheDate(price, date);
         return Futures.builder()
@@ -51,16 +53,17 @@ public enum FuturesConverter {
                 .stepPrice(Double.parseDouble(dto[STEPPRICE.ordinal()].toString()))
                 .currency(Currency.RUR)
                 .price(priceAtTheDate)
+                .dayTradeVolume((Integer) marketData[MarketData.VALTODAY.ordinal()])
                 .expiration(expiration)
                 .board(Board.valueOf((String) dto[BOARDID.ordinal()]))
                 .market(Market.Forts)
                 .build();
     }
 
-    public static List<Futures> moexDtoToFuturesList(List<Object[]> dto) {
+    public static List<Futures> moexDtoToFuturesList(List<Object[]> dto, List<Object[]> marketData) {
         ArrayList<Futures> futuresList = new ArrayList<>();
-        for (Object[] o : dto) {
-            futuresList.add(moexDtoToFutures(o));
+        for (int i = 0; i < dto.size(); i++) {
+            futuresList.add(moexDtoToFutures(dto.get(i), marketData.get(i)));
         }
         return futuresList;
     }

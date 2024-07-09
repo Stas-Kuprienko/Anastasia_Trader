@@ -14,18 +14,22 @@ public final class Stock implements Securities {
 
     private String ticker;
     private String name;
-    private Currency currency;
     private PriceAtTheDate price;
+    private int lotSize;
+    private long dayTradeVolume;
+    private Currency currency;
     private Market market;
     private Board board;
 
 
     @Builder
-    public Stock(String ticker, String name, Currency currency, PriceAtTheDate price, Market market, Board board) {
+    public Stock(String ticker, String name, Currency currency, PriceAtTheDate price, int lotSize, long dayTradeVolume, Market market, Board board) {
         this.ticker = ticker;
         this.name = name;
         this.currency = currency;
         this.price = price;
+        this.lotSize = lotSize;
+        this.dayTradeVolume = dayTradeVolume;
         this.market = market;
         this.board = board;
     }
@@ -47,6 +51,22 @@ public final class Stock implements Securities {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getLotSize() {
+        return lotSize;
+    }
+
+    public void setLotSize(int lotSize) {
+        this.lotSize = lotSize;
+    }
+
+    public long getDayTradeVolume() {
+        return dayTradeVolume;
+    }
+
+    public void setDayTradeVolume(long dayTradeVolume) {
+        this.dayTradeVolume = dayTradeVolume;
     }
 
     public Currency getCurrency() {
@@ -85,7 +105,8 @@ public final class Stock implements Securities {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Stock stock)) return false;
-        return Objects.equals(ticker, stock.ticker) &&
+        return lotSize == stock.lotSize &&
+                Objects.equals(ticker, stock.ticker) &&
                 Objects.equals(name, stock.name) &&
                 currency == stock.currency &&
                 market == stock.market &&
@@ -94,7 +115,7 @@ public final class Stock implements Securities {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ticker, name, currency, market, board);
+        return Objects.hash(ticker, name, lotSize, currency, market, board);
     }
 
     @Override
@@ -102,10 +123,17 @@ public final class Stock implements Securities {
         return "Stock{" +
                 "ticker='" + ticker + '\'' +
                 ", name='" + name + '\'' +
-                ", currency=" + currency +
                 ", price=" + price +
+                ", lotSize=" + lotSize +
+                ", dayTradeVolume=" + dayTradeVolume +
+                ", currency=" + currency +
                 ", market=" + market +
                 ", board=" + board +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Long o) {
+        return Long.compare(dayTradeVolume, o);
     }
 }

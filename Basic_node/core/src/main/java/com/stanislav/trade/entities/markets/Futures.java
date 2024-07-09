@@ -22,6 +22,7 @@ public final class Futures implements Securities {
     private double stepPrice;
     private Currency currency;
     private PriceAtTheDate price;
+    private long dayTradeVolume;
     private LocalDate expiration;
     private Market market;
     private Board board;
@@ -29,7 +30,7 @@ public final class Futures implements Securities {
 
     @Builder
     public Futures(String ticker, String name, String asset, double minStep, double stepPrice,
-                   Currency currency, PriceAtTheDate price, LocalDate expiration, Market market, Board board) {
+                   Currency currency, PriceAtTheDate price, long dayTradeVolume, LocalDate expiration, Market market, Board board) {
         this.ticker = ticker;
         this.name = name;
         this.asset = asset;
@@ -37,6 +38,7 @@ public final class Futures implements Securities {
         this.stepPrice = stepPrice;
         this.currency = currency;
         this.price = price;
+        this.dayTradeVolume = dayTradeVolume;
         this.expiration = expiration;
         this.market = market;
         this.board = board;
@@ -109,6 +111,14 @@ public final class Futures implements Securities {
         this.price = price;
     }
 
+    public long getDayTradeVolume() {
+        return dayTradeVolume;
+    }
+
+    public void setDayTradeVolume(long dayTradeVolume) {
+        this.dayTradeVolume = dayTradeVolume;
+    }
+
     public Market getMarket() {
         return market;
     }
@@ -159,5 +169,10 @@ public final class Futures implements Securities {
                 ", market=" + market +
                 ", board=" + board +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Long o) {
+        return Long.compare(dayTradeVolume, o);
     }
 }

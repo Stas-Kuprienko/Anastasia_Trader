@@ -54,11 +54,13 @@ public class MoexExchangeData implements ExchangeData {
             return stock;
         }
         String uri = String.format(STOCK_URL, ticker);
-        List<Object[]> dto = getSecurity(uri);
-        if (dto.isEmpty()) {
+        List<List<Object[]>> dtoLists = getSecurity(uri);
+        var dto = dtoLists.get(0);
+        var marketData = dtoLists.get(1);
+        if (dto.isEmpty() || marketData.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(StocksConverter.moexDtoToStock(dto.getFirst()));
+            return Optional.of(StocksConverter.moexDtoToStock(dto.getFirst(), marketData.getFirst()));
         }
     }
 
@@ -74,11 +76,13 @@ public class MoexExchangeData implements ExchangeData {
     @Override
     public List<Stock> getStocks(SortByColumn sortByColumn, SortOrder sortOrder) {
         GetQueryBuilder query = new GetQueryBuilder(STOCKS_URL);
-        List<Object[]> dto = getSecurities(query, sortByColumn, sortOrder);
-        if (dto.isEmpty()) {
+        List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
+        var dto = dtoLists.get(0);
+        var marketData = dtoLists.get(1);
+        if (dto.isEmpty() || marketData.isEmpty()) {
             return Collections.emptyList();
         } else {
-            var list = StocksConverter.moexDtoToStocks(dto);
+            var list = StocksConverter.moexDtoToStocks(dto, marketData);
             exchangeDataStorage.addStockList(list);
             return list;
         }
@@ -87,11 +91,13 @@ public class MoexExchangeData implements ExchangeData {
     @Override
     public Optional<Futures> getFutures(String ticker) {
         String uri = String.format(FUTURES_URL, ticker);
-        List<Object[]> dto = getSecurity(uri);
-        if (dto.isEmpty()) {
+        List<List<Object[]>> dtoLists = getSecurity(uri);
+        var dto = dtoLists.get(0);
+        var marketData = dtoLists.get(1);
+        if (dto.isEmpty() || marketData.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(FuturesConverter.moexDtoToFutures(dto.getFirst()));
+            return Optional.of(FuturesConverter.moexDtoToFutures(dto.getFirst(), marketData.getFirst()));
         }
     }
 
@@ -103,24 +109,24 @@ public class MoexExchangeData implements ExchangeData {
     @Override
     public List<Futures> getFuturesList(SortByColumn sortByColumn, SortOrder sortOrder) {
         GetQueryBuilder query = new GetQueryBuilder(FUTURES_LIST_URL);
-        List<Object[]> dto = getSecurities(query, sortByColumn, sortOrder);
-        if (dto.isEmpty()) {
+        List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
+        var dto = dtoLists.get(0);
+        var marketData = dtoLists.get(1);
+        if (dto.isEmpty() || marketData.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return FuturesConverter.moexDtoToFuturesList(dto);
+            return FuturesConverter.moexDtoToFuturesList(dto, marketData);
         }
     }
 
 
-    private List<Object[]> getSecurity(String uri) {
+    private List<List<Object[]>> getSecurity(String uri) {
         GetQueryBuilder query = new GetQueryBuilder(uri);
         query.add(marketdata.toString(), 1);
-        String response = restConsumer.doRequest(query.build(), HttpMethod.GET);
-        String[] layers = {"securities", "data"};
-        return dataParser.parseObjectsList(response, Object[].class, layers);
+        return getListOfLists(query.build());
     }
 
-    private List<Object[]> getSecurities(GetQueryBuilder query, SortByColumn sortByColumn, SortOrder sortOrder) {
+    private List<List<Object[]>> getSecurities(GetQueryBuilder query, SortByColumn sortByColumn, SortOrder sortOrder) {
         query.add(marketdata.toString(), 1);
         query.add(leaders.toString(), 1);
         if (!sortByColumn.equals(SortByColumn.NONE)) {
@@ -135,9 +141,16 @@ public class MoexExchangeData implements ExchangeData {
                 query.add(sort_order.toString(), sortOrder);
             }
         }
-        String response = restConsumer.doRequest(query.build(), HttpMethod.GET);
+        return getListOfLists(query.build());
+    }
+
+    private List<List<Object[]>> getListOfLists(String uri) {
+        String response = restConsumer.doRequest(uri, HttpMethod.GET);
         String[] layers = {"securities", "data"};
-        return dataParser.parseObjectsList(response, Object[].class, layers);
+        List<Object[]> dto = dataParser.parseObjectsList(response, Object[].class, layers);
+        layers = new String[]{"marketdata", "data"};
+        List<Object[]> marketdata = dataParser.parseObjectsList(response, Object[].class, layers);
+        return List.of(dto, marketdata);
     }
 
     private String stockUrl() {
