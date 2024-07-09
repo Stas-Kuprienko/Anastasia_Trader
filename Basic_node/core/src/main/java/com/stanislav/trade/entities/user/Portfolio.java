@@ -65,5 +65,5 @@ public final class Portfolio {
     }
 
 
-    public record Position(String ticker, Market market, double price, long quantity, Currency currency) {}
+    public record Position(String ticker, Market market, double price, double totalCost, long quantity, Currency currency, double profit) {}
 }

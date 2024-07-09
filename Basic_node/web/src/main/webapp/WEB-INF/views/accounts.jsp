@@ -605,7 +605,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
             <ul role="list" class="t508__container t-container">
                 <c:forEach items="${accounts}" var = "account">
                     <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
-                        <a href="/anastasia/user/account/${account.id}">
+                        <a href="/anastasia/user/account/${account.clientId}?broker=${account.broker}">
                             <div class="t-cell t-valign_top">
                                 <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1476889049104"
                                      data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"
@@ -617,7 +617,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                             </div>
                             <div class="t508__textwrapper t-cell t-valign_top" style="">
                                 <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">${account.broker}</div>
-                                <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">${account.balance}</div>
+                                <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">${account.clientId}</div>
                             </div>
                         </a>
                     </li>

@@ -2,10 +2,12 @@ package com.stanislav.trade.datasource.jpa.hibernate;
 
 import com.stanislav.trade.datasource.jpa.AccountDao;
 import com.stanislav.trade.entities.user.Account;
+import com.stanislav.trade.entities.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -24,11 +26,34 @@ public class AccountDaoHibernate implements AccountDao {
 
 
     @Override
-    public List<Account> findAllByUser(Long userId) {
+    public List<Account> findAllByUser(User user) {
         String param = "user";
-        String jpql = jpQuery.nativeSelectAllWhere1Param(Account.class, param);
+        String jpql = jpQuery
+                .initSelect()
+                .fullyFrom()
+                .table(Account.class)
+                .where(param)
+                .build();
         var query = entityManager.createQuery(jpql, Account.class);
-        query.setParameter(param, userId);
+        query.setParameter(param, user);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Account> findByParameters(Map<String, Object> params) {
+        if (params.isEmpty()) {
+            throw new IllegalArgumentException("parameters map is empty");
+        }
+        String jpql = jpQuery
+                .initSelect()
+                .fullyFrom()
+                .table(Account.class)
+                .where(params.keySet().toArray(new String[]{}))
+                .build();
+        var query = entityManager.createQuery(jpql, Account.class);
+        for (var p : params.entrySet()) {
+            query.setParameter(p.getKey(), p.getValue());
+        }
         return query.getResultList();
     }
 

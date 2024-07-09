@@ -62,7 +62,9 @@ public class FinamPortfolioDto {
                 row.securityCode,
                 row.market,
                 row.currentPrice,
+                row.equity,
                 row.balance,
-                currency);
+                currency,
+                row.unrealizedProfit);
     }
 }

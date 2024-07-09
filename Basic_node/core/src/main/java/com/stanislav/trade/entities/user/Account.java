@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stanislav.trade.entities.Broker;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -23,7 +22,7 @@ public final class Account implements Serializable {
     @Column(nullable = false)
     private String clientId;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user", nullable = false)
     @JsonIgnore
     private User user;
@@ -37,17 +36,14 @@ public final class Account implements Serializable {
     @JsonIgnore
     private RiskProfile riskProfile;
 
-    private BigDecimal balance;
 
-
-    public Account(long id, String clientId, User user, Broker broker, String token, RiskProfile riskProfile, BigDecimal balance) {
+    public Account(long id, String clientId, User user, Broker broker, String token, RiskProfile riskProfile) {
         this.id = id;
         this.clientId = clientId;
         this.user = user;
         this.broker = broker;
         this.token = token;
         this.riskProfile = riskProfile;
-        this.balance = balance;
     }
 
     public Account() {}
@@ -101,14 +97,6 @@ public final class Account implements Serializable {
         this.riskProfile = riskProfile;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -130,7 +118,6 @@ public final class Account implements Serializable {
                 ", clientId='" + clientId + '\'' +
                 ", userId=" + user.getId() +
                 ", broker='" + broker + '\'' +
-                ", balance=" + balance +
                 '}';
     }
 }

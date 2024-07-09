@@ -4,64 +4,62 @@
 
 package com.stanislav.trade.utils;
 
-
-import java.util.Objects;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GetQueryBuilder {
 
-    private final String url;
-    private final ArrayList<Node> parameters;
+    private final StringBuilder uri;
+    private final ArrayList<Parameter> parameters;
 
     public GetQueryBuilder(String url) {
-        this.url = url == null ? "" : url;
+        uri = new StringBuilder();
+        if (url != null) {
+            uri.append(url);
+        }
         this.parameters = new ArrayList<>();
     }
 
+
     public GetQueryBuilder() {
-        this.url = "";
+        uri = new StringBuilder();
         this.parameters = new ArrayList<>();
+    }
+
+    public GetQueryBuilder appendToUrl(Object str) {
+        if (str != null) {
+            uri.append(str);
+        }
+        return this;
     }
 
     public GetQueryBuilder add(String key, Object value) {
         if (value != null) {
-            parameters.add(new Node(key, value));
+            parameters.add(new Parameter(key, value));
         }
         return this;
     }
 
     public String build() {
-        if (parameters.isEmpty()) {
-            return url;
-        } else {
-            StringBuilder str = new StringBuilder(url).append('?');
-            for (Node n : parameters) {
-                str.append(n.key).append('=').append(n.value).append('&');
-            } str.deleteCharAt(str.length() - 1);
-            return str.toString();
+        if (!parameters.isEmpty()) {
+            if (!uri.isEmpty() && uri.charAt(uri.length() - 1) == '/') {
+                uri.deleteCharAt(uri.length() - 1);
+            }
+            uri.append('?');
+            for (Parameter n : parameters) {
+                uri.append(n.key).append('=').append(n.value).append('&');
+            }
+            uri.deleteCharAt(uri.length() - 1);
         }
+        return uri.toString();
     }
 
-    private record Node(String key, Object value) {}
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GetQueryBuilder that)) return false;
-        return Objects.equals(url, that.url) &&
-                Arrays.equals(parameters.toArray(), ((GetQueryBuilder) o).parameters.toArray());
-
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(url, Arrays.hashCode(parameters.toArray(new Node[]{})));
-    }
+    private record Parameter(String key, Object value) {}
 
     @Override
     public String toString() {
-        return build();
+        return "GetQueryBuilder{" +
+                "uri=" + uri +
+                ", parameters=" + parameters +
+                '}';
     }
 }

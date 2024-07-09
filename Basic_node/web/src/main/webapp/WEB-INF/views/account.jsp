@@ -597,7 +597,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
             <div class="t-section__container t-container t-container_flex">
                 <div class="t-col t-col_10 t-prefix_1">
                     <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">
-                        ${account.broker}
+                        ${account.broker}: ${account.clientId}
                     </div>
                 </div>
             </div>
@@ -615,11 +615,21 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                     </div>
                     <div class="t508__textwrapper t-cell t-valign_top" style="">
                         <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">
-                            ${account.clientId}
-                        </div>
+                            ${balance}
+                        </div><br><br>
+                        <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104" style="text-align:center">
+                            Позиции:
+                        </div><br>
+                        <c:forEach items="${positions}" var="p">
                         <div class="t508__descr t-descr t-descr_sm" field="li_descr__1476889049104">
-                            ${account.balance}
-                        </div>
+                            <p>актив: ${p.ticker}</p>
+                            <p>рынок: ${p.market}</p>
+                            <p>текущая цена: ${p.price}</p>
+                            <p>количество: ${p.quantity}</p>
+                            <p>стоимость: ${p.totalCost}</p>
+                            <p>валюта: ${p.currency}</p>
+                        </div><br>
+                        </c:forEach>
                     </div>
                 </div><br>
                 <c:if test="${param.updateToken != null}">
@@ -677,7 +687,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                 <div class="t-col t-col_12">
                     <div class="t-section__bottomwrapper t-clear t-align_center">
                         <c:if test="${param.updateToken == null}">
-                            <a href="/anastasia/user/account/${account.id}?updateToken=true" target="" class="t-btn t-btn_md"
+                            <a href="/anastasia/user/account/${account.clientId}?broker=${account.broker}updateToken=true" target="" class="t-btn t-btn_md"
                                style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
                                data-buttonfieldset="bbutton">
                                 <table style="width:100%; height:100%;">
@@ -689,18 +699,18 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                 </table>
                             </a>
                         </c:if>
-                    <a href="/anastasia/user/account" target="" class="t-btn t-btn_md"
-                       style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
-                       data-buttonfieldset="bbutton">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <table style="width:100%; height:100%;">
-                            <tbody>
-                            <tr>
-                                <td data-field="bbuttontitle">Удалить счёт</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </a>
+                        <a href="/anastasia/user/account" target="" class="t-btn t-btn_md"
+                           style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
+                           data-buttonfieldset="bbutton">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <table style="width:100%; height:100%;">
+                                <tbody>
+                                <tr>
+                                    <td data-field="bbuttontitle">Удалить счёт</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </a>
                     </div>
                 </div>
             </div>

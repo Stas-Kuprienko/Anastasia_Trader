@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public final class Order implements Serializable {
 
-    private Long orderId;
+    private Integer orderId;
 
     private String clientId;
 
@@ -35,7 +35,7 @@ public final class Order implements Serializable {
     private LocalDateTime created;
 
 
-    public Order(long orderId, String clientId, Broker broker, String ticker, Board board,
+    public Order(int orderId, String clientId, Broker broker, String ticker, Board board,
                  BigDecimal price, long quantity, Direction direction, String status, LocalDateTime created) {
         this.orderId = orderId;
         this.clientId = clientId;
@@ -56,11 +56,11 @@ public final class Order implements Serializable {
     }
 
 
-    public Long getOrderId() {
+    public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
 
@@ -171,7 +171,7 @@ public final class Order implements Serializable {
 
         private OrderBuilder() {}
 
-        public OrderBuilder orderId(long orderId) {
+        public OrderBuilder orderId(int orderId) {
             Order.this.setOrderId(orderId);
             return this;
         }

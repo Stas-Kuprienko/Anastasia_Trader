@@ -630,7 +630,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                 <div class="t-section__container t-container t-container_flex">
                     <div class="t-col t-col_10 t-prefix_1">
                         <div class="t-section__title t-title t-title_xs t-align_center t-margin_auto" field="btitle">
-                            ${order.ticker}
+                            Актив: ${order.ticker}
                         </div>
                     </div>
                 </div>

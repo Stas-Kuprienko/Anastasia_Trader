@@ -13,10 +13,12 @@ import io.jsonwebtoken.JwtParser;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -96,23 +98,38 @@ public class UserDataServiceRamImpl implements UserDataService {
 
     @Transactional
     @Override
-    public Optional<Account> findAccountByLoginClientIdBroker(String login, String clientId, Broker broker) {
-        try {
-            User user = findUserByLogin(login).orElseThrow();
-            return user.getAccounts()
-                    .stream()
-                    .filter(a -> a.getClientId().equals(clientId) && a.getBroker().equals(broker))
-                    .findFirst();
-        } catch (NoSuchElementException | NullPointerException e) {
-            log.warn(e.getMessage());
-            throw new IllegalArgumentException(e);
+    public List<Account> getAccountsByLogin(String login) {
+        Optional<User> user = userDao.findByLogin(login);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("user=" + login + " is not found");
+        }
+        return accountDao.findAllByUser(user.get());
+    }
+
+    @Transactional
+    @Override
+    public Optional<Account> findAccountByLoginClientBroker(String login, String clientId, Broker broker) throws AccessDeniedException {
+        Map<String, Object> params = HashMap.newHashMap(2);
+        params.put("clientId", clientId);
+        params.put("broker", broker);
+        List<Account> accounts = accountDao.findByParameters(params);
+        if (accounts.isEmpty()) {
+            return Optional.empty();
+        }
+        Optional<Account> account = Optional.of(accounts.getFirst());
+        if (account.get().getUser().getLogin().equals(login)) {
+            return account;
+        } else {
+            log.warn("parameters: {login: '%s', clientId: '%s', broker: '%s'}".formatted(login, clientId, broker));
+            throw new AccessDeniedException("user=" + login
+                    + " tries access to account=" + broker + ':' + clientId);
         }
     }
 
     @Transactional
     @Override
-    public void deleteAccount(String login, long id) {
-        var account = accountDao.findById(id);
+    public void deleteAccount(String login, long accountId) {
+        var account = accountDao.findById(accountId);
         if (account.isPresent()) {
             if (account.get().getUser().getLogin().equals(login)) {
                 accountDao.delete(account.get());
