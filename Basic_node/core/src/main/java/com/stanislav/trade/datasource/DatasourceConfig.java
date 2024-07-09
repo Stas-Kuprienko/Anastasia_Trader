@@ -2,7 +2,6 @@ package com.stanislav.trade.datasource;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,6 @@ public class DatasourceConfig {
     private final String redisHost;
     private final Integer redisPort;
 
-    private LocalContainerEntityManagerFactoryBean entityManagerFactory;
     private RedisConnectionFactory redisConnectionFactory;
 
 
@@ -48,13 +46,12 @@ public class DatasourceConfig {
 
     @Bean
     public DataSource dataSource() {
-        var dataSource = new JndiDataSourceLookup().getDataSource(jpaProperties.getProperty("datasource.name"));
-        log.info("Datasource=" + dataSource);
-        return dataSource;
+        return new JndiDataSourceLookup().getDataSource(jpaProperties.getProperty("datasource.name"));
     }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+        log.info("Datasource=" + dataSource);
 
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 
@@ -63,9 +60,7 @@ public class DatasourceConfig {
         entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         entityManagerFactory.setJpaProperties(jpaProperties);
 
-        entityManagerFactory.setPersistenceProvider(new HibernatePersistenceProvider());
-
-        return this.entityManagerFactory = entityManagerFactory;
+        return entityManagerFactory;
     }
 
     @Bean
@@ -102,7 +97,11 @@ public class DatasourceConfig {
         return redisTemplate;
     }
 
-    private void destroyRedisConnectionFactory() {
+    // /\ <--------- Redis configuration ---------> /\ //
+    // <---------------------------------------------> //
+
+    @PreDestroy
+    public void destroy() {
         if (redisConnectionFactory != null) {
             try {
                 var jcf =(JedisConnectionFactory) redisConnectionFactory;
@@ -111,17 +110,6 @@ public class DatasourceConfig {
                 log.error(e.getMessage());
             }
         }
-    }
-
-    // /\ <--------- Redis configuration ---------> /\ //
-    // <---------------------------------------------> //
-
-    @PreDestroy
-    public void destroy() {
-        if (entityManagerFactory != null) {
-            entityManagerFactory.destroy();
-        }
-        destroyRedisConnectionFactory();
     }
 
 

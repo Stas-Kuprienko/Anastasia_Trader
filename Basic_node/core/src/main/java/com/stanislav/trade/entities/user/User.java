@@ -5,6 +5,9 @@
 package com.stanislav.trade.entities.user;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "user")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public final class User implements Serializable {
 
     @Id

@@ -16,7 +16,7 @@ public class RiskProfile {
     private Long accountId;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "account", nullable = false)
     @JsonIgnore
     private Account account;

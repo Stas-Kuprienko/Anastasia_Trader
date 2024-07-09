@@ -7,11 +7,16 @@ package com.stanislav.trade.entities.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stanislav.trade.entities.Broker;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "account")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public final class Account implements Serializable {
 
     @Id
@@ -32,7 +37,7 @@ public final class Account implements Serializable {
 
     private String token;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REFRESH)
     @JsonIgnore
     private RiskProfile riskProfile;
 

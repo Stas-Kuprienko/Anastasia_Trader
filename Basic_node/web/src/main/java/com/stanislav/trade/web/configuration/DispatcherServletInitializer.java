@@ -4,7 +4,6 @@
 
 package com.stanislav.trade.web.configuration;
 
-import com.stanislav.trade.datasource.DatasourceConfig;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -13,7 +12,7 @@ public class DispatcherServletInitializer
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{AnastasiaTraderConfig.class, WebApplicationConfig.class, DatasourceConfig.class};
+        return new Class[]{};
     }
 
     @Override
