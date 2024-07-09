@@ -30,7 +30,7 @@ public class SmartTradeController {
 
     @GetMapping("/select")
     public String selectSmart(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        Optional<User> user = userDataService.findByLogin(userDetails.getUsername());
+        Optional<User> user = userDataService.findUserByLogin(userDetails.getUsername());
         if (user.isEmpty()) {
             log.error("user=" + userDetails.getUsername() + " is lost");
             return "login";

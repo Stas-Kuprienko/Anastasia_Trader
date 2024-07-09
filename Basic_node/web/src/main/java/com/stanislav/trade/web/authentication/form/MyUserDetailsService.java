@@ -24,7 +24,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userDataService
-                .findByLogin(username)
+                .findUserByLogin(username)
                 .map(MyUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }

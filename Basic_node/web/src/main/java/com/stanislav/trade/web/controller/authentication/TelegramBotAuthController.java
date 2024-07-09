@@ -66,7 +66,7 @@ public class TelegramBotAuthController {
                     request.getSession().setAttribute(CHAT_ID, chatId);
                     return "forward:/telegram-bot/sign-up";
                 } else {
-                    User user = userDataService.findByLogin(principal.getName()).orElseThrow();
+                    User user = userDataService.findUserByLogin(principal.getName()).orElseThrow();
                     return signUpToTelegram(chatId, user);
                 }
             }
@@ -103,7 +103,7 @@ public class TelegramBotAuthController {
         if (chatId == null) {
             return "forward:/error/" + ErrorCase.TELEGRAM_ID_LOST;
         }
-        User user = userDataService.create(login, password, name);
+        User user = userDataService.createUser(login, password, name);
         try {
             request.login(login, password);
             request.getSession().removeAttribute(CHAT_ID);
@@ -125,7 +125,7 @@ public class TelegramBotAuthController {
         try {
             request.login(login, password);
             request.getSession().removeAttribute(CHAT_ID);
-            User user = userDataService.findByLogin(login).orElseThrow();
+            User user = userDataService.findUserByLogin(login).orElseThrow();
             return signUpToTelegram(chatId, user);
         } catch (ServletException e) {
             log.warn(e.getMessage());

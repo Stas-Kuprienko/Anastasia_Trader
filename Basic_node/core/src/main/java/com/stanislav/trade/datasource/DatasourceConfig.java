@@ -28,17 +28,20 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class DatasourceConfig {
 
+    private final Properties jpaProperties;
+    private final String redisHost;
+    private final Integer redisPort;
+
     private LocalContainerEntityManagerFactoryBean entityManagerFactory;
     private RedisConnectionFactory redisConnectionFactory;
 
-    private final Properties jpaProperties;
-    private final Properties inMemoryProperties;
-
 
     public DatasourceConfig(@Value("${database.jpa.properties}") String jpa,
-                            @Value("${database.in-memory.properties}") String inMemory) {
+                            @Value("${redis.config.host}") String redisHost,
+                            @Value("${redis.config.port}") Integer redisPort) {
         jpaProperties = loadDatabaseProperties(jpa);
-        inMemoryProperties = loadDatabaseProperties(inMemory);
+        this.redisHost = redisHost;
+        this.redisPort = redisPort;
     }
 
     // \/ <---------- JPA configuration ----------> \/ //
@@ -79,11 +82,8 @@ public class DatasourceConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
 
-        String host = inMemoryProperties.getProperty("redis.config.host");
-        int port = Integer.parseInt(inMemoryProperties.getProperty("redis.config.port"));
-
         RedisStandaloneConfiguration redisStandaloneConfiguration =
-                new RedisStandaloneConfiguration(host, port);
+                new RedisStandaloneConfiguration(redisHost, redisPort);
 
         var connectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
         redisConnectionFactory = connectionFactory;

@@ -5,24 +5,23 @@ import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.entities.user.User;
-import com.stanislav.trade.web.controller.service.ErrorController;
-import com.stanislav.trade.web.service.AccountService;
+import com.stanislav.trade.web.controller.TradeController;
 import com.stanislav.trade.web.controller.service.ErrorCase;
+import com.stanislav.trade.web.controller.service.ErrorController;
+import com.stanislav.trade.web.controller.service.MVC;
 import com.stanislav.trade.web.service.UserDataService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Controller
@@ -30,16 +29,12 @@ import java.util.Set;
 public class AccountController {
 
     private final UserDataService userDataService;
-    private final AccountService accountService;
-
-    private final TradingService tradingService;
+    private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
 
     @Autowired
-    public AccountController(UserDataService userDataService, AccountService accountService,
-                             @Qualifier("finamTradingService") TradingService tradingService) {
+    public AccountController(List<TradingService> tradingServices, UserDataService userDataService) {
         this.userDataService = userDataService;
-        this.accountService = accountService;
-        this.tradingService = tradingService;
+        tradingServiceMap = TradeController.initTradingServiceMap(tradingServices);
     }
 
     @GetMapping("/new-account")
@@ -48,27 +43,24 @@ public class AccountController {
         return "new_account";
     }
 
-    @GetMapping("/account/{account}")
+    @GetMapping("/account")
     public String getAccount(@AuthenticationPrincipal UserDetails userDetails,
-                             @PathVariable("account") String accountId, Model model) {
-        long id;
-        Optional<Account> account;
-        try {
-            id = Long.parseLong(accountId);
-            account = accountService.findById(id, userDetails.getUsername());
-        } catch (NumberFormatException | NullPointerException e) {
-            log.info(e.getMessage());
-            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
-        } catch (AccessDeniedException e) {
-            log.warn(e.getMessage());
-            return ErrorController.URL_FORWARD + ErrorCase.ACCESS_DENIED;
-        }
-        if (account.isPresent()) {
-            model.addAttribute("account", account.get());
+                             @RequestParam("clientId") String clientId,
+                             @RequestParam("broker") String broker, Model model) {
+        Optional<Account> optionalAccount = userDataService
+                .findAccountByLoginClientIdBroker(userDetails.getUsername(), clientId, Broker.valueOf(broker));
+        if (optionalAccount.isPresent()) {
+            Account account = optionalAccount.get();
+            String token = userDataService.decodeToken(account.getToken());
+            TradingService tradingService = tradingServiceMap.get(account.getBroker());
+            Portfolio portfolio = tradingService.getPortfolio(account.getClientId(), token, true);
+            model.addAttribute("account", account);
+            model.addAttribute("balance", portfolio.getBalance());
+            model.addAttribute("positions", portfolio.getPositions());
+            //TODO update page
             return "account";
         } else {
-            log.info("account is not found, id=" + id);
-            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
+            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
         }
     }
 
@@ -83,10 +75,10 @@ public class AccountController {
             log.error("User ID is lost");
             return "redirect:/login";
         }
-        Optional<User> user = userDataService.findById(id);
+        Optional<User> user = userDataService.findUserById(id);
         if (user.isPresent()) {
             try {
-                Account account = accountService.create(user.get(), clientId, token, broker);
+                Account account = userDataService.createAccount(user.get(), clientId, token, broker);
                 var accounts = user.get().getAccounts();
                 accounts.add(account);
                 model.addAttribute("accounts", accounts);
@@ -108,7 +100,7 @@ public class AccountController {
             log.error("User ID is lost");
             return "redirect:/login";
         }
-        var optionalUser = userDataService.findById(id);
+        var optionalUser = userDataService.findUserById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             model.addAttribute("accounts", user.getAccounts());
@@ -120,45 +112,16 @@ public class AccountController {
     }
 
     @DeleteMapping("/account/{account}")
-    public String deleteAccount(@PathVariable("account") String accountId, Model model) {
-        long id;
-        try {
-            id = Long.parseLong(accountId);
-        } catch (NumberFormatException | NullPointerException e) {
-            log.info(e.getMessage());
-            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
-        }
-        accountService.delete(id);
-        var accounts = accountService.findByUser(id);
-        model.addAttribute("accounts", accounts);
-        return "accounts";
-    }
-
-    @GetMapping("/account/{accountId}/portfolio")
-    public String portfolio(@AuthenticationPrincipal UserDetails userDetails,
-                            @PathVariable("accountId") String accountId, Model model) {
-        long id;
-        Optional<Account> account;
-        try {
-            id = Long.parseLong(accountId);
-            account = accountService.findById(id, userDetails.getUsername());
-        } catch (NumberFormatException | NullPointerException e) {
-            log.info(e.getMessage());
-            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
-        } catch (AccessDeniedException e) {
-            log.warn(e.getMessage());
-            return ErrorController.URL_FORWARD + ErrorCase.ACCESS_DENIED;
-        }
-        if (account.isPresent()) {
-            Account a = account.get();
-            String token = accountService.decodeToken(a.getToken());
-            Portfolio portfolio = tradingService.getPortfolio(a.getClientId(), token, true);
-            model.addAttribute("portfolio", portfolio);
-            //TODO to create page
-            return "portfolio";
+    public String deleteAccount(@AuthenticationPrincipal UserDetails userDetails,
+                                @PathVariable("account") Long accountId, Model model) {
+        userDataService.deleteAccount(userDetails.getUsername(), accountId);
+        Optional<User> user = userDataService.findUserByLogin(userDetails.getUsername());
+        if (user.isPresent()) {
+            model.addAttribute("accounts", user.get().getAccounts());
+            return MVC.REDIRECT + "accounts";
         } else {
-            log.info("account is not found, id=" + id);
-            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
+            log.error("user=" + userDetails.getUsername() + " is lost");
+            return MVC.REDIRECT + "login";
         }
     }
 }

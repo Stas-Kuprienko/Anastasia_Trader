@@ -53,7 +53,7 @@ public class AuthenticationController {
                                @RequestParam("password") String password,
                                @RequestParam(name = "name", required = false) String name,
                                HttpServletRequest request) {
-        User user = userDataService.create(login, password, name);
+        User user = userDataService.createUser(login, password, name);
         try {
             request.login(login, password);
             request.getSession().setAttribute("id", user.getId());
@@ -66,7 +66,7 @@ public class AuthenticationController {
 
     @PostMapping("/login/auth")
     public String loginHandle(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
-        Optional<User> user = userDataService.findByLogin(userDetails.getUsername());
+        Optional<User> user = userDataService.findUserByLogin(userDetails.getUsername());
         if (user.isPresent()) {
             request.getSession().setAttribute("id", user.get().getId());
             if (user.get().getRole().equals(User.Role.USER)) {
@@ -87,7 +87,7 @@ public class AuthenticationController {
             log.error("User ID is lost");
             return "redirect:/login";
         }
-        User user = userDataService.findById(id).orElseThrow();
+        User user = userDataService.findUserById(id).orElseThrow();
         model.addAttribute("user", user);
         return "main";
     }
