@@ -105,8 +105,7 @@ public final class TradeController {
     @PostMapping("/order/{ticker}")
     public String newOrderHandle(@AuthenticationPrincipal UserDetails userDetails,
                                  @PathVariable("ticker") String ticker,
-                                 @RequestParam("clientId") String clientId,
-                                 @RequestParam("broker") String broker,
+                                 @RequestParam("account") String clientBroker,
                                  @RequestParam("board") String board,
                                  @RequestParam("price") double price,
                                  @RequestParam("quantity") long quantity,
@@ -116,6 +115,12 @@ public final class TradeController {
                                  @RequestParam(name = "delayTime", required = false) LocalDateTime delayTime,
                                  Model model) {
         try {
+            String[] clientIdAndBroker = clientBroker.split(":");
+            if (clientIdAndBroker.length != 2) {
+                throw new IllegalArgumentException(clientBroker);
+            }
+            String broker = clientIdAndBroker[0];
+            String clientId = clientIdAndBroker[1];
             Account account = userDataService
                     .findAccountByLoginClientBroker(userDetails.getUsername(), clientId, Broker.valueOf(broker))
                     .orElseThrow();

@@ -645,13 +645,13 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                                     data-redactor-toolbar="no"
                                                     field="li_title__1495040492013" style="color:;font-weight:400;">Выбрать
                                                 счёт</label>
-                                            <select name="accountId"
+                                            <select name="account"
                                                     id="input_1494858949999"
                                                     class="t-select js-tilda-rule t-select_bbonly"
                                                     aria-required="true"
                                                     style="color:#ffffff;border:1px solid #000000;background-color:#000000;font-weight:600;font-size:22px;">
                                                 <c:forEach items="${accounts}" var="a">
-                                                <option value="${a.id}" style="color:#ffffff;background-color:#000000;">
+                                                <option value="${a.broker}:${a.clientId}" style="color:#ffffff;background-color:#000000;">
                                                     ${a.broker.title}: ${a.clientId}
                                                 </option>
                                                 </c:forEach>
