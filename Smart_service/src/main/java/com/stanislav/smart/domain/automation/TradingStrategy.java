@@ -14,6 +14,8 @@ public interface TradingStrategy {
 
     TimeFrame.Scope timeFrame();
 
+    double getPrice();
+
     byte analysing();
 
     boolean observe();

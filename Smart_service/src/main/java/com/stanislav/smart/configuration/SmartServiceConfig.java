@@ -1,9 +1,9 @@
 package com.stanislav.smart.configuration;
 
-import com.stanislav.smart.domain.automation.grpc_impl.StrategiesDispatcher;
-import com.stanislav.smart.domain.controller.DroneLauncher;
-import com.stanislav.smart.domain.controller.grpc_impl.GRpcDroneLauncher;
-import com.stanislav.smart.domain.controller.grpc_impl.SmartAutoTradeGRpcImpl;
+import com.stanislav.smart.domain.automation.strategy_boxes.StrategiesDispatcher;
+import com.stanislav.smart.domain.automation.DroneLauncher;
+import com.stanislav.smart.domain.automation.grpc_impl.DroneLauncherGrpc;
+import com.stanislav.smart.domain.automation.grpc_impl.SmartAutoTradeGRpcImpl;
 import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
@@ -62,7 +62,7 @@ public class SmartServiceConfig {
 
     @Bean
     public DroneLauncher droneLauncher(ScheduledExecutorService scheduledExecutorService, StrategiesDispatcher strategiesDispatcher) {
-        return new GRpcDroneLauncher(scheduledExecutorService, strategiesDispatcher);
+        return new DroneLauncherGrpc(scheduledExecutorService, strategiesDispatcher);
     }
 
     @Bean

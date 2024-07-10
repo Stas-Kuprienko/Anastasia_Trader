@@ -6,6 +6,10 @@ import java.util.concurrent.ScheduledFuture;
 
 public interface Drone extends Runnable {
 
+    void addAccount(Smart.Account account);
+
+    void removeAccount(Smart.Account account);
+
     Smart.Security getSecurity();
 
     TradingStrategy getStrategy();

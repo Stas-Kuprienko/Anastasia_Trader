@@ -1,4 +1,4 @@
-package com.stanislav.smart.domain.controller;
+package com.stanislav.smart.domain.automation;
 
 import com.stanislav.smart.domain.automation.Drone;
 import io.grpc.stub.StreamObserver;

@@ -30,6 +30,11 @@ public class MovingAverageStrategy implements TradingStrategy {
     }
 
     @Override
+    public double getPrice() {
+        return collector.lastAskPrice();
+    }
+
+    @Override
     public byte analysing() {
         double lastAveragePrice = smaAide.last();
         double lastPrice = collector.lastAskPrice();

@@ -5,6 +5,8 @@ import com.stanislav.smart.domain.automation.TradingStrategy;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 
 import static com.stanislav.smart.domain.entities.TimeFrame.*;
@@ -15,6 +17,7 @@ public class GrpcFollowerDrone implements Drone {
     private final TradingStrategy strategy;
     private final Smart.SubscribeTradeRequest request;
     private final StreamObserver<Smart.SubscribeTradeResponse> responseObserver;
+    private final Set<Smart.Account> accounts;
     private ScheduledFuture<?> scheduledFuture;
 
     private boolean isActive;
@@ -27,6 +30,7 @@ public class GrpcFollowerDrone implements Drone {
         this.strategy = strategy;
         this.request = request;
         this.responseObserver = responseObserver;
+        accounts = new HashSet<>();
     }
 
 
@@ -53,13 +57,8 @@ public class GrpcFollowerDrone implements Drone {
                 do {
                     dealing = strategy.observe();
                     if (dealing) {
-                        Smart.OrderNotification notification = Smart.OrderNotification.newBuilder()
-                                .setAccount(Smart.Account.newBuilder().setId(0).build())
-                                .setSecurity(request.getSecurity())
-                                .setPrice(0).build(); //TODO set price !!!
-                        Smart.SubscribeTradeResponse subscribeTradeResponse = Smart.SubscribeTradeResponse.newBuilder()
-                                .setNotification(notification).build();
-                        responseObserver.onNext(subscribeTradeResponse);
+                        //TODO trade order
+                        //TODO notify
                         strategy.manageDeal();
                     } else {
                         try {
@@ -77,6 +76,16 @@ public class GrpcFollowerDrone implements Drone {
             }
         } while (isActive);
 
+    }
+
+    @Override
+    public void addAccount(Smart.Account account) {
+        accounts.add(account);
+    }
+
+    @Override
+    public void removeAccount(Smart.Account account) {
+        accounts.remove(account);
     }
 
     @Override
@@ -138,7 +147,11 @@ public class GrpcFollowerDrone implements Drone {
         isActive = false;
         //TODO loggers
         //TODO send exception
+        Smart.Exception ex = Smart.Exception.newBuilder()
+                .setMessage(e.getMessage())
+                .build();
         Smart.SubscribeTradeResponse response = Smart.SubscribeTradeResponse.newBuilder()
+                .setException(ex)
                 .build();
         responseObserver.onNext(response);
     }

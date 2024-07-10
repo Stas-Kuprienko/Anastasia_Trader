@@ -1,8 +1,8 @@
-package com.stanislav.smart.domain.controller.grpc_impl;
+package com.stanislav.smart.domain.automation.grpc_impl;
 
 import com.google.protobuf.Empty;
-import com.stanislav.smart.domain.automation.grpc_impl.StrategiesDispatcher;
-import com.stanislav.smart.domain.controller.DroneLauncher;
+import com.stanislav.smart.domain.automation.strategy_boxes.StrategiesDispatcher;
+import com.stanislav.smart.domain.automation.DroneLauncher;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 import stanislav.anastasia.trade.SmartAutoTradeGrpc;
