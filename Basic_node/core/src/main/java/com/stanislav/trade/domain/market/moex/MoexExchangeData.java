@@ -3,7 +3,6 @@ package com.stanislav.trade.domain.market.moex;
 import com.stanislav.trade.domain.market.ExchangeData;
 import com.stanislav.trade.domain.market.ExchangeDataCache;
 import com.stanislav.trade.domain.market.moex.converters.FuturesConverter;
-import com.stanislav.trade.domain.market.moex.converters.MarketData;
 import com.stanislav.trade.domain.market.moex.converters.StocksConverter;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
@@ -160,9 +159,7 @@ public class MoexExchangeData implements ExchangeData {
         query.add(leaders.toString(), 1);
         if (!sortByColumn.equals(SortByColumn.NONE)) {
             String sortColumn = switch (sortByColumn) {
-//                case TICKER -> MarketData.SECID.toString();
-                case TRADE_VOLUME -> MarketData.VALTODAY.toString();
-//                case CHANGE_PERCENT -> MarketData.LASTCHANGEPRCNT.toString();
+                case TRADE_VOLUME -> SortingColumns.VALTODAY.toString();
                 case null, default -> throw new IllegalArgumentException(sortByColumn.toString());
             };
             query.add(sort_column.toString(), sortColumn.toLowerCase());
@@ -243,5 +240,10 @@ public class MoexExchangeData implements ExchangeData {
         leaders,
         sort_column,
         sort_order
+    }
+
+    enum SortingColumns {
+
+        VALTODAY
     }
 }

@@ -5,7 +5,6 @@ import com.stanislav.trade.entities.Currency;
 import com.stanislav.trade.entities.Market;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Securities;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,9 +40,49 @@ public enum FuturesConverter {
     NEGOTIATEDFEE,
     EXERCISEFEE;
 
+    enum MarketData {
+        SECID,
+        BOARDID,
+        BID,
+        OFFER,
+        SPREAD,
+        OPEN,
+        HIGH,
+        LOW,
+        LAST,
+        QUANTITY,
+        LASTCHANGE,
+        SETTLEPRICE,
+        SETTLETOPREVSETTLE,
+        OPENPOSITION,
+        NUMTRADES,
+        VOLTODAY,
+        VALTODAY,
+        VALTODAY_USD,
+        UPDATETIME,
+        LASTCHANGEPRCNT,
+        BIDDEPTH,
+        BIDDEPTHT,
+        NUMBIDS,
+        OFFERDEPTH,
+        OFFERDEPTHT,
+        NUMOFFERS,
+        TIME,
+        SETTLETOPREVSETTLEPRC,
+        SEQNUM,
+        SYSTIME,
+        TRADEDATE,
+        LASTTOPREVPRICE,
+        OICHANGE,
+        OPENPERIODPRICE,
+        SWAPRATE
+    }
+
+    public static final DateTimeFormatter DATE_TIME_FORMAT = StocksConverter.DATE_TIME_FORMAT;
+
     public static Futures moexDtoToFutures(Object[] dto, Object[] marketData) {
         double price = Double.parseDouble(marketData[MarketData.LAST.ordinal()].toString());
-        LocalDateTime date = LocalDateTime.parse(marketData[MarketData.SYSTIME.ordinal()].toString(), DateTimeFormatter.ISO_DATE);
+        LocalDateTime date = LocalDateTime.parse(marketData[MarketData.SYSTIME.ordinal()].toString(), DATE_TIME_FORMAT);
         LocalDate expiration = LocalDate.parse(dto[LASTDELDATE.ordinal()].toString());
         Securities.PriceAtTheDate priceAtTheDate = new Securities.PriceAtTheDate(price, date);
         return Futures.builder()
@@ -54,7 +93,7 @@ public enum FuturesConverter {
                 .stepPrice(Double.parseDouble(dto[STEPPRICE.ordinal()].toString()))
                 .currency(Currency.RUR)
                 .price(priceAtTheDate)
-                .dayTradeVolume((Integer) marketData[MarketData.VALTODAY.ordinal()])
+                .dayTradeVolume(Long.parseLong(marketData[MarketData.VALTODAY.ordinal()].toString()))
                 .expiration(expiration)
                 .board(Board.valueOf((String) dto[BOARDID.ordinal()]))
                 .market(Market.Forts)

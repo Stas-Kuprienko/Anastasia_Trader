@@ -42,6 +42,65 @@ public enum StocksConverter {
     LISTLEVEL,
     SETTLEDATE;
 
+    enum MarketData {
+        SECID,
+        BOARDID,
+        BID,
+        BIDDEPTH,
+        OFFER,
+        OFFERDEPTH,
+        SPREAD,
+        BIDDEPTHT,
+        OFFERDEPTHT,
+        OPEN,
+        LOW,
+        HIGH,
+        LAST,
+        LASTCHANGE,
+        LASTCHANGEPRCNT,
+        QTY,
+        VALUE,
+        VALUE_USD,
+        WAPRICE,
+        LASTCNGTOLASTWAPRICE,
+        WAPTOPREVWAPRICEPRCNT,
+        WAPTOPREVWAPRICE,
+        CLOSEPRICE,
+        MARKETPRICETODAY,
+        MARKETPRICE,
+        LASTTOPREVPRICE,
+        NUMTRADES,
+        VOLTODAY,
+        VALTODAY,
+        VALTODAY_USD,
+        ETFSETTLEPRICE,
+        TRADINGSTATUS,
+        UPDATETIME,
+        LASTBID,
+        LASTOFFER,
+        LCLOSEPRICE,
+        LCURRENTPRICE,
+        MARKETPRICE2,
+        NUMBIDS,
+        NUMOFFERS,
+        CHANGE,
+        TIME,
+        HIGHBID,
+        LOWOFFER,
+        PRICEMINUSPREVWAPRICE,
+        OPENPERIODPRICE,
+        SEQNUM,
+        SYSTIME,
+        CLOSINGAUCTIONPRICE,
+        CLOSINGAUCTIONVOLUME,
+        ISSUECAPITALIZATION,
+        ISSUECAPITALIZATION_UPDATETIME,
+        ETFSETTLECURRENCY,
+        VALTODAY_RUR,
+        TRADINGSESSION,
+        TRENDISSUECAPITALIZATION
+    }
+
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Stock moexDtoToStock(Object[] dto, Object[] marketData) {
@@ -59,17 +118,16 @@ public enum StocksConverter {
             date = null;
         }
         Securities.PriceAtTheDate priceAtTheDate = new Securities.PriceAtTheDate(price, date);
-        Stock stock = Stock.builder()
+        return Stock.builder()
                 .ticker((String) dto[SECID.ordinal()])
                 .name((String) dto[SECNAME.ordinal()])
                 .currency(currency)
                 .price(priceAtTheDate)
                 .lotSize((Integer) dto[LOTSIZE.ordinal()])
+                .dayTradeVolume(Long.parseLong(marketData[MarketData.VALTODAY.ordinal()].toString()))
                 .market(Market.Stock)
                 .board(Board.valueOf((String) dto[BOARDID.ordinal()]))
                 .build();
-        stock.setDayTradeVolume(Long.parseLong(marketData[MarketData.VALTODAY.ordinal()].toString()));
-        return stock;
     }
 
     public static List<Stock> moexDtoToStocks(List<Object[]> dto, List<Object[]> marketData) {
