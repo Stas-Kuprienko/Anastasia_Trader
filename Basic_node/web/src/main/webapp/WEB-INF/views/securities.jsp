@@ -617,7 +617,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                          data-redactor-toolbar="no" style="width:32vh;">${item.price.price}
                                     </div><br>
                                     <div class="t681__price-text t-descr t-descr_xxs" field="li_text__1493289538895">
-                                        цена за ${item.price.time}</div><br>
+                                        цена за ${item.price.time.toLocalDate()} ${item.price.time.toLocalTime()}</div><br>
                                     <div class="t681__price-text t-descr t-descr_xxs" field="li_text__1493289538895">
                                         ${item.market}</div>
                                 </div>

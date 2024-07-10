@@ -7,9 +7,9 @@ import com.stanislav.trade.entities.markets.Securities;
 import com.stanislav.trade.entities.markets.Stock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum StocksConverter {
@@ -42,6 +42,8 @@ public enum StocksConverter {
     LISTLEVEL,
     SETTLEDATE;
 
+    public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public static Stock moexDtoToStock(Object[] dto, Object[] marketData) {
         Object value = dto[CURRENCYID.ordinal()];
         Currency currency = value != null ?
@@ -52,8 +54,7 @@ public enum StocksConverter {
         double price = Double.parseDouble(value != null ? value.toString() : "0.0");
         LocalDateTime date;
         try {
-            //TODO
-            date = LocalDateTime.parse(marketData[MarketData.SYSTIME.ordinal()].toString(), DateTimeFormatter.ISO_DATE);
+            date = LocalDateTime.parse(marketData[MarketData.SYSTIME.ordinal()].toString(), DATE_TIME_FORMAT);
         } catch (DateTimeParseException e) {
             date = null;
         }
@@ -74,7 +75,13 @@ public enum StocksConverter {
     public static List<Stock> moexDtoToStocks(List<Object[]> dto, List<Object[]> marketData) {
         ArrayList<Stock> stocks = new ArrayList<>();
         for (int i = 0; i < dto.size(); i++) {
-            stocks.add(moexDtoToStock(dto.get(i), marketData.get(i)));
+            var a = dto.get(i);
+            var b = marketData.get(i);
+            if (a[SECID.ordinal()].equals(b[MarketData.SECID.ordinal()])) {
+                stocks.add(moexDtoToStock(a, b));
+            } else {
+                throw new IllegalArgumentException(Arrays.toString(a) + '\n' + Arrays.toString(b));
+            }
         }
         return stocks;
     }

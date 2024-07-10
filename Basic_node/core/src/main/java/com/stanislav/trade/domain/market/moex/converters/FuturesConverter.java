@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum FuturesConverter {
@@ -63,7 +64,13 @@ public enum FuturesConverter {
     public static List<Futures> moexDtoToFuturesList(List<Object[]> dto, List<Object[]> marketData) {
         ArrayList<Futures> futuresList = new ArrayList<>();
         for (int i = 0; i < dto.size(); i++) {
-            futuresList.add(moexDtoToFutures(dto.get(i), marketData.get(i)));
+            var a = dto.get(i);
+            var b = marketData.get(i);
+            if (a[SECID.ordinal()].equals(b[MarketData.SECID.ordinal()])) {
+                futuresList.add(moexDtoToFutures(dto.get(i), marketData.get(i)));
+            } else {
+                throw new IllegalArgumentException(Arrays.toString(a) + '\n' + Arrays.toString(b));
+            }
         }
         return futuresList;
     }

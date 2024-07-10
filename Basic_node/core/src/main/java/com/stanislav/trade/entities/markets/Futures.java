@@ -8,7 +8,6 @@ import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.Currency;
 import com.stanislav.trade.entities.Market;
 import lombok.Builder;
-
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -29,8 +28,8 @@ public final class Futures implements Securities {
 
 
     @Builder
-    public Futures(String ticker, String name, String asset, double minStep, double stepPrice,
-                   Currency currency, PriceAtTheDate price, long dayTradeVolume, LocalDate expiration, Market market, Board board) {
+    public Futures(String ticker, String name, String asset, double minStep, double stepPrice, Currency currency,
+                   PriceAtTheDate price, long dayTradeVolume, LocalDate expiration, Market market, Board board) {
         this.ticker = ticker;
         this.name = name;
         this.asset = asset;
@@ -139,9 +138,7 @@ public final class Futures implements Securities {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Futures futures)) return false;
-        return Double.compare(minStep, futures.minStep) == 0 &&
-                Double.compare(stepPrice, futures.stepPrice) == 0 &&
-                Objects.equals(ticker, futures.ticker) &&
+        return Objects.equals(ticker, futures.ticker) &&
                 Objects.equals(name, futures.name) &&
                 Objects.equals(asset, futures.asset) &&
                 currency == futures.currency &&
@@ -152,7 +149,7 @@ public final class Futures implements Securities {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ticker, name, asset, minStep, stepPrice, currency, expiration, market, board);
+        return Objects.hash(ticker, name, asset, currency, expiration, market, board);
     }
 
     @Override
@@ -162,7 +159,7 @@ public final class Futures implements Securities {
                 ", name='" + name + '\'' +
                 ", asset='" + asset + '\'' +
                 ", minStep=" + minStep +
-                ", spetPrice=" + stepPrice +
+                ", stepPrice=" + stepPrice +
                 ", currency=" + currency +
                 ", price=" + price +
                 ", expiration=" + expiration +
@@ -172,7 +169,8 @@ public final class Futures implements Securities {
     }
 
     @Override
-    public int compareTo(Long o) {
-        return Long.compare(dayTradeVolume, o);
+    public int compareTo(Securities o) {
+        Futures futures = (Futures) o;
+        return Long.compare(futures.dayTradeVolume, dayTradeVolume);
     }
 }

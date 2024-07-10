@@ -2,11 +2,11 @@ package com.stanislav.trade.domain.market;
 
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface ExchangeDataStorage {
+public interface ExchangeDataCache {
 
     void add(Stock stock);
 
@@ -23,4 +23,12 @@ public interface ExchangeDataStorage {
     Optional<Futures> getFutures(String ticker);
 
     List<Futures> getAllFutures();
+
+    LocalDateTime getStocksUpdated();
+
+    void stocksUpdated();
+
+    LocalDateTime getFuturesUpdated();
+
+    void futuresUpdated();
 }

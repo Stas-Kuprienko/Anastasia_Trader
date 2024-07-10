@@ -27,13 +27,14 @@ public interface ExchangeData {
     enum SortByColumn {
 
         NONE,
-        TICKER,
+//        TICKER,
         TRADE_VOLUME,
-        CHANGE_PERCENT
+//        CHANGE_PERCENT
     }
 
     enum SortOrder {
 
-        asc, desc
+        asc,
+        desc
     }
 }

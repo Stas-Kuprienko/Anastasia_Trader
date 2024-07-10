@@ -105,8 +105,7 @@ public final class Stock implements Securities {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Stock stock)) return false;
-        return lotSize == stock.lotSize &&
-                Objects.equals(ticker, stock.ticker) &&
+        return Objects.equals(ticker, stock.ticker) &&
                 Objects.equals(name, stock.name) &&
                 currency == stock.currency &&
                 market == stock.market &&
@@ -115,7 +114,7 @@ public final class Stock implements Securities {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ticker, name, lotSize, currency, market, board);
+        return Objects.hash(ticker, name, currency, market, board);
     }
 
     @Override
@@ -125,7 +124,6 @@ public final class Stock implements Securities {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", lotSize=" + lotSize +
-                ", dayTradeVolume=" + dayTradeVolume +
                 ", currency=" + currency +
                 ", market=" + market +
                 ", board=" + board +
@@ -133,7 +131,8 @@ public final class Stock implements Securities {
     }
 
     @Override
-    public int compareTo(Long o) {
-        return Long.compare(dayTradeVolume, o);
+    public int compareTo(Securities o) {
+        Stock stock = (Stock) o;
+        return Long.compare(stock.dayTradeVolume, dayTradeVolume);
     }
 }
