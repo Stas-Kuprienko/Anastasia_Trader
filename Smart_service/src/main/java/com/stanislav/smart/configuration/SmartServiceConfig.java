@@ -6,6 +6,7 @@ import com.stanislav.smart.domain.automation.grpc_impl.DroneLauncherGrpc;
 import com.stanislav.smart.domain.automation.grpc_impl.SmartAutoTradeGRpcImpl;
 import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
+import com.stanislav.smart.domain.trade.TradingService;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.service.grpc_impl.GRpcFrame;
 import com.stanislav.smart.service.grpc_impl.security.ServerSecurityInterceptor;

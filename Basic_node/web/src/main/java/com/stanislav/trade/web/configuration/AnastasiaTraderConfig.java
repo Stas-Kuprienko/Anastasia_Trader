@@ -7,6 +7,7 @@ package com.stanislav.trade.web.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.stanislav.trade.domain.market.grpc.GRpcConnection;
+import com.stanislav.trade.domain.notification.SmartSubscribeNotificationService;
 import com.stanislav.trade.domain.smart.SmartAutoTradeService;
 import com.stanislav.trade.domain.smart.finam_grpc.SmartAutoTradeImpl;
 import io.jsonwebtoken.JwtBuilder;
@@ -80,8 +81,9 @@ public class AnastasiaTraderConfig {
     }
 
     @Bean
-    public SmartAutoTradeService smartAutoTradeService(GRpcConnection connection, JwtBuilder jwtBuilder) {
-        return new SmartAutoTradeImpl(jwtBuilder.compact(), connection);
+    public SmartAutoTradeService smartAutoTradeService(GRpcConnection connection, JwtBuilder jwtBuilder,
+                                                       SmartSubscribeNotificationService notificationService) {
+        return new SmartAutoTradeImpl(notificationService, jwtBuilder.compact(), connection);
     }
 
     @Bean

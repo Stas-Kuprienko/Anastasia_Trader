@@ -7,8 +7,10 @@ package com.stanislav.trade.domain.smart.finam_grpc;
 import com.google.protobuf.Empty;
 import com.stanislav.trade.domain.market.grpc.Authentication;
 import com.stanislav.trade.domain.market.grpc.GRpcConnection;
+import com.stanislav.trade.domain.notification.SmartSubscribeNotificationService;
 import com.stanislav.trade.domain.smart.SmartAutoTradeService;
 import com.stanislav.trade.entities.Board;
+import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.TimeFrame;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +22,13 @@ import java.util.Set;
 @Slf4j
 public class SmartAutoTradeImpl implements SmartAutoTradeService {
 
+    private final SmartSubscribeNotificationService notificationService;
     private final SmartAutoTradeGrpc.SmartAutoTradeStub stub;
     private final Set<String> strategies;
 
 
-    public SmartAutoTradeImpl(String token, GRpcConnection connection) {
+    public SmartAutoTradeImpl(SmartSubscribeNotificationService notificationService, String token, GRpcConnection connection) {
+        this.notificationService = notificationService;
         this.stub = SmartAutoTradeGrpc.newStub(connection.getChannel()).
                 withCallCredentials(Authentication.xApiKeyAuthorization(token));
         strategies = new HashSet<>();
@@ -38,8 +42,12 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     }
 
     @Override
-    public void subscribe(String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame) {
+    public void subscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame, String token) {
 
+        Smart.Account account = Smart.Account.newBuilder()
+                .setClientId(clientId)
+                .setBroker(broker.name())
+                .build();
         Smart.Security security = Smart.Security.newBuilder()
                 .setTicker(ticker)
                 .setBoard(board.toString())
@@ -49,34 +57,40 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
                 .setTimeFrame(TimeFrame.parse(timeFrame))
                 .build();
         Smart.SubscribeTradeRequest request = Smart.SubscribeTradeRequest.newBuilder()
+                .setAccount(account)
                 .setSecurity(security)
                 .setStrategy(strategy)
+                .setToken(token)
                 .build();
-        //TODO !!!!!!!!!!!!!!!!!!!!!!!
-        SmartTradeResponse response = new SmartTradeResponse();
+
+        SubscribeTradeResponse response = new SubscribeTradeResponse(notificationService);
         stub.subscribe(request, response);
-
-
     }
 
     @Override
-    public void unsubscribe(String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame) {
+    public void unsubscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame) {
+        Smart.Account account = Smart.Account.newBuilder()
+                .setClientId(clientId)
+                .setBroker(broker.name())
+                .build();
         Smart.Security security = Smart.Security.newBuilder()
                 .setTicker(ticker)
-                .setBoard(board.name())
+                .setBoard(board.toString())
                 .build();
         Smart.Strategy strategy = Smart.Strategy.newBuilder()
                 .setName(strategyName)
                 .setTimeFrame(TimeFrame.parse(timeFrame))
                 .build();
-        StreamObserver<Smart.UnsubscribeResponse> responseStreamObserver;
+
+        StreamObserver<Smart.UnsubscribeResponse> responseStreamObserver = new UnsubscribeResponseObserver();
 
         Smart.UnsubscribeRequest request = Smart.UnsubscribeRequest.newBuilder()
+                .setAccount(account)
                 .setSecurity(security)
                 .setStrategy(strategy)
                 .build();
-        stub.unsubscribe(request, null);
-        //TODO
+
+        stub.unsubscribe(request, responseStreamObserver);
     }
 
 

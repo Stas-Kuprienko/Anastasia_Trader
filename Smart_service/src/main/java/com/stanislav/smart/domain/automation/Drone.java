@@ -10,15 +10,13 @@ public interface Drone extends Runnable {
 
     void removeAccount(Smart.Account account);
 
-    Smart.Security getSecurity();
-
-    TradingStrategy getStrategy();
-
     void launch();
 
     ScheduledFuture<?> getScheduledFuture();
 
     void setScheduledFuture(ScheduledFuture<?> scheduledFuture);
+
+    boolean isUseless();
 
     boolean stop();
 }

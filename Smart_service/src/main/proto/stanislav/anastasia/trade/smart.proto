@@ -46,13 +46,6 @@ message UnsubscribeResponse {
 
 }
 
-enum Direction {
-
-  BUY = 0;
-  SELL = 1;
-
-}
-
 message Account {
 
   string broker = 1;
@@ -64,22 +57,6 @@ message Security {
 
   string ticker = 1;
   string board = 2;
-
-}
-
-message OrderNotification {
-
-  repeated Account account = 1;
-  Security security = 2;
-  double price = 3;
-  Direction direction = 4;
-  string dateTime = 5;
-
-}
-
-message StrategiesList {
-
-  repeated string item = 1;
 
 }
 
@@ -97,6 +74,29 @@ message Strategy {
 
   string name = 1;
   TimeFrame timeFrame = 2;
+
+}
+
+enum Direction {
+
+  BUY = 0;
+  SELL = 1;
+
+}
+
+message OrderNotification {
+
+  repeated Account account = 1;
+  Security security = 2;
+  double price = 3;
+  Direction direction = 4;
+  string dateTime = 5;
+
+}
+
+message StrategiesList {
+
+  repeated string item = 1;
 
 }
 

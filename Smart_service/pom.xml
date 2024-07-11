@@ -50,11 +50,11 @@
 			<artifactId>protobuf-java</artifactId>
 			<version>3.25.2</version>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>6.1.6</version>
+			<groupId>ru.tinkoff.piapi</groupId>
+			<artifactId>java-sdk-core</artifactId>
+			<version>1.5</version>
 		</dependency>
 
 		<dependency>

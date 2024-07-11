@@ -27,8 +27,7 @@ public class SmartAutoTradeGRpcImpl extends SmartAutoTradeGrpc.SmartAutoTradeImp
 
     @Override
     public void unsubscribe(Smart.UnsubscribeRequest request, StreamObserver<Smart.UnsubscribeResponse> responseObserver) {
-        //TODO !!!
-        droneLauncher.stopDrone(request.getSecurity());
+        droneLauncher.removeAccount(request);
     }
 
     @Override

@@ -13,7 +13,6 @@ import static com.stanislav.smart.domain.entities.TimeFrame.*;
 
 public class GrpcFollowerDrone implements Drone {
 
-    private final Smart.Security security;
     private final TradingStrategy strategy;
     private final Smart.SubscribeTradeRequest request;
     private final StreamObserver<Smart.SubscribeTradeResponse> responseObserver;
@@ -23,10 +22,8 @@ public class GrpcFollowerDrone implements Drone {
     private boolean isActive;
 
 
-    public GrpcFollowerDrone(Smart.Security security, TradingStrategy strategy,
-                             Smart.SubscribeTradeRequest request,
+    public GrpcFollowerDrone(TradingStrategy strategy, Smart.SubscribeTradeRequest request,
                              StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
-        this.security = security;
         this.strategy = strategy;
         this.request = request;
         this.responseObserver = responseObserver;
@@ -89,16 +86,6 @@ public class GrpcFollowerDrone implements Drone {
     }
 
     @Override
-    public Smart.Security getSecurity() {
-        return security;
-    }
-
-    @Override
-    public TradingStrategy getStrategy() {
-        return strategy;
-    }
-
-    @Override
     public ScheduledFuture<?> getScheduledFuture() {
         return scheduledFuture;
     }
@@ -106,6 +93,11 @@ public class GrpcFollowerDrone implements Drone {
     @Override
     public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
         this.scheduledFuture = scheduledFuture;
+    }
+
+    @Override
+    public boolean isUseless() {
+        return accounts.isEmpty();
     }
 
     @Override
@@ -154,5 +146,6 @@ public class GrpcFollowerDrone implements Drone {
                 .setException(ex)
                 .build();
         responseObserver.onNext(response);
+        responseObserver.onError(e);
     }
 }
