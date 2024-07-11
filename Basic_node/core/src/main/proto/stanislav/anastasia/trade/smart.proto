@@ -18,7 +18,6 @@ message SubscribeTradeRequest {
   Security security = 1;
   Strategy strategy = 2;
   Account account = 3;
-  string token = 4;
 
 }
 
@@ -27,7 +26,6 @@ message UnsubscribeRequest {
   Security security = 1;
   Strategy strategy = 2;
   Account account = 3;
-  string token = 4;
 
 }
 
@@ -50,6 +48,7 @@ message Account {
 
   string broker = 1;
   string clientId = 2;
+  string token = 3;
 
 }
 

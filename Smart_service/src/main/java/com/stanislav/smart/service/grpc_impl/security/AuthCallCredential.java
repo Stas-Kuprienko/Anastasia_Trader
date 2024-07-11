@@ -6,18 +6,18 @@ import io.grpc.Status;
 
 import java.util.concurrent.Executor;
 
-public class Authenticator extends CallCredentials {
+public class AuthCallCredential extends CallCredentials {
 
     private final String apiToken;
     private final Headers header;
 
-    Authenticator(Headers header, String apiToken) {
+    AuthCallCredential(Headers header, String apiToken) {
         this.header = header;
         this.apiToken = apiToken;
     }
 
-    public static Authenticator XApiKeyAuthorization(String apiToken) {
-        return new Authenticator(Headers.API_KEY, apiToken);
+    public static AuthCallCredential XApiKeyAuthorization(String apiToken) {
+        return new AuthCallCredential(Headers.API_KEY, apiToken);
     }
 
 

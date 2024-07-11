@@ -5,12 +5,12 @@
 package com.stanislav.smart.domain.automation.strategies;
 
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
-import com.stanislav.smart.domain.automation.TradingStrategy;
+import com.stanislav.smart.domain.automation.TradeStrategy;
 import com.stanislav.smart.domain.entities.Direction;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
 
-public class MovingAverageStrategy implements TradingStrategy {
+public class MovingAverageStrategy implements TradeStrategy {
 
     private final SimpleMovingAverageAide smaAide;
     private final EventStreamListener.OrderBookCollector collector;
@@ -35,6 +35,12 @@ public class MovingAverageStrategy implements TradingStrategy {
     }
 
     @Override
+    public int getQuantity() {
+        //TODO
+        return 0;
+    }
+
+    @Override
     public byte analysing() {
         double lastAveragePrice = smaAide.last();
         double lastPrice = collector.lastAskPrice();
@@ -49,7 +55,6 @@ public class MovingAverageStrategy implements TradingStrategy {
         return (byte) ((difference * 100) / lastPrice);
     }
 
-//TODO !!!!!!!!!!!!
 
     @Override
     public boolean observe() {
@@ -74,6 +79,10 @@ public class MovingAverageStrategy implements TradingStrategy {
         //TODO
     }
 
+    @Override
+    public Direction getDirection() {
+        return direction;
+    }
 
     private boolean deciding() {
         //TODO

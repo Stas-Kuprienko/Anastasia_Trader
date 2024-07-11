@@ -45,8 +45,9 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     public void subscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame, String token) {
 
         Smart.Account account = Smart.Account.newBuilder()
-                .setClientId(clientId)
                 .setBroker(broker.name())
+                .setClientId(clientId)
+                .setToken(token)
                 .build();
         Smart.Security security = Smart.Security.newBuilder()
                 .setTicker(ticker)
@@ -60,7 +61,6 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
                 .setAccount(account)
                 .setSecurity(security)
                 .setStrategy(strategy)
-                .setToken(token)
                 .build();
 
         SubscribeTradeResponse response = new SubscribeTradeResponse(notificationService);
@@ -68,10 +68,11 @@ public class SmartAutoTradeImpl implements SmartAutoTradeService {
     }
 
     @Override
-    public void unsubscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame) {
+    public void unsubscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame, String token) {
         Smart.Account account = Smart.Account.newBuilder()
-                .setClientId(clientId)
                 .setBroker(broker.name())
+                .setClientId(clientId)
+                .setToken(token)
                 .build();
         Smart.Security security = Smart.Security.newBuilder()
                 .setTicker(ticker)

@@ -16,5 +16,5 @@ public interface SmartAutoTradeService {
 
     void subscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame, String token);
 
-    void unsubscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame);
+    void unsubscribe(String clientId, Broker broker, String ticker, Board board, String strategyName, TimeFrame.Scope timeFrame, String token);
 }

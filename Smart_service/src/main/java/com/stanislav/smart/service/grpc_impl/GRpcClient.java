@@ -1,6 +1,6 @@
 package com.stanislav.smart.service.grpc_impl;
 
-import com.stanislav.smart.service.grpc_impl.security.Authenticator;
+import com.stanislav.smart.service.grpc_impl.security.AuthCallCredential;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -9,17 +9,17 @@ import javax.annotation.PreDestroy;
 public class GRpcClient implements AutoCloseable {
 
     private final ManagedChannel channel;
-    private final Authenticator authenticator;
+    private final AuthCallCredential authCallCredential;
 
 
     public GRpcClient(String resource, String token) {
         channel = ManagedChannelBuilder.forTarget(resource).build();
-        this.authenticator = Authenticator.XApiKeyAuthorization(token);
+        this.authCallCredential = AuthCallCredential.XApiKeyAuthorization(token);
     }
 
 
-    public Authenticator getAuthenticator() {
-        return authenticator;
+    public AuthCallCredential getAuthenticator() {
+        return authCallCredential;
     }
 
     public ManagedChannel getChannel() {

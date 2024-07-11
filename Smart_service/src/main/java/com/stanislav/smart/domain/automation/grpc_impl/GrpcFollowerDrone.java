@@ -1,7 +1,12 @@
 package com.stanislav.smart.domain.automation.grpc_impl;
 
 import com.stanislav.smart.domain.automation.Drone;
-import com.stanislav.smart.domain.automation.TradingStrategy;
+import com.stanislav.smart.domain.automation.TradeStrategy;
+import com.stanislav.smart.domain.entities.Board;
+import com.stanislav.smart.domain.entities.Direction;
+import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
+import com.stanislav.smart.domain.trade.TradeDealingManager;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 import java.time.Duration;
@@ -9,12 +14,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 
-import static com.stanislav.smart.domain.entities.TimeFrame.*;
-
 public class GrpcFollowerDrone implements Drone {
 
-    private final TradingStrategy strategy;
-    private final Smart.SubscribeTradeRequest request;
+    private final TradeDealingManager dealingManager;
+    private final TradeStrategy strategy;
+    private final Smart.Security security;
     private final StreamObserver<Smart.SubscribeTradeResponse> responseObserver;
     private final Set<Smart.Account> accounts;
     private ScheduledFuture<?> scheduledFuture;
@@ -22,10 +26,11 @@ public class GrpcFollowerDrone implements Drone {
     private boolean isActive;
 
 
-    public GrpcFollowerDrone(TradingStrategy strategy, Smart.SubscribeTradeRequest request,
-                             StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
+    public GrpcFollowerDrone(TradeDealingManager dealingManager, TradeStrategy strategy,
+                             Smart.Security security, StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
+        this.dealingManager = dealingManager;
         this.strategy = strategy;
-        this.request = request;
+        this.security = security;
         this.responseObserver = responseObserver;
         accounts = new HashSet<>();
     }
@@ -54,9 +59,12 @@ public class GrpcFollowerDrone implements Drone {
                 do {
                     dealing = strategy.observe();
                     if (dealing) {
-                        //TODO trade order
+                        NewOrderCriteria newOrder = buildNewOrderCriteria(
+                                strategy.getPrice(), strategy.getQuantity(), strategy.getDirection());
+                        dealingManager.initiateNewOrder(accounts, newOrder);
                         //TODO notify
                         strategy.manageDeal();
+                        //TODO deal managing
                     } else {
                         try {
                             synchronized (this) {
@@ -115,24 +123,31 @@ public class GrpcFollowerDrone implements Drone {
     }
 
 
-    private Duration defineInterval(Scope timeFrame) {
-        Duration duration;
-        if (timeFrame.getClass().equals(IntraDay.class)) {
-            IntraDay intraDay = (IntraDay) timeFrame;
-            switch (intraDay) {
-                case M1, M5 -> duration = Duration.ofSeconds(1);
-                case M15 -> duration = Duration.ofMinutes(1);
+    private Duration defineInterval(TimeFrame.Scope timeFrame) {
+        if (timeFrame.getClass().equals(TimeFrame.IntraDay.class)) {
+            TimeFrame.IntraDay intraDay = (TimeFrame.IntraDay) timeFrame;
+            return switch (intraDay) {
+                case M1, M5 -> Duration.ofSeconds(1);
+                case M15 -> Duration.ofMinutes(1);
                 default -> throw new IllegalStateException("Unexpected value: " + timeFrame);
-            }
+            };
         } else {
-            Day day = (Day) timeFrame;
-            switch (day) {
-                case D1 -> duration = Duration.ofHours(1);
-                case W1 -> duration = Duration.ofDays(1);
+            TimeFrame.Day day = (TimeFrame.Day) timeFrame;
+            return switch (day) {
+                case D1 -> Duration.ofHours(1);
+                case W1 -> Duration.ofDays(1);
                 default -> throw new IllegalStateException("Unexpected value: " + timeFrame);
-            }
+            };
         }
-        return duration;
+    }
+
+    private NewOrderCriteria buildNewOrderCriteria(double price, int quantity, Direction direction) {
+        return new NewOrderCriteria(
+                security.getTicker(),
+                Board.valueOf(security.getBoard()),
+                price,
+                1,
+                direction);
     }
 
     private void error(Exception e) {
@@ -147,5 +162,6 @@ public class GrpcFollowerDrone implements Drone {
                 .build();
         responseObserver.onNext(response);
         responseObserver.onError(e);
+        responseObserver.onCompleted();
     }
 }

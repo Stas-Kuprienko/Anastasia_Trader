@@ -1,18 +1,19 @@
 package com.stanislav.smart.configuration;
 
-import com.stanislav.smart.domain.automation.strategy_boxes.StrategiesDispatcher;
 import com.stanislav.smart.domain.automation.DroneLauncher;
 import com.stanislav.smart.domain.automation.grpc_impl.DroneLauncherGrpc;
 import com.stanislav.smart.domain.automation.grpc_impl.SmartAutoTradeGRpcImpl;
+import com.stanislav.smart.domain.automation.strategy_boxes.StrategiesDispatcher;
 import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
 import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
-import com.stanislav.smart.domain.trade.TradingService;
+import com.stanislav.smart.domain.trade.TradeDealingManager;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.service.grpc_impl.GRpcFrame;
 import com.stanislav.smart.service.grpc_impl.security.ServerSecurityInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -21,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 @Configuration
 @ComponentScan("com.stanislav.smart")
 @PropertySource("classpath:application.properties")
+@EnableScheduling
 public class SmartServiceConfig {
 
     private final String appId;
@@ -62,8 +64,10 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public DroneLauncher droneLauncher(ScheduledExecutorService scheduledExecutorService, StrategiesDispatcher strategiesDispatcher) {
-        return new DroneLauncherGrpc(scheduledExecutorService, strategiesDispatcher);
+    public DroneLauncher droneLauncher(TradeDealingManager dealingManager,
+                                       ScheduledExecutorService scheduledExecutorService,
+                                       StrategiesDispatcher strategiesDispatcher) {
+        return new DroneLauncherGrpc(dealingManager, scheduledExecutorService, strategiesDispatcher);
     }
 
     @Bean

@@ -1,13 +1,15 @@
 package com.stanislav.smart.domain.trade;
 
-import com.stanislav.smart.domain.entities.Board;
-import com.stanislav.smart.domain.entities.Direction;
+import com.stanislav.smart.domain.entities.Broker;
+import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
 
 public interface TradingService {
 
-    void makeOrder(String clientId, String token, String ticker, Board board, double price, long quantity, Direction direction);
+    int makeOrder(String clientId, String token, NewOrderCriteria newOrderCriteria);
 
     void checkOrder(String clientId, String token, int orderId);
 
     void cancelOrder(String clientId, String token, int orderId);
+
+    Broker getBroker();
 }

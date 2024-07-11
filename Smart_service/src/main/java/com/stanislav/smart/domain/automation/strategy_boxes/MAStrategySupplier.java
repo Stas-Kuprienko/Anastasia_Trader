@@ -2,7 +2,7 @@ package com.stanislav.smart.domain.automation.strategy_boxes;
 
 import com.stanislav.smart.domain.analysis.technical.AnalysisAideSupplier;
 import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
-import com.stanislav.smart.domain.automation.TradingStrategySupplier;
+import com.stanislav.smart.domain.automation.TradeStrategySupplier;
 import com.stanislav.smart.domain.automation.strategies.MovingAverageStrategy;
 import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.TimeFrame;
@@ -14,7 +14,7 @@ import stanislav.anastasia.trade.Smart;
 import java.util.HashMap;
 
 @Component("maStrategyBox")
-public class MAStrategySupplier implements TradingStrategySupplier<MovingAverageStrategy> {
+public class MAStrategySupplier implements TradeStrategySupplier<MovingAverageStrategy> {
 
     public static final int MA_PERIOD = 20;
 
