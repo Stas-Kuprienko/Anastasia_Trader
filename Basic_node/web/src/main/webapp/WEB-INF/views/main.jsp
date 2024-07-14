@@ -104,10 +104,9 @@
         <div class="tmenu-mobile tmenu-mobile_positionfixed">
             <div class="tmenu-mobile__container">
                 <div class="tmenu-mobile__burgerlogo"><a href="https://t.me/anastasia_tradebot" target="_blank"
-                                                         rel="noopener"><img src="/anastasia/style/-22111.png"
+                                                         rel="noopener"><img src="/anastasia/style/bot.webp"
                                                                              class="tmenu-mobile__imglogo"
                                                                              imgfield="img"
-                                                                             style="max-width: 80px; width: 80px;"
                                                                              alt="Телеграм-бот"></a></div>
                 <button type="button" class="t-menuburger t-menuburger_first " aria-label="Навигационное меню"
                         aria-expanded="false"><span style="background-color:#fff;"></span><span
@@ -492,7 +491,7 @@
                 <div class="t456__leftwrapper" style="min-width:80px;width:80px;">
                     <div class="t456__logowrapper" style="display: block;"><a href="https://t.me/anastasia_tradebot"
                                                                               target="_blank" rel="noopener"><img
-                            class="t456__imglogo t456__imglogomobile" src="/anastasia/style/-22111.png" imgfield="img"
+                            class="t456__imglogo t456__imglogomobile" src="/anastasia/style/bot.webp" imgfield="img"
                             style="max-width: 80px; width: 80px;" alt="Телеграм-бот"></a></div>
                 </div>
                 <nav class="t456__rightwrapper t456__menualign_right" style="">
@@ -641,7 +640,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
                                                    imgfield="li_img__5139100788872" alt="">
                     <div class="t490__wrappercenter">
                         <div class="t-card__title t-heading t-heading_md" field="li_title__5139100788872"><a
-                                href="/anastasia/smart" class="t-card__link"
+                                href="/anastasia/smart/subscribe" class="t-card__link"
                                 id="cardtitle4_752807230"><span style="color: rgb(255, 255, 255);">Смарт</span></a>
                         </div>
                     </div>

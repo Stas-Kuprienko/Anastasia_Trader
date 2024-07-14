@@ -17,6 +17,18 @@ public final class TimeFrame {
     public sealed interface Scope permits Day, IntraDay {}
 
 
+    public static Scope valueOf(String value) {
+        return switch (value) {
+            case "M1" -> IntraDay.M1;
+            case "M5" -> IntraDay.M5;
+            case "M15" -> IntraDay.M15;
+            case "H1" -> IntraDay.H1;
+            case "D1" -> Day.D1;
+            case "W1" -> Day.W1;
+            case null, default -> throw new IllegalArgumentException("value=" + value);
+        };
+    }
+
     public static Scope parse(Smart.TimeFrame timeFrameProto) {
         return switch (timeFrameProto) {
             case D1 -> Day.D1;

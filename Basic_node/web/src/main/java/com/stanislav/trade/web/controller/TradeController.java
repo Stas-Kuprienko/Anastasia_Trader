@@ -115,12 +115,12 @@ public final class TradeController {
                                  @RequestParam(name = "delayTime", required = false) LocalDateTime delayTime,
                                  Model model) {
         try {
-            String[] clientIdAndBroker = clientBroker.split(":");
-            if (clientIdAndBroker.length != 2) {
+            String[] accountData = clientBroker.split(":");
+            if (accountData.length != 2) {
                 throw new IllegalArgumentException(clientBroker);
             }
-            String broker = clientIdAndBroker[0];
-            String clientId = clientIdAndBroker[1];
+            String broker = accountData[0];
+            String clientId = accountData[1];
             Account account = userDataService
                     .findAccountByLoginClientBroker(userDetails.getUsername(), clientId, Broker.valueOf(broker))
                     .orElseThrow();

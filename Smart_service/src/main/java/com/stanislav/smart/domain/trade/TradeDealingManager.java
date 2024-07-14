@@ -4,10 +4,8 @@ import com.stanislav.smart.domain.entities.Broker;
 import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
 import com.stanislav.smart.domain.trade.utils.AsyncTradeOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import stanislav.anastasia.trade.Smart;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
