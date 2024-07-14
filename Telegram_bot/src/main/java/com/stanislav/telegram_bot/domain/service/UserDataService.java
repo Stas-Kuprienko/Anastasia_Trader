@@ -4,7 +4,7 @@ import com.stanislav.telegram_bot.entities.user.User;
 
 import java.util.Optional;
 
-public interface UserService {
+public interface UserDataService {
 
     User save(User user);
 

@@ -1,7 +1,7 @@
 package com.stanislav.telegram_bot.rest.controllers;
 
 import com.stanislav.telegram_bot.domain.TelegramBotController;
-import com.stanislav.telegram_bot.domain.service.UserService;
+import com.stanislav.telegram_bot.domain.service.UserDataService;
 import com.stanislav.telegram_bot.entities.user.User;
 import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.Locale;
 @RequestMapping("/user")
 public class UserDataRestController {
 
-    private final UserService userService;
+    private final UserDataService userDataService;
     private final RestTemplate restTemplate;
     private final String resource;
     private final TelegramBotController controller;
@@ -27,9 +27,9 @@ public class UserDataRestController {
 
 
     @Autowired
-    public UserDataRestController(UserService userService, RestTemplate restTemplate, TelegramBotController controller,
+    public UserDataRestController(UserDataService userDataService, RestTemplate restTemplate, TelegramBotController controller,
                                   @Value("${api.resource}") String resource, MessageSource messageSource) {
-        this.userService = userService;
+        this.userDataService = userDataService;
         this.restTemplate = restTemplate;
         this.resource = resource;
         this.controller = controller;
@@ -59,7 +59,7 @@ public class UserDataRestController {
             sendMessage.setChatId(chatId);
             sendMessage.setText(messageToUser);
             controller.execute(sendMessage);
-            userService.save(user);
+            userDataService.save(user);
             return true;
         } catch (RestClientException | NullPointerException | PersistenceException e) {
             //TODO logs

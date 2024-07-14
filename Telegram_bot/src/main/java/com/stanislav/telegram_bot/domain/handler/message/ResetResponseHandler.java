@@ -2,7 +2,7 @@ package com.stanislav.telegram_bot.domain.handler.message;
 
 import com.stanislav.telegram_bot.domain.handler.Commands;
 import com.stanislav.telegram_bot.domain.handler.ResponseHandler;
-import com.stanislav.telegram_bot.domain.service.UserService;
+import com.stanislav.telegram_bot.domain.service.UserDataService;
 import com.stanislav.telegram_bot.domain.session.SessionContext;
 import com.stanislav.telegram_bot.entities.user.ContextState;
 import com.stanislav.telegram_bot.entities.user.User;
@@ -17,12 +17,12 @@ import java.util.Locale;
 @Component("/reset")
 public class ResetResponseHandler implements ResponseHandler {
 
-    private final UserService userService;
+    private final UserDataService userDataService;
     private final MessageSource messageSource;
 
     @Autowired
-    public ResetResponseHandler(UserService userService, MessageSource messageSource) {
-        this.userService = userService;
+    public ResetResponseHandler(UserDataService userDataService, MessageSource messageSource) {
+        this.userDataService = userDataService;
         this.messageSource = messageSource;
     }
 
@@ -30,7 +30,7 @@ public class ResetResponseHandler implements ResponseHandler {
     public BotApiMethodMessage handle(SessionContext context, Message message) {
         context.reset();
         Long chatId = message.getChatId();
-        User user = userService.findById(chatId).orElseThrow();
+        User user = userDataService.findById(chatId).orElseThrow();
         user.setContextState(ContextState.CLEAR);
         String text = messageSource.getMessage(
                 Commands.RESET.pattern, null, Locale.of(message.getFrom().getLanguageCode()));

@@ -2,7 +2,8 @@ package com.stanislav.telegram_bot.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.springframework.lang.NonNull;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,6 +11,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "account")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public final class Account implements Serializable {
 
     @Id
