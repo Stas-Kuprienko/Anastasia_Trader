@@ -146,7 +146,7 @@ public class GrpcFollowerDrone implements Drone {
                 security.getTicker(),
                 Board.valueOf(security.getBoard()),
                 price,
-                1,
+                quantity,
                 direction);
     }
 

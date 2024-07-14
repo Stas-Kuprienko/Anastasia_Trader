@@ -7,12 +7,15 @@ import com.stanislav.smart.domain.automation.strategy_boxes.StrategiesDispatcher
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.trade.TradeDealingManager;
 import io.grpc.stub.StreamObserver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import stanislav.anastasia.trade.Smart;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Component("droneLauncher")
 public class DroneLauncherGrpc implements DroneLauncher {
 
     private final TradeDealingManager dealingManager;
@@ -20,7 +23,7 @@ public class DroneLauncherGrpc implements DroneLauncher {
     private final ScheduledExecutorService scheduledExecutor;
     private final ConcurrentHashMap<DroneCard, Drone> launched;
 
-
+    @Autowired
     public DroneLauncherGrpc(TradeDealingManager dealingManager,
                              ScheduledExecutorService scheduledExecutor,
                              StrategiesDispatcher strategiesDispatcher) {

@@ -2,6 +2,7 @@ package com.stanislav.smart.domain.trade;
 
 import com.stanislav.smart.domain.entities.Broker;
 import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
+import com.stanislav.smart.domain.trade.utils.AsyncTradeOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -14,10 +15,12 @@ import java.util.Set;
 @Component
 public class TradeDealingManager {
 
+    private final AsyncTradeOrder asyncTradeOrder;
     private final HashMap<Broker, TradingService> tradingServiceMap;
 
     @Autowired
-    public TradeDealingManager(List<TradingService> tradingServices) {
+    public TradeDealingManager(AsyncTradeOrder asyncTradeOrder, List<TradingService> tradingServices) {
+        this.asyncTradeOrder = asyncTradeOrder;
         tradingServiceMap = fillInMap(tradingServices);
     }
 
@@ -25,16 +28,10 @@ public class TradeDealingManager {
     public void initiateNewOrder(Set<Smart.Account> accounts, NewOrderCriteria newOrderCriteria) {
         for (Smart.Account account : accounts) {
             TradingService tradingService = tradingServiceMap.get(Broker.valueOf(account.getBroker()));
-            newOrderAsync(tradingService, account, newOrderCriteria);
+            asyncTradeOrder.newOrderAsync(tradingService, account, newOrderCriteria);
         }
     }
 
-
-    @Async
-    private void newOrderAsync(TradingService ts, Smart.Account account, NewOrderCriteria criteria) {
-
-        ts.makeOrder(account.getClientId(), account.getToken(), criteria);
-    }
 
     private HashMap<Broker, TradingService> fillInMap(List<TradingService> tradingServices) {
         HashMap<Broker, TradingService> map = new HashMap<>();

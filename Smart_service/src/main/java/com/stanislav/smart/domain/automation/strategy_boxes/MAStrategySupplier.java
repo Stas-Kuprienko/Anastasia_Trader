@@ -7,8 +7,8 @@ import com.stanislav.smart.domain.automation.strategies.MovingAverageStrategy;
 import com.stanislav.smart.domain.entities.Board;
 import com.stanislav.smart.domain.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.EventStream;
-import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import stanislav.anastasia.trade.Smart;
 import java.util.HashMap;
@@ -24,10 +24,11 @@ public class MAStrategySupplier implements TradeStrategySupplier<MovingAverageSt
 
 
     @Autowired
-    public MAStrategySupplier(AnalysisAideSupplier analysisAideSupplier, EventStreamKit eventStreamKit) {
+    public MAStrategySupplier(AnalysisAideSupplier analysisAideSupplier,
+                              @Qualifier("orderBookStream") EventStream eventStream) {
         this.analysisAideSupplier = analysisAideSupplier;
         strategyMap = new HashMap<>();
-        this.eventStream = eventStreamKit.getOrderBookStreamService();
+        this.eventStream = eventStream;
     }
 
 

@@ -1,18 +1,17 @@
 package com.stanislav.smart.configuration;
 
 import com.stanislav.smart.domain.automation.DroneLauncher;
-import com.stanislav.smart.domain.automation.grpc_impl.DroneLauncherGrpc;
 import com.stanislav.smart.domain.automation.grpc_impl.SmartAutoTradeGRpcImpl;
 import com.stanislav.smart.domain.automation.strategy_boxes.StrategiesDispatcher;
-import com.stanislav.smart.domain.market.event_stream.EventStreamKit;
-import com.stanislav.smart.domain.market.event_stream.finam.FinamGrpcEventStreamKit;
-import com.stanislav.smart.domain.trade.TradeDealingManager;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.service.grpc_impl.GRpcFrame;
 import com.stanislav.smart.service.grpc_impl.security.ServerSecurityInterceptor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import javax.annotation.PreDestroy;
 import java.util.List;
@@ -23,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 @ComponentScan("com.stanislav.smart")
 @PropertySource("classpath:application.properties")
 @EnableScheduling
+@EnableAsync
 public class SmartServiceConfig {
 
     private final String appId;
@@ -38,13 +38,13 @@ public class SmartServiceConfig {
                               @Value("${grpc.service.port}") String port,
                               @Value("${grpc.api.resource}") String apiResource,
                               @Value("${grpc.api.token}") String apiToken,
-                              @Value("${service.thread_pool_size}") String threadPoolSize) {
+                              @Value("${service.thread_pool_size}") Integer threadPoolSize) {
         this.appId = appId;
         this.secretKey = secretKey;
         this.port = Integer.parseInt(port);
         this.apiResource = apiResource;
         this.apiToken = apiToken;
-        this.scheduledExecutorService  = Executors.newScheduledThreadPool(Integer.parseInt(threadPoolSize));
+        this.scheduledExecutorService  = Executors.newScheduledThreadPool(threadPoolSize);
     }
 
 
@@ -59,29 +59,11 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public EventStreamKit eventStreamKit(GRpcClient gRpcClient) {
-        return new FinamGrpcEventStreamKit(scheduledExecutorService, gRpcClient);
-    }
-
-    @Bean
-    public DroneLauncher droneLauncher(TradeDealingManager dealingManager,
-                                       ScheduledExecutorService scheduledExecutorService,
-                                       StrategiesDispatcher strategiesDispatcher) {
-        return new DroneLauncherGrpc(dealingManager, scheduledExecutorService, strategiesDispatcher);
-    }
-
-    @Bean
     public GRpcFrame grpcFrame(StrategiesDispatcher dispatcher, DroneLauncher droneLauncher) {
         ServerSecurityInterceptor interceptor = new ServerSecurityInterceptor(appId, secretKey);
         SmartAutoTradeGRpcImpl smartAutoTrade = new SmartAutoTradeGRpcImpl(dispatcher, droneLauncher);
         return new GRpcFrame(port, List.of(interceptor), List.of(smartAutoTrade));
     }
-
-    @Bean
-    public ApplicationContext context() {
-        return new AnnotationConfigApplicationContext();
-    }
-
 
     @PreDestroy
     public void destroy() {
