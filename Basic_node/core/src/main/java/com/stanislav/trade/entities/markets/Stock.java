@@ -8,8 +8,11 @@ import lombok.Builder;
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.Currency;
 import com.stanislav.trade.entities.Market;
+import org.springframework.data.redis.core.RedisHash;
+
 import java.util.Objects;
 
+@RedisHash
 public final class Stock implements Securities {
 
     private String ticker;

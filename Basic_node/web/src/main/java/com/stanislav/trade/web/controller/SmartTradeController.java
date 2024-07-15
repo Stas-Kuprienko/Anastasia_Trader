@@ -8,6 +8,7 @@ import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.controller.service.ErrorController;
+import com.stanislav.trade.web.service.AccountService;
 import com.stanislav.trade.web.service.UserDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,11 +30,14 @@ import java.util.Set;
 public class SmartTradeController {
 
     private final UserDataService userDataService;
+    private final AccountService accountService;
     private final SmartAutoTradeService smartAutoTradeService;
 
     @Autowired
-    public SmartTradeController(UserDataService userDataService, SmartAutoTradeService smartAutoTradeService) {
+    public SmartTradeController(UserDataService userDataService,
+                                AccountService accountService, SmartAutoTradeService smartAutoTradeService) {
         this.userDataService = userDataService;
+        this.accountService = accountService;
         this.smartAutoTradeService = smartAutoTradeService;
     }
 
@@ -53,7 +56,7 @@ public class SmartTradeController {
 
     @GetMapping("/subscribe")
     public String subscribePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        List<Account> accounts = userDataService.getAccountsByLogin(userDetails.getUsername());
+        List<Account> accounts = accountService.getAccountsByLogin(userDetails.getUsername());
         model.addAttribute("accounts", accounts);
         return "smart";
     }
@@ -71,12 +74,12 @@ public class SmartTradeController {
         //TODO TEMPORARY, JUST FOR SAMPLE
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
-        Optional<Account> optionalAccount = userDataService.findAccountByLoginClientBroker(userDetails.getUsername(), clientId, broker);
+        Optional<Account> optionalAccount = accountService.findAccountByLoginClientBroker(userDetails.getUsername(), clientId, broker);
         if (optionalAccount.isEmpty()) {
             return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
         }
         Account account = optionalAccount.get();
-        String token = userDataService.decodeToken(account.getToken());
+        String token = accountService.decodeToken(account.getToken());
         TimeFrame.Scope tf = TimeFrame.valueOf(timeFrame);
         smartAutoTradeService.subscribe(account.getClientId(), account.getBroker(), "SBER", Board.TQBR, strategy, tf, token);
         return "ok";

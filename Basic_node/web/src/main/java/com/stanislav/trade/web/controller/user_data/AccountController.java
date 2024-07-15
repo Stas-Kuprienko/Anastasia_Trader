@@ -10,6 +10,7 @@ import com.stanislav.trade.web.controller.TradeController;
 import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.controller.service.MVC;
+import com.stanislav.trade.web.service.AccountService;
 import com.stanislav.trade.web.service.UserDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AccountController {
 
     private final UserDataService userDataService;
+    private final AccountService accountService;
     private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
 
     @Autowired
-    public AccountController(List<TradingService> tradingServices, UserDataService userDataService) {
+    public AccountController(List<TradingService> tradingServices,
+                             UserDataService userDataService, AccountService accountService) {
         this.userDataService = userDataService;
         tradingServiceMap = TradeController.initTradingServiceMap(tradingServices);
+        this.accountService = accountService;
     }
 
     @GetMapping("/new-account")
@@ -46,11 +50,11 @@ public class AccountController {
     public String getAccount(@AuthenticationPrincipal UserDetails userDetails,
                              @PathVariable("clientId") String clientId,
                              @RequestParam("broker") String broker, Model model) {
-        Optional<Account> optionalAccount = userDataService
+        Optional<Account> optionalAccount = accountService
                 .findAccountByLoginClientBroker(userDetails.getUsername(), clientId, Broker.valueOf(broker));
         if (optionalAccount.isPresent()) {
             Account account = optionalAccount.get();
-            String token = userDataService.decodeToken(account.getToken());
+            String token = accountService.decodeToken(account.getToken());
             TradingService tradingService = tradingServiceMap.get(account.getBroker());
             Portfolio portfolio = tradingService.getPortfolio(account.getClientId(), token, true);
             model.addAttribute("account", account);
@@ -72,8 +76,8 @@ public class AccountController {
         Optional<User> user = userDataService.findUserByLogin(userDetails.getUsername());
         if (user.isPresent()) {
             try {
-                Account account = userDataService.createAccount(user.get(), clientId, token, broker);
-                var accounts = userDataService.getAccountsByLogin(userDetails.getUsername());
+                Account account = accountService.createAccount(user.get(), clientId, token, broker);
+                var accounts = accountService.getAccountsByLogin(userDetails.getUsername());
                 accounts.add(account);
                 model.addAttribute("accounts", accounts);
                 return MVC.REDIRECT + WebApplicationConfig.resource +
@@ -91,7 +95,7 @@ public class AccountController {
     @GetMapping("/accounts")
     public String getAccounts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         try {
-            List<Account> accounts = userDataService.getAccountsByLogin(userDetails.getUsername());
+            List<Account> accounts = accountService.getAccountsByLogin(userDetails.getUsername());
             model.addAttribute("accounts", accounts);
             return "accounts";
         } catch (IllegalArgumentException e) {
@@ -103,7 +107,7 @@ public class AccountController {
     @DeleteMapping("/account/{account}")
     public String deleteAccount(@AuthenticationPrincipal UserDetails userDetails,
                                 @PathVariable("account") Long accountId) {
-        userDataService.deleteAccount(userDetails.getUsername(), accountId);
+        accountService.deleteAccount(userDetails.getUsername(), accountId);
         return MVC.REDIRECT + WebApplicationConfig.resource + "user/accounts";
     }
 }

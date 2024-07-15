@@ -1,29 +1,60 @@
+/*
+ * Stanislav Kuprienko *** Omsk, Russia
+ */
+
 package com.stanislav.trade.web.service;
 
-import com.stanislav.trade.entities.Broker;
-import com.stanislav.trade.entities.user.Account;
+import com.stanislav.trade.datasource.jpa.UserDao;
+import com.stanislav.trade.entities.user.TelegramChatId;
 import com.stanislav.trade.entities.user.User;
-
-import java.util.List;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import java.util.Optional;
 
-public interface UserDataService {
+@Slf4j
+@Service
+public class UserDataService {
 
-    User createUser(String login, String password, String name);
+    //TODO   TEMPORARY SOLUTION. NEED TO MAKE !!!!!!!!!!!
 
-    Account createAccount(User user, String clientId, String token, String broker);
+    private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
-    Optional<User> findUserById(Long id);
 
-    Optional<User> findUserByLogin(String login);
+    @Autowired
+    public UserDataService(UserDao userDao, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    List<Account> getAccountsByLogin(String login);
 
-    Optional<Account> findAccountByLoginClientBroker(String login, String clientId, Broker broker);
+    @Transactional
+    public User createUser(String login, String password, String name) {
+        User user = new User(
+                login,
+                passwordEncoder.encode(password),
+                User.Role.USER,
+                name != null ? name : "");
+        userDao.save(user);
+        return user;
+    }
 
-    void deleteAccount(String login, long accountId);
+    public Optional<User> findUserById(Long id) {
+        return userDao.findById(id);
+    }
 
-    boolean addTelegramChatId(User user, Long chatId);
+    public Optional<User> findUserByLogin(String login) {
+        return userDao.findByLogin(login);
+    }
 
-    String decodeToken(String token) throws IllegalArgumentException;
+    public boolean addTelegramChatId(User user, Long chatId) {
+        Optional<TelegramChatId> chat = userDao.findTelegramChatId(chatId);
+        if (chat.isPresent() && chat.get().getUser().equals(user)) {
+            return true;
+        }
+        return userDao.addTelegramChatId(user, chatId);
+    }
 }
