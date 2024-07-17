@@ -5,13 +5,14 @@ import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.authentication.form.MyUserDetails;
 import com.stanislav.trade.web.configuration.WebApplicationConfig;
 import com.stanislav.trade.web.controller.TradeController;
 import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.controller.service.MVC;
 import com.stanislav.trade.web.service.AccountService;
-import com.stanislav.trade.web.service.UserDataService;
+import com.stanislav.trade.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -28,13 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/user")
 public class AccountController {
 
-    private final UserDataService userDataService;
+    private final UserService userDataService;
     private final AccountService accountService;
     private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
 
     @Autowired
     public AccountController(List<TradingService> tradingServices,
-                             UserDataService userDataService, AccountService accountService) {
+                             UserService userDataService, AccountService accountService) {
         this.userDataService = userDataService;
         tradingServiceMap = TradeController.initTradingServiceMap(tradingServices);
         this.accountService = accountService;
@@ -50,21 +50,17 @@ public class AccountController {
     public String getAccount(@AuthenticationPrincipal UserDetails userDetails,
                              @PathVariable("clientId") String clientId,
                              @RequestParam("broker") String broker, Model model) {
-        Optional<Account> optionalAccount = accountService
-                .findAccountByLoginClientBroker(userDetails.getUsername(), clientId, Broker.valueOf(broker));
-        if (optionalAccount.isPresent()) {
-            Account account = optionalAccount.get();
-            String token = accountService.decodeToken(account.getToken());
-            TradingService tradingService = tradingServiceMap.get(account.getBroker());
-            Portfolio portfolio = tradingService.getPortfolio(account.getClientId(), token, true);
-            model.addAttribute("account", account);
-            model.addAttribute("balance", portfolio.getBalance());
-            model.addAttribute("positions", portfolio.getPositions());
-            //TODO smart trade subscribes
-            return "account";
-        } else {
-            return ErrorController.URL_FORWARD + ErrorCase.BAD_REQUEST;
-        }
+
+        long userId = ((MyUserDetails) userDetails).getId();
+        Account account = accountService.findByClientIdAndBroker(userId, clientId, Broker.valueOf(broker));
+        String token = accountService.decodeToken(account.getToken());
+        TradingService tradingService = tradingServiceMap.get(account.getBroker());
+        Portfolio portfolio = tradingService.getPortfolio(account.getClientId(), token, true);
+        model.addAttribute("account", account);
+        model.addAttribute("balance", portfolio.getBalance());
+        model.addAttribute("positions", portfolio.getPositions());
+        //TODO smart trade subscribes
+        return "account";
     }
 
     @PostMapping("/account")
@@ -73,29 +69,25 @@ public class AccountController {
                                    @RequestParam("token") String token,
                                    @RequestParam("broker") String broker,
                                    Model model) {
-        Optional<User> user = userDataService.findUserByLogin(userDetails.getUsername());
-        if (user.isPresent()) {
-            try {
-                Account account = accountService.createAccount(user.get(), clientId, token, broker);
-                var accounts = accountService.getAccountsByLogin(userDetails.getUsername());
-                accounts.add(account);
-                model.addAttribute("accounts", accounts);
-                return MVC.REDIRECT + WebApplicationConfig.resource +
-                        "user/account/" + clientId + "?broker=" + broker;
-            } catch (IllegalArgumentException e) {
-                log.error(e.getMessage());
-                return ErrorController.URL_REDIRECT + ErrorCase.BAD_REQUEST;
-            }
-        } else {
-            log.error("user=" + userDetails.getUsername() + " is lost");
-            return MVC.REDIRECT + MVC.LOGIN_PAGE;
+        User user = userDataService.findUserByLogin(userDetails.getUsername());
+        try {
+            Account account = accountService.createAccount(user, clientId, token, broker);
+            var accounts = accountService.findByLogin(userDetails.getUsername());
+            accounts.add(account);
+            model.addAttribute("accounts", accounts);
+            return MVC.REDIRECT + WebApplicationConfig.resource +
+                    "user/account/" + clientId + "?broker=" + broker;
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ErrorController.REDIRECT_ERROR + ErrorCase.BAD_REQUEST;
         }
     }
+
 
     @GetMapping("/accounts")
     public String getAccounts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         try {
-            List<Account> accounts = accountService.getAccountsByLogin(userDetails.getUsername());
+            List<Account> accounts = accountService.findByLogin(userDetails.getUsername());
             model.addAttribute("accounts", accounts);
             return "accounts";
         } catch (IllegalArgumentException e) {

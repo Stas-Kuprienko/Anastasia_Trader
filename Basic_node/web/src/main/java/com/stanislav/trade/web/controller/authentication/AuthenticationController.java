@@ -1,10 +1,11 @@
 package com.stanislav.trade.web.controller.authentication;
 
 import com.stanislav.trade.entities.user.User;
-import com.stanislav.trade.web.service.UserDataService;
+import com.stanislav.trade.web.authentication.form.MyUserDetails;
+import com.stanislav.trade.web.controller.service.MVC;
+import com.stanislav.trade.web.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -25,11 +25,11 @@ public class AuthenticationController {
     private final static String LOGIN_MAPPING = "/anastasia/login";
     private static final String SIGN_UP_MAPPING = "/anastasia/sign-up";
 
-    private final UserDataService userDataService;
+    private final UserService userDataService;
 
 
     @Autowired
-    public AuthenticationController(UserDataService userDataService) {
+    public AuthenticationController(UserService userDataService) {
         this.userDataService = userDataService;
     }
 
@@ -45,7 +45,7 @@ public class AuthenticationController {
     public String login(HttpServletRequest request) {
         request.setAttribute(LOGIN_ATTRIBUTE, LOGIN_MAPPING);
         request.setAttribute(SIGN_UP_ATTRIBUTE, SIGN_UP_MAPPING);
-        return "login";
+        return MVC.LOGIN_PAGE;
     }
 
     @PostMapping("/sign-up")
@@ -57,37 +57,29 @@ public class AuthenticationController {
         try {
             request.login(login, password);
             request.getSession().setAttribute("id", user.getId());
-            return "redirect:/user";
+            return MVC.REDIRECT + "/user";
         } catch (ServletException e) {
             log.error(e.getMessage());
-            return "redirect:/sign-up";
+            return MVC.REDIRECT + "/sign-up";
         }
     }
 
     @PostMapping("/login/auth")
-    public String loginHandle(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
-        Optional<User> user = userDataService.findUserByLogin(userDetails.getUsername());
-        if (user.isPresent()) {
-            request.getSession().setAttribute("id", user.get().getId());
-            if (user.get().getRole().equals(User.Role.USER)) {
-                return "redirect:/user";
-            } else if (user.get().getRole().equals(User.Role.ADMIN)) {
-                return "redirect:/admin";
-            } else {
-                log.error("user role is " + user.get().getRole());
+    public String loginHandle(@AuthenticationPrincipal UserDetails userDetails) {
+        User.Role role = ((MyUserDetails) userDetails).getRole();
+        return switch (role) {
+            case USER -> MVC.REDIRECT + "/user";
+            case ADMIN -> MVC.REDIRECT + "/admin";
+            case null, default -> {
+                log.error("user role is " + role);
+                yield MVC.REDIRECT + "/login?error=true";
             }
-        }
-        return "redirect:/login?error=true";
+        };
     }
 
     @GetMapping("/user")
-    public String mainPage(HttpSession session, Model model) {
-        Long id = (Long) session.getAttribute("id");
-        if (id == null) {
-            log.error("User ID is lost");
-            return "redirect:/login";
-        }
-        User user = userDataService.findUserById(id).orElseThrow();
+    public String mainPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User user = userDataService.findUserById(((MyUserDetails) userDetails).getId());
         model.addAttribute("user", user);
         return "main";
     }

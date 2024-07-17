@@ -1,18 +1,21 @@
 package com.stanislav.trade.web.controller.service;
 
+import com.stanislav.trade.web.exceptions.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jasper.JasperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @ControllerAdvice
@@ -48,6 +51,19 @@ public class MyExceptionHandler {
                 messageSource.getMessage("500", null, Locale.of("RU")),
                 ErrorController.Images.SERVER_ERROR.file, 500);
         modelAndView.addObject(ErrorController.ERROR_KEY, errorModel);
+        return modelAndView;
+    }
+
+    @ExceptionHandler({NotFoundException.class, NoSuchElementException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ModelAndView notFoundHandle(Exception e) {
+        log.info(e.getMessage());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName(ErrorController.ERROR_PAGE);
+        modelAndView.addObject("error", new ErrorController.ErrorModel(
+                messageSource.getMessage(ErrorCase.NOT_FOUND.toString(), null, Locale.of("RU")),
+                "not-found.webp",
+                404));
         return modelAndView;
     }
 }

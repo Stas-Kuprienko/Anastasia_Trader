@@ -46,7 +46,7 @@ public final class MarketController {
         Optional<Stock> stock = exchangeData.getStock(ticker);
         if (stock.isEmpty()) {
             log.info(ticker + " is not found");
-            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
+            return ErrorController.FORWARD_ERROR + ErrorCase.NOT_FOUND;
         }
         model.addAttribute(SEC_ITEM, stock.get());
         model.addAttribute("type", STOCK_URI);
@@ -83,7 +83,7 @@ public final class MarketController {
         Optional<Futures> futures = exchangeData.getFutures(ticker);
         if (futures.isEmpty()) {
             log.info(ticker + " is not found");
-            return ErrorController.URL_FORWARD + ErrorCase.NOT_FOUND;
+            return ErrorController.FORWARD_ERROR + ErrorCase.NOT_FOUND;
         }
         model.addAttribute(SEC_ITEM, futures.get());
         model.addAttribute("type", FUTURES_URI);

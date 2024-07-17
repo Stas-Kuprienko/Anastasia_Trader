@@ -3,7 +3,9 @@ package com.stanislav.trade.web.controller.authentication;
 import com.stanislav.trade.entities.user.User;
 import com.stanislav.trade.web.authentication.rest.RestAuthService;
 import com.stanislav.trade.web.controller.service.ErrorCase;
-import com.stanislav.trade.web.service.UserDataService;
+import com.stanislav.trade.web.controller.service.ErrorController;
+import com.stanislav.trade.web.controller.service.MVC;
+import com.stanislav.trade.web.service.UserService;
 import io.jsonwebtoken.JwtParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,13 +37,13 @@ public class TelegramBotAuthController {
 
     private final RestTemplate restTemplate;
     private final JwtParser jwtParser;
-    private final UserDataService userDataService;
+    private final UserService userDataService;
     private final RestAuthService restAuthService;
 
 
     @Autowired
     public TelegramBotAuthController(RestTemplate restTemplate, JwtParser jwtParser,
-                                     UserDataService userDataService, RestAuthService restAuthService,
+                                     UserService userDataService, RestAuthService restAuthService,
                                      @Value("${telegram.rest}") String telegramBotApiUrl,
                                      @Value("${telegram_bot.link}") String telegramBot) {
         this.telegramBotApiUrl = telegramBotApiUrl;
@@ -64,20 +66,20 @@ public class TelegramBotAuthController {
                 var principal = request.getUserPrincipal();
                 if (principal == null) {
                     request.getSession().setAttribute(CHAT_ID, chatId);
-                    return "forward:/telegram-bot/sign-up";
+                    return MVC.FORWARD + "/telegram-bot/sign-up";
                 } else {
-                    User user = userDataService.findUserByLogin(principal.getName()).orElseThrow();
+                    User user = userDataService.findUserByLogin(principal.getName());
                     return signUpToTelegram(chatId, user);
                 }
             }
         }
-        return "forward:/error/" + ErrorCase.TELEGRAM_ID_LOST;
+        return ErrorController.FORWARD_ERROR + ErrorCase.TELEGRAM_ID_LOST;
     }
 
     @GetMapping("/sign-up")
     public String signUp(HttpServletRequest request) {
         if (request.getSession().getAttribute(CHAT_ID) == null) {
-            return "forward:/error/" + ErrorCase.TELEGRAM_ID_LOST;
+            return ErrorController.FORWARD_ERROR + ErrorCase.TELEGRAM_ID_LOST;
         }
         request.setAttribute(AuthenticationController.LOGIN_ATTRIBUTE, LOGIN_TELEGRAM_MAPPING);
         request.setAttribute(AuthenticationController.SIGN_UP_ATTRIBUTE, SIGN_UP_TELEGRAM_MAPPING);
@@ -87,11 +89,11 @@ public class TelegramBotAuthController {
     @GetMapping("/login")
     public String login(HttpServletRequest request) {
         if (request.getSession().getAttribute(CHAT_ID) == null) {
-            return "forward:/error/" + ErrorCase.TELEGRAM_ID_LOST;
+            return ErrorController.FORWARD_ERROR + ErrorCase.TELEGRAM_ID_LOST;
         }
         request.setAttribute(AuthenticationController.Args.login.toString(), LOGIN_TELEGRAM_MAPPING);
         request.setAttribute(AuthenticationController.Args.signUp.toString(), SIGN_UP_TELEGRAM_MAPPING);
-        return "login";
+        return MVC.LOGIN_PAGE;
     }
 
     @PostMapping("/sign-up")
@@ -101,7 +103,7 @@ public class TelegramBotAuthController {
                                HttpServletRequest request) {
         Long chatId = (Long) request.getSession().getAttribute(CHAT_ID);
         if (chatId == null) {
-            return "forward:/error/" + ErrorCase.TELEGRAM_ID_LOST;
+            return ErrorController.REDIRECT_ERROR + ErrorCase.TELEGRAM_ID_LOST;
         }
         User user = userDataService.createUser(login, password, name);
         try {
@@ -109,7 +111,7 @@ public class TelegramBotAuthController {
             request.getSession().removeAttribute(CHAT_ID);
         } catch (ServletException e) {
             log.error(e.getMessage());
-            return "redirect:/sign-up";
+            return MVC.REDIRECT + "/sign-up";
         }
         return signUpToTelegram(chatId, user);
     }
@@ -120,16 +122,16 @@ public class TelegramBotAuthController {
                               HttpServletRequest request) {
         Long chatId = (Long) request.getSession().getAttribute(CHAT_ID);
         if (chatId == null) {
-            return "forward:/error/" + ErrorCase.TELEGRAM_ID_LOST;
+            return ErrorController.REDIRECT_ERROR + ErrorCase.TELEGRAM_ID_LOST;
         }
         try {
             request.login(login, password);
             request.getSession().removeAttribute(CHAT_ID);
-            User user = userDataService.findUserByLogin(login).orElseThrow();
+            User user = userDataService.findUserByLogin(login);
             return signUpToTelegram(chatId, user);
         } catch (ServletException e) {
             log.warn(e.getMessage());
-            return "redirect:/login?error=true";
+            return MVC.REDIRECT + "/login?error=true";
         }
     }
 
@@ -141,9 +143,9 @@ public class TelegramBotAuthController {
                 .exchange(telegramBotApiUrl + "user/register", HttpMethod.POST, httpEntity, Boolean.class);
         if (Boolean.TRUE.equals(response.getBody()) &&
                 userDataService.addTelegramChatId(user, chatId)) {
-            return "redirect:" + telegramBot;
+            return MVC.REDIRECT + telegramBot;
         } else {
-            return "forward:/error/" + ErrorCase.DEFAULT;
+            return ErrorController.REDIRECT_ERROR + ErrorCase.DEFAULT;
         }
     }
 

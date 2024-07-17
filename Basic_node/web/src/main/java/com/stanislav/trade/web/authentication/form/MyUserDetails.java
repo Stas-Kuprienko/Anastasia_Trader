@@ -7,31 +7,38 @@ package com.stanislav.trade.web.authentication.form;
 import com.stanislav.trade.entities.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.List;
 
 public class MyUserDetails implements UserDetails {
 
-    private final User user;
+    private final Long id;
+    private final String login;
+    private final String password;
+    private final User.Role role;
+    private final String name;
 
     public MyUserDetails(User user) {
-        this.user = user;
+        this.id = user.getId();
+        this.login = user.getLogin();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+        this.name = user.getName();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of((GrantedAuthority) () -> user.getRole().toString());
+        return List.of((GrantedAuthority) role::toString);
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getLogin();
+        return login;
     }
 
     @Override
@@ -56,5 +63,17 @@ public class MyUserDetails implements UserDetails {
     public boolean isEnabled() {
         //TODO
         return true;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public User.Role getRole() {
+        return role;
+    }
+
+    public String getName() {
+        return name;
     }
 }

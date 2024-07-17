@@ -17,8 +17,8 @@ import java.util.Locale;
 @Controller
 public class ErrorController {
 
-    public static final String URL_FORWARD = "forward:/error/";
-    public static final String URL_REDIRECT = "redirect:/error/";
+    public static final String FORWARD_ERROR = "forward:/error/";
+    public static final String REDIRECT_ERROR = "redirect:/error/";
     public static final String ERROR_PAGE = "error_page";
     public static final String ERROR_KEY = "error";
 
