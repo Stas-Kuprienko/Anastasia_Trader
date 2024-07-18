@@ -2,6 +2,7 @@ package com.stanislav.trade.datasource;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.K;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -30,16 +32,19 @@ public class DatasourceConfig {
     private final Properties jpaProperties;
     private final String redisHost;
     private final Integer redisPort;
+    private final String redisPassword;
 
     private RedisConnectionFactory redisConnectionFactory;
 
 
     public DatasourceConfig(@Value("${database.jpa.properties}") String jpa,
                             @Value("${redis.config.host}") String redisHost,
-                            @Value("${redis.config.port}") Integer redisPort) {
+                            @Value("${redis.config.port}") Integer redisPort,
+                            @Value("${redis.config.password}") String redisPassword) {
         jpaProperties = loadDatabaseProperties(jpa);
         this.redisHost = redisHost;
         this.redisPort = redisPort;
+        this.redisPassword = redisPassword;
     }
 
     // \/ <---------- JPA configuration ----------> \/ //
@@ -54,10 +59,12 @@ public class DatasourceConfig {
         log.info("Datasource=" + dataSource);
 
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 
         entityManagerFactory.setDataSource(dataSource);
         entityManagerFactory.setPackagesToScan("com.stanislav.trade.entities");
-        entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
+        entityManagerFactory.setPersistenceProvider(vendorAdapter.getPersistenceProvider());
         entityManagerFactory.setJpaProperties(jpaProperties);
 
         return entityManagerFactory;
@@ -77,10 +84,12 @@ public class DatasourceConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
 
-        RedisStandaloneConfiguration redisStandaloneConfiguration =
+        RedisStandaloneConfiguration configuration =
                 new RedisStandaloneConfiguration(redisHost, redisPort);
 
-        var connectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
+        configuration.setPassword(redisPassword);
+
+        var connectionFactory = new JedisConnectionFactory(configuration);
         redisConnectionFactory = connectionFactory;
         return connectionFactory;
     }

@@ -1,0 +1,43 @@
+version: '3'
+
+networks:
+  app-networks:
+    driver: bridge
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anastasia
+    networks:
+      - app-networks
+    depends_on:
+      - redis
+    ports:
+      - '8080:8080'
+
+#  db:
+#    image: mysql:8.0.38
+#    container_name: mysql
+#    networks:
+#      - app-networks
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=1234
+#      - MYSQL_USER=user
+#      - MYSQL_PASSWORD=1234
+#      - MYSQL_DATABASE=trade_app
+#    ports:
+#      - '3306:3306'
+#    volumes:
+#      - ./.resource_files/init-database.sql:/docker-entrypoint-initdb.d/initdb.sql
+
+  redis:
+    image: redis:7.2-rc-alpine
+    restart: always
+    container_name: rediska
+    networks:
+      - app-networks
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass 12345
