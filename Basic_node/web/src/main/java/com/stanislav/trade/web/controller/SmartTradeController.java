@@ -9,7 +9,6 @@ import com.stanislav.trade.web.authentication.form.MyUserDetails;
 import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.service.AccountService;
-import com.stanislav.trade.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,17 +27,15 @@ import java.util.Set;
 @RequestMapping("/smart")
 public class SmartTradeController {
 
-    private final UserService userDataService;
     private final AccountService accountService;
     private final SmartAutoTradeService smartAutoTradeService;
 
     @Autowired
-    public SmartTradeController(UserService userDataService,
-                                AccountService accountService, SmartAutoTradeService smartAutoTradeService) {
-        this.userDataService = userDataService;
+    public SmartTradeController(AccountService accountService, SmartAutoTradeService smartAutoTradeService) {
         this.accountService = accountService;
         this.smartAutoTradeService = smartAutoTradeService;
     }
+
 
     @GetMapping("/select")
     public String selectSmart(@AuthenticationPrincipal UserDetails userDetails, Model model) {

@@ -37,20 +37,20 @@ public class TelegramBotAuthController {
 
     private final RestTemplate restTemplate;
     private final JwtParser jwtParser;
-    private final UserService userDataService;
+    private final UserService userService;
     private final RestAuthService restAuthService;
 
 
     @Autowired
     public TelegramBotAuthController(RestTemplate restTemplate, JwtParser jwtParser,
-                                     UserService userDataService, RestAuthService restAuthService,
+                                     UserService userService, RestAuthService restAuthService,
                                      @Value("${telegram.rest}") String telegramBotApiUrl,
                                      @Value("${telegram_bot.link}") String telegramBot) {
         this.telegramBotApiUrl = telegramBotApiUrl;
         this.telegramBot = telegramBot;
         this.jwtParser = jwtParser;
         this.restTemplate = restTemplate;
-        this.userDataService = userDataService;
+        this.userService = userService;
         this.restAuthService = restAuthService;
     }
 
@@ -68,7 +68,7 @@ public class TelegramBotAuthController {
                     request.getSession().setAttribute(CHAT_ID, chatId);
                     return MVC.FORWARD + "/telegram-bot/sign-up";
                 } else {
-                    User user = userDataService.findUserByLogin(principal.getName());
+                    User user = userService.findUserByLogin(principal.getName());
                     return signUpToTelegram(chatId, user);
                 }
             }
@@ -105,7 +105,7 @@ public class TelegramBotAuthController {
         if (chatId == null) {
             return ErrorController.REDIRECT_ERROR + ErrorCase.TELEGRAM_ID_LOST;
         }
-        User user = userDataService.createUser(login, password, name);
+        User user = userService.createUser(login, password, name);
         try {
             request.login(login, password);
             request.getSession().removeAttribute(CHAT_ID);
@@ -127,7 +127,7 @@ public class TelegramBotAuthController {
         try {
             request.login(login, password);
             request.getSession().removeAttribute(CHAT_ID);
-            User user = userDataService.findUserByLogin(login);
+            User user = userService.findUserByLogin(login);
             return signUpToTelegram(chatId, user);
         } catch (ServletException e) {
             log.warn(e.getMessage());
@@ -142,7 +142,7 @@ public class TelegramBotAuthController {
         ResponseEntity<Boolean> response = restTemplate
                 .exchange(telegramBotApiUrl + "user/register", HttpMethod.POST, httpEntity, Boolean.class);
         if (Boolean.TRUE.equals(response.getBody()) &&
-                userDataService.addTelegramChatId(user, chatId)) {
+                userService.addTelegramChatId(user, chatId)) {
             return MVC.REDIRECT + telegramBot;
         } else {
             return ErrorController.REDIRECT_ERROR + ErrorCase.DEFAULT;

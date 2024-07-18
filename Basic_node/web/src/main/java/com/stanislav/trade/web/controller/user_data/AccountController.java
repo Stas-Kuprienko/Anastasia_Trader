@@ -28,14 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/user")
 public class AccountController {
 
-    private final UserService userDataService;
+    private final UserService userService;
     private final AccountService accountService;
     private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
 
     @Autowired
     public AccountController(List<TradingService> tradingServices,
-                             UserService userDataService, AccountService accountService) {
-        this.userDataService = userDataService;
+                             UserService userService, AccountService accountService) {
+        this.userService = userService;
         tradingServiceMap = TradeController.initTradingServiceMap(tradingServices);
         this.accountService = accountService;
     }
@@ -69,7 +69,7 @@ public class AccountController {
                                    @RequestParam("token") String token,
                                    @RequestParam("broker") String broker,
                                    Model model) {
-        User user = userDataService.findUserByLogin(userDetails.getUsername());
+        User user = userService.findUserByLogin(userDetails.getUsername());
         try {
             Account account = accountService.createAccount(user, clientId, token, broker);
             var accounts = accountService.findByLogin(userDetails.getUsername());

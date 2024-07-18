@@ -21,7 +21,6 @@ import com.stanislav.trade.web.controller.service.ErrorCase;
 import com.stanislav.trade.web.controller.service.ErrorController;
 import com.stanislav.trade.web.controller.service.MVC;
 import com.stanislav.trade.web.service.AccountService;
-import com.stanislav.trade.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,7 +42,6 @@ public final class TradeController {
     private static final String ORDER_VIEW = "order_view";
     private static final String ITEM = "item";
 
-    private final UserService userDataService;
     private final AccountService accountService;
     private final ExchangeData exchangeData;
     private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
@@ -51,9 +49,8 @@ public final class TradeController {
 
     @Autowired
     public TradeController(@Qualifier("moexExchangeData") ExchangeData exchangeData,
-                           List<TradingService> tradingServices, UserService userDataService, AccountService accountService) {
+                           List<TradingService> tradingServices, AccountService accountService) {
         this.tradingServiceMap = initTradingServiceMap(tradingServices);
-        this.userDataService = userDataService;
         this.exchangeData = exchangeData;
         this.accountService = accountService;
     }

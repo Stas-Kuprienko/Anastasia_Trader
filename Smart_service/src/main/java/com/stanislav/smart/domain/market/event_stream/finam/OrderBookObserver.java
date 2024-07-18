@@ -1,6 +1,6 @@
 package com.stanislav.smart.domain.market.event_stream.finam;
 
-import com.stanislav.smart.domain.market.event_stream.EventStreamException;
+import com.stanislav.smart.domain.exceptions.EventStreamException;
 import io.grpc.stub.StreamObserver;
 import proto.tradeapi.v1.Events;
 

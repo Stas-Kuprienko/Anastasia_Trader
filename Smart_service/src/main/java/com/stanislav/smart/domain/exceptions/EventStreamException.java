@@ -1,4 +1,4 @@
-package com.stanislav.smart.domain.market.event_stream;
+package com.stanislav.smart.domain.exceptions;
 
 public class EventStreamException extends Exception {
 

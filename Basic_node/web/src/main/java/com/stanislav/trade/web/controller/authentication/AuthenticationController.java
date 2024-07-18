@@ -25,12 +25,12 @@ public class AuthenticationController {
     private final static String LOGIN_MAPPING = "/anastasia/login";
     private static final String SIGN_UP_MAPPING = "/anastasia/sign-up";
 
-    private final UserService userDataService;
+    private final UserService userService;
 
 
     @Autowired
-    public AuthenticationController(UserService userDataService) {
-        this.userDataService = userDataService;
+    public AuthenticationController(UserService userService) {
+        this.userService = userService;
     }
 
 
@@ -53,7 +53,7 @@ public class AuthenticationController {
                                @RequestParam("password") String password,
                                @RequestParam(name = "name", required = false) String name,
                                HttpServletRequest request) {
-        User user = userDataService.createUser(login, password, name);
+        User user = userService.createUser(login, password, name);
         try {
             request.login(login, password);
             request.getSession().setAttribute("id", user.getId());
@@ -79,7 +79,7 @@ public class AuthenticationController {
 
     @GetMapping("/user")
     public String mainPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userDataService.findUserById(((MyUserDetails) userDetails).getId());
+        User user = userService.findUserById(((MyUserDetails) userDetails).getId());
         model.addAttribute("user", user);
         return "main";
     }
