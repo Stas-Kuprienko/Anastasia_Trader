@@ -1,4 +1,8 @@
-package com.stanislav.smart.domain.analysis.technical;
+/*
+ * Stanislav Kuprienko *** Omsk, Russia
+ */
+
+package com.stanislav.smart.domain.analysis.technical.support_resistance;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.TimeFrame;
@@ -52,7 +56,6 @@ public class SupportResistanceLevelsAide implements AnalysisAide {
      * The description of support/resistance line parameters.
      * @param timeFrame The timeFrame of the level.
      * @param averageVolume The average value of trading volumes around the price range of the level.
-     * @param spread The average value of the price range. These are percentage units.
      * @param importance The index of the importance of the level (how many times has the price reached the level).
      */
     public record Level(TimeFrame.Scope timeFrame, long averageVolume, int importance) {

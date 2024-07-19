@@ -4,25 +4,47 @@
 
 package com.stanislav.smart.domain.automation.strategies;
 
-import com.stanislav.smart.domain.analysis.technical.SimpleMovingAverageAide;
+import com.stanislav.smart.domain.analysis.technical.sma.SimpleMovingAverageAide;
+import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.TradeStrategy;
 import com.stanislav.smart.domain.entities.Direction;
 import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
+import com.stanislav.smart.domain.market.event_stream.OrderBookStreamListener;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MovingAverageStrategy implements TradeStrategy {
 
+    private final Set<Drone> consumers;
     private final SimpleMovingAverageAide smaAide;
-    private final EventStreamListener.OrderBookCollector collector;
+    private final OrderBookStreamListener listener;
+    private final OrderBookStreamListener.OrderBookCollector collector;
 
     private Direction direction;
 
 
-    public MovingAverageStrategy(SimpleMovingAverageAide smaAide, EventStreamListener.EventCollector collector) {
+    public MovingAverageStrategy(SimpleMovingAverageAide smaAide, OrderBookStreamListener listener) {
         this.smaAide = smaAide;
-        this.collector = (EventStreamListener.OrderBookCollector) collector;
+        this.listener = listener;
+        this.collector = listener.orderBookCollector();
+        consumers = new HashSet<>();
     }
 
+    @Override
+    public void addConsumer(Object o) {
+        consumers.add((Drone) o);
+    }
+
+    @Override
+    public void removeConsumer(Object o) {
+        consumers.remove((Drone) o);
+    }
+
+    @Override
+    public boolean isUseless() {
+        return consumers.isEmpty();
+    }
 
     @Override
     public TimeFrame.Scope timeFrame() {
@@ -82,6 +104,15 @@ public class MovingAverageStrategy implements TradeStrategy {
     @Override
     public Direction getDirection() {
         return direction;
+    }
+
+    @Override
+    public boolean stop() {
+        listener.removeConsumer(this);
+        if (listener.isUseless()) {
+            return listener.stop();
+        }
+        return false;
     }
 
     private boolean deciding() {

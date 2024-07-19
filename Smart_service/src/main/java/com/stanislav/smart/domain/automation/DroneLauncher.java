@@ -5,7 +5,7 @@ import stanislav.anastasia.trade.Smart;
 
 public interface DroneLauncher {
 
-    Drone launchDrone(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> response);
+    void launchDrone(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> response);
 
     void removeAccount(Smart.UnsubscribeRequest unsubscribeRequest);
 

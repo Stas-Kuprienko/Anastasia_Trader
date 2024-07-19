@@ -1,13 +1,13 @@
 package com.stanislav.smart.domain.market.event_stream.finam;
 
 import com.stanislav.smart.domain.exceptions.EventStreamException;
-import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
+import com.stanislav.smart.domain.market.event_stream.OrderBookStreamListener;
 import com.stanislav.smart.domain.market.event_stream.OrderBookRow;
 import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class FinamOrderBookCollector implements EventStreamListener.OrderBookCollector {
+public class FinamOrderBookCollector implements OrderBookStreamListener.OrderBookCollector {
 
     private static final byte DEFAULT_CAPACITY = 10;
     private final int capacity;

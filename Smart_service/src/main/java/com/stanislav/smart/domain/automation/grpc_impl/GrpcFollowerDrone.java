@@ -94,13 +94,13 @@ public class GrpcFollowerDrone implements Drone {
     }
 
     @Override
-    public ScheduledFuture<?> getScheduledFuture() {
-        return scheduledFuture;
+    public void addConsumer(Object o) {
+        addAccount((Smart.Account) o);
     }
 
     @Override
-    public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
-        this.scheduledFuture = scheduledFuture;
+    public void removeConsumer(Object o) {
+        removeAccount((Smart.Account) o);
     }
 
     @Override
@@ -115,11 +115,23 @@ public class GrpcFollowerDrone implements Drone {
 
     @Override
     public boolean stop() {
-        isActive = false;
-        if (!scheduledFuture.isDone() || !scheduledFuture.isCancelled()) {
-            return scheduledFuture.cancel(true);
+        if (!scheduledFuture.isDone()) {
+            scheduledFuture.cancel(true);
         }
+        strategy.removeConsumer(this);
+        if (strategy.isUseless()) {
+            strategy.stop();
+        }
+        isActive = false;
         return true;
+    }
+
+    public ScheduledFuture<?> getScheduledFuture() {
+        return scheduledFuture;
+    }
+
+    public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
+        this.scheduledFuture = scheduledFuture;
     }
 
 
@@ -151,7 +163,6 @@ public class GrpcFollowerDrone implements Drone {
     }
 
     private void error(Exception e) {
-        isActive = false;
         //TODO loggers
         //TODO send exception
         Smart.Exception ex = Smart.Exception.newBuilder()
@@ -163,5 +174,6 @@ public class GrpcFollowerDrone implements Drone {
         responseObserver.onNext(response);
         responseObserver.onError(e);
         responseObserver.onCompleted();
+        stop();
     }
 }

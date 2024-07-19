@@ -2,7 +2,7 @@ package com.stanislav.smart.configuration;
 
 import com.stanislav.smart.domain.automation.DroneLauncher;
 import com.stanislav.smart.domain.automation.grpc_impl.SmartAutoTradeGRpcImpl;
-import com.stanislav.smart.domain.automation.strategy_boxes.StrategiesDispatcher;
+import com.stanislav.smart.domain.automation.strategy_suppliers.StrategiesDispatcher;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import com.stanislav.smart.service.grpc_impl.GRpcFrame;
 import com.stanislav.smart.service.grpc_impl.security.ServerSecurityInterceptor;

@@ -1,4 +1,8 @@
-package com.stanislav.smart.domain.analysis.technical;
+/*
+ * Stanislav Kuprienko *** Omsk, Russia
+ */
+
+package com.stanislav.smart.domain.analysis.technical.sma;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
 import com.stanislav.smart.domain.entities.TimeFrame;

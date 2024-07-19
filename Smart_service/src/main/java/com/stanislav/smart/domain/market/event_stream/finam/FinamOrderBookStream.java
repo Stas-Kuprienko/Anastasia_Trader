@@ -1,7 +1,7 @@
 package com.stanislav.smart.domain.market.event_stream.finam;
 
-import com.stanislav.smart.domain.market.event_stream.EventStream;
-import com.stanislav.smart.domain.market.event_stream.EventStreamListener;
+import com.stanislav.smart.domain.market.event_stream.OrderBookStream;
+import com.stanislav.smart.domain.market.event_stream.OrderBookStreamListener;
 import com.stanislav.smart.service.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +13,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service("orderBookStream")
-public class FinamOrderBookStream implements EventStream {
+public class FinamOrderBookStream implements OrderBookStream {
 
     private static final String ORDER_BOOK_REQUEST_ID = "32ef5786-e887";
 
     private final ScheduledExecutorService scheduler;
     private final EventsGrpc.EventsStub stub;
-    private final ConcurrentHashMap<Smart.Security, OrderBookStreamListener> eventStreamMap;
+    private final ConcurrentHashMap<Smart.Security, OrderBookRpcThreadListener> eventStreamMap;
 
     @Autowired
     public FinamOrderBookStream(ScheduledExecutorService scheduler, GRpcClient rpcClient) {
@@ -30,33 +30,34 @@ public class FinamOrderBookStream implements EventStream {
 
 
     @Override
-    public EventStreamListener subscribe(Smart.Security security) {
+    public OrderBookStreamListener subscribe(Smart.Security security) {
         var subscribe = buildSubscribeRequest(security);
         var unsubscribe = buildUnsubscribeRequest(security);
-        OrderBookStreamListener eventStreamListener = new OrderBookStreamListener(subscribe, unsubscribe, stub);
-        var listener = scheduler.scheduleAtFixedRate(
-                        eventStreamListener.initStreamThread(), 1, 1, TimeUnit.SECONDS);
+        OrderBookRpcThreadListener listener = new OrderBookRpcThreadListener(subscribe, unsubscribe, stub);
+        var scheduledFuture = scheduler.scheduleAtFixedRate(
+                        listener.initStreamThread(), 1, 1, TimeUnit.SECONDS);
 
-        eventStreamListener.setScheduledFuture(listener);
-        eventStreamMap.put(security, eventStreamListener);
-        return eventStreamListener;
+        listener.setScheduledFuture(scheduledFuture);
+        eventStreamMap.put(security, listener);
+        return listener;
     }
 
     @Override
-    public void unsubscribe(EventStreamListener listener) {
+    public void unsubscribe(OrderBookStreamListener listener) {
         unsubscribe(listener, false);
     }
 
     @Override
-    public void unsubscribe(EventStreamListener listener, boolean isForced) {
-        if (isForced || !(listener.isUsing())) {
+    public void unsubscribe(OrderBookStreamListener orderBookStreamListener, boolean isForced) {
+        OrderBookRpcThreadListener listener = (OrderBookRpcThreadListener) orderBookStreamListener;
+        if (isForced || !(listener.isUseless())) {
             listener.getScheduledFuture().cancel(true);
-            listener.stopStream();
+            listener.stop();
         }
     }
 
     @Override
-    public OrderBookStreamListener getEventStreamListener(Smart.Security security) {
+    public OrderBookRpcThreadListener getListener(Smart.Security security) {
         return eventStreamMap.get(security);
     }
 
