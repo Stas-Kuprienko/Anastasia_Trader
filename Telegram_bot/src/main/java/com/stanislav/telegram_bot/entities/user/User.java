@@ -1,40 +1,24 @@
 package com.stanislav.telegram_bot.entities.user;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "user")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Embeddable
 public final class User {
 
-    @Id
-    @Column(name = "id")
-    private Long chatId;
-
-    private Long dbId;
-
-    @Column(unique = true)
+    private Long id;
     private String login;
-
     private String name;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Transient
     private List<Account> accounts = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    private ContextState contextState;
-
-
-    public User(Long chatId, Long dbId, String login, String name) {
-        this.chatId = chatId;
-        this.dbId = dbId;
+    public User(Long id, String login, String name) {
+        this.id = id;
         this.login = login;
         this.name = name;
     }
@@ -42,20 +26,12 @@ public final class User {
     public User() {}
 
 
-    public Long getChatId() {
-        return chatId;
+    public Long getId() {
+        return id;
     }
 
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
-    }
-
-    public Long getDbId() {
-        return dbId;
-    }
-
-    public void setDbId(Long dbId) {
-        this.dbId = dbId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -86,30 +62,22 @@ public final class User {
         this.accounts.add(account);
     }
 
-    public ContextState getContextState() {
-        return contextState;
-    }
-
-    public void setContextState(ContextState contextState) {
-        this.contextState = contextState;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(chatId, user.chatId);
+        return Objects.equals(id, user.id) && Objects.equals(login, user.login);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(chatId);
+        return Objects.hash(id, login);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "chatId=" + chatId +
+                "id=" + id +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
                 ", accounts=" + accounts +

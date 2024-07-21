@@ -6,6 +6,7 @@ import com.stanislav.telegram_bot.domain.service.UserDataService;
 import com.stanislav.telegram_bot.domain.session.SessionContext;
 import com.stanislav.telegram_bot.entities.user.ContextState;
 import com.stanislav.telegram_bot.entities.user.User;
+import com.stanislav.telegram_bot.entities.user.UserChat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -30,8 +31,8 @@ public class ResetResponseHandler implements ResponseHandler {
     public BotApiMethodMessage handle(SessionContext context, Message message) {
         context.reset();
         Long chatId = message.getChatId();
-        User user = userDataService.findById(chatId).orElseThrow();
-        user.setContextState(ContextState.CLEAR);
+        UserChat userChat = userDataService.findByChatId(chatId);
+        userChat.setContextState(ContextState.CLEAR);
         String text = messageSource.getMessage(
                 Commands.RESET.pattern, null, Locale.of(message.getFrom().getLanguageCode()));
         SendMessage response = new SendMessage();

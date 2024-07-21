@@ -29,7 +29,7 @@ public class KeyboardKit {
 
         for (Account a : accounts) {
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(a.getBroker() + '\n' + a.getClientId());
+            button.setText(a.getBroker().getTitle() + ':' + a.getClientId());
             button.setCallbackData(a.getClientId());
             buttons.add(List.of(button));
         }

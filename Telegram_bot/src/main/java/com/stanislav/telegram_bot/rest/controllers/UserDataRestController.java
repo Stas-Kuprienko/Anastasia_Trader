@@ -2,17 +2,17 @@ package com.stanislav.telegram_bot.rest.controllers;
 
 import com.stanislav.telegram_bot.domain.TelegramBotController;
 import com.stanislav.telegram_bot.domain.service.UserDataService;
+import com.stanislav.telegram_bot.entities.user.ContextState;
 import com.stanislav.telegram_bot.entities.user.User;
+import com.stanislav.telegram_bot.entities.user.UserChat;
+import com.stanislav.telegram_bot.exceptions.NotFoundException;
 import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import java.util.Locale;
 
 @RestController
@@ -20,63 +20,36 @@ import java.util.Locale;
 public class UserDataRestController {
 
     private final UserDataService userDataService;
-    private final RestTemplate restTemplate;
-    private final String resource;
     private final TelegramBotController controller;
     private final MessageSource messageSource;
 
 
     @Autowired
-    public UserDataRestController(UserDataService userDataService, RestTemplate restTemplate, TelegramBotController controller,
-                                  @Value("${api.resource}") String resource, MessageSource messageSource) {
+    public UserDataRestController(UserDataService userDataService, TelegramBotController controller, MessageSource messageSource) {
         this.userDataService = userDataService;
-        this.restTemplate = restTemplate;
-        this.resource = resource;
         this.controller = controller;
         this.messageSource = messageSource;
     }
 
 
     @PostMapping("/register")
-    public boolean register(@RequestParam("login") String login,
-                            @RequestParam("chatId") long chatId,
-                            @RequestParam("id") long id,
-                            @RequestParam("name") String name,
-                            @RequestParam("locale") String locale) {
-
+    public boolean register(@RequestParam("chatId") long chatId,
+                            @RequestParam("locale") String locale,
+                            @RequestBody User user) {
         try {
-            User user = new User(chatId, id, login, name);
-//            String uri = resource + Mapping.ACCOUNTS.v + "?login=" + login;
-//            ResponseEntity<Account[]> response =
-//                    restTemplate.getForEntity(uri, Account[].class);
-//            List<Account> accounts;
-//            if (response.getBody() != null) {
-//                accounts = List.of(response.getBody());
-//                user.setAccounts(accounts);
-//            }
+            UserChat userChat = new UserChat(chatId, user, ContextState.CLEAR);
+            userDataService.save(userChat);
             String messageToUser = messageSource.getMessage("signed-up", null, Locale.of(locale));
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
             sendMessage.setText(messageToUser);
             controller.execute(sendMessage);
-            userDataService.save(user);
             return true;
-        } catch (RestClientException | NullPointerException | PersistenceException e) {
+        } catch (RestClientException | PersistenceException | NotFoundException e) {
             //TODO logs
             return false;
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-
-    enum Mapping {
-        ACCOUNTS("/accounts");
-
-        final String v;
-
-        Mapping(String v) {
-            this.v = v;
         }
     }
 }

@@ -1,13 +1,14 @@
 package com.stanislav.telegram_bot.datasource.repositories;
 
 import com.stanislav.telegram_bot.entities.user.User;
+import com.stanislav.telegram_bot.entities.user.UserChat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserDao extends JpaRepository<User, Long> {
+public interface UserChatRepository extends JpaRepository<UserChat, Long> {
 
-    Optional<User> findByLogin(String login);
+    Optional<UserChat> findById(long userId);
 }

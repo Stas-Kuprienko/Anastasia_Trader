@@ -34,7 +34,6 @@ public final class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     private Broker broker;
 
-    @JsonIgnore
     private String token;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.REFRESH)

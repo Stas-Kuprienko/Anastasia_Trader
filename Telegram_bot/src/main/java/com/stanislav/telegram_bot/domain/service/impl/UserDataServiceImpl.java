@@ -1,42 +1,66 @@
 package com.stanislav.telegram_bot.domain.service.impl;
 
-import com.stanislav.telegram_bot.datasource.repositories.UserDao;
+import com.stanislav.telegram_bot.datasource.repositories.UserChatRepository;
 import com.stanislav.telegram_bot.domain.service.UserDataService;
 import com.stanislav.telegram_bot.entities.user.User;
+import com.stanislav.telegram_bot.entities.user.UserChat;
+import com.stanislav.telegram_bot.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service("userDataService")
 public class UserDataServiceImpl implements UserDataService {
 
-    private final UserDao dao;
+    //TODO TEMPORARY SOLUTION, NEED TO REWORK BY REDIS CACHE
+    private final Cache cache;
 
+    private final UserChatRepository userChatRepository;
 
     @Autowired
-    public UserDataServiceImpl(UserDao dao) {
-        this.dao = dao;
+    public UserDataServiceImpl(Cache cache, UserChatRepository userChatRepository) {
+        this.cache = cache;
+        this.userChatRepository = userChatRepository;
     }
 
 
     @Override
-    public User save(User user) {
-        user = dao.save(user);
-        return user;
+    public boolean isRegistered(long chatId) {
+        Optional<UserChat> userChat = cache.get(chatId);
+        if (userChat.isEmpty()) {
+            userChat = userChatRepository.findById(chatId);
+        }
+        return userChat.isPresent();
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return dao.findById(id);
+    public UserChat findByChatId(Long chatId) {
+        Optional<UserChat> userChat = cache.get(chatId);
+        if (userChat.isEmpty()) {
+            userChat = userChatRepository.findById(chatId);
+            if (userChat.isEmpty()) {
+                throw new NotFoundException("userChat " + chatId + " is not found");
+            }
+        }
+        return userChat.get();
     }
 
     @Override
-    public Optional<User> findByLogin(String login) {
-        return dao.findByLogin(login);
+    public UserChat findByUser(User user) {
+        Optional<UserChat> userChat = cache.get(user);
+        if (userChat.isEmpty()) {
+            userChat = userChatRepository.findById(user.getId());
+            if (userChat.isEmpty()) {
+                throw new NotFoundException("userChat " + user + " is not found");
+            }
+        }
+        return userChat.get();
     }
 
     @Override
-    public boolean update(User user) {
-        return false;
+    public void save(UserChat userChat) {
+        userChatRepository.save(userChat);
+        cache.put(userChat);
     }
 }

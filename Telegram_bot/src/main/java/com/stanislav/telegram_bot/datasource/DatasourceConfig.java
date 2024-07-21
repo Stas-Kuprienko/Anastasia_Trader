@@ -6,16 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +25,6 @@ import java.util.Properties;
 public class DatasourceConfig {
 
     private final Properties properties;
-
 
     public DatasourceConfig(@Value("${database.properties.file}") String fileName) {
         properties = loadDatabaseProperties(fileName);
@@ -49,25 +45,20 @@ public class DatasourceConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Autowired DataSource dataSource) {
 
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setDatabase(Database.MYSQL);
 
         entityManagerFactory.setDataSource(dataSource);
         entityManagerFactory.setPackagesToScan("com.stanislav.telegram_bot.entities");
         entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
+        entityManagerFactory.setPersistenceProvider(vendorAdapter.getPersistenceProvider());
         entityManagerFactory.setJpaProperties(properties);
+
         return entityManagerFactory;
     }
 
     @Bean
     public PlatformTransactionManager transactionManager(@Autowired EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
-    }
-
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-        return new PersistenceExceptionTranslationPostProcessor();
     }
 
     @Bean

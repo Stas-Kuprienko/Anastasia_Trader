@@ -3,7 +3,6 @@ package com.stanislav.telegram_bot.domain.handler.message;
 import com.stanislav.telegram_bot.domain.elements.KeyboardKit;
 import com.stanislav.telegram_bot.domain.handler.Commands;
 import com.stanislav.telegram_bot.domain.handler.ResponseHandler;
-import com.stanislav.telegram_bot.domain.service.UserDataService;
 import com.stanislav.telegram_bot.domain.session.SessionContext;
 import io.jsonwebtoken.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +21,14 @@ public class StartResponseHandler implements ResponseHandler {
     private static final String CHAT_ID = "chatId";
     private final String resource;
     private final MessageSource messageSource;
-    private final UserDataService userDataService;
     private final KeyboardKit keyboardKit;
     private final JwtBuilder jwtBuilder;
 
 
     @Autowired
-    public StartResponseHandler(MessageSource messageSource, UserDataService userDataService,
-                                KeyboardKit keyboardKit, JwtBuilder jwtBuilder,
-                                @Value("${api.resource}") String resource) {
+    public StartResponseHandler(@Value("${api.resource}") String resource,
+                                MessageSource messageSource, KeyboardKit keyboardKit, JwtBuilder jwtBuilder) {
         this.messageSource = messageSource;
-        this.userDataService = userDataService;
         this.keyboardKit = keyboardKit;
         this.jwtBuilder = jwtBuilder;
         this.resource = resource;
@@ -46,7 +42,7 @@ public class StartResponseHandler implements ResponseHandler {
         response.setChatId(chatId);
         String lang = message.getFrom().getLanguageCode().toUpperCase();
         String name = message.getFrom().getFirstName();
-        if (context == null || userDataService.findById(chatId).isEmpty()) {
+        if (context == null) {
             String chatIdToken = jwtBuilder.claim("chatId", chatId).compact();
             String link = resource + AUTH + '?' +
                     CHAT_ID + '=' + chatId + '&' + 't' + '=' + chatIdToken;

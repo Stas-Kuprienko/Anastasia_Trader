@@ -1,46 +1,32 @@
 package com.stanislav.telegram_bot.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+import com.stanislav.telegram_bot.entities.Broker;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 
-@Entity
-@Table(name = "account")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public final class Account implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String clientId;
 
-    @ManyToOne
-    @JoinColumn(name = "user", nullable = false)
     @JsonIgnore
     private User user;
 
-    private String broker;
+    private Broker broker;
 
     private String token;
 
-    @Transient
-    private BigDecimal balance;
+    private RiskProfile riskProfile;
 
-
-    public Account(Long id, String clientId, User user, String broker, String token, BigDecimal balance) {
+    public Account(long id, String clientId, User user, Broker broker, String token, RiskProfile riskProfile) {
         this.id = id;
         this.clientId = clientId;
         this.user = user;
         this.broker = broker;
         this.token = token;
-        this.balance = balance;
+        this.riskProfile = riskProfile;
     }
 
     public Account() {}
@@ -70,11 +56,11 @@ public final class Account implements Serializable {
         this.user = user;
     }
 
-    public String getBroker() {
+    public Broker getBroker() {
         return broker;
     }
 
-    public void setBroker(String broker) {
+    public void setBroker(Broker broker) {
         this.broker = broker;
     }
 
@@ -86,24 +72,26 @@ public final class Account implements Serializable {
         this.token = token;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public RiskProfile getRiskProfile() {
+        return riskProfile;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setRiskProfile(RiskProfile riskProfile) {
+        this.riskProfile = riskProfile;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Account account)) return false;
-        return Objects.equals(id, account.id);
+        return Objects.equals(clientId, account.clientId) &&
+                Objects.equals(user, account.user) &&
+                Objects.equals(broker, account.broker);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(clientId, user, broker);
     }
 
     @Override
@@ -111,8 +99,8 @@ public final class Account implements Serializable {
         return "Account{" +
                 "id=" + id +
                 ", clientId='" + clientId + '\'' +
+                ", userId=" + user.getId() +
                 ", broker='" + broker + '\'' +
-                ", balance=" + balance +
                 '}';
     }
 }

@@ -47,7 +47,7 @@ public class CommandDispatcher {
         Long chatId = message.getChatId();
         if (message.hasText()) {
             String text = message.getText();
-            if (userDataService.findById(chatId).isEmpty() && !text.equals("/start")) {
+            if (!userDataService.isRegistered(chatId) && !text.equals("/start")) {
                 return handlerMap.get("/start").handle(null, message);
             }
             ResponseHandler handler = handlerMap.get(text);

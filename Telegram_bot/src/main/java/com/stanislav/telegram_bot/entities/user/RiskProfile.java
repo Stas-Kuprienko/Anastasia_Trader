@@ -2,22 +2,16 @@
  * Stanislav Kuprienko *** Omsk, Russia
  */
 
-package com.stanislav.trade.entities.user;
+package com.stanislav.telegram_bot.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+
 import java.util.Objects;
 
-@Entity
-@Table(name = "risk_profile")
 public class RiskProfile {
 
-    @Id
     private Long accountId;
 
-    @MapsId
-    @OneToOne
-    @JoinColumn(name = "account", nullable = false)
     @JsonIgnore
     private Account account;
 
@@ -29,7 +23,6 @@ public class RiskProfile {
 
     private byte StockInAccountPercentage;
 
-    @Enumerated(EnumType.STRING)
     private RiskType riskType;
 
 

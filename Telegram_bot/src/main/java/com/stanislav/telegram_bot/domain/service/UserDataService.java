@@ -1,16 +1,14 @@
 package com.stanislav.telegram_bot.domain.service;
 
 import com.stanislav.telegram_bot.entities.user.User;
-
-import java.util.Optional;
+import com.stanislav.telegram_bot.entities.user.UserChat;
 
 public interface UserDataService {
+    boolean isRegistered(long chatId);
 
-    User save(User user);
+    UserChat findByChatId(Long chatId);
 
-    Optional<User> findById(Long id);
+    UserChat findByUser(User user);
 
-    Optional<User> findByLogin(String login);
-
-    boolean update(User user);
+    void save(UserChat userChat);
 }
