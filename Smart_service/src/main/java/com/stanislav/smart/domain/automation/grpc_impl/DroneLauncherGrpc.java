@@ -4,30 +4,29 @@ import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.DroneLauncher;
 import com.stanislav.smart.domain.automation.TradeStrategy;
 import com.stanislav.smart.domain.automation.strategy_suppliers.StrategiesDispatcher;
-import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.entities.TimeFrame;
 import com.stanislav.smart.domain.trade.TradeDealingManager;
 import io.grpc.stub.StreamObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import stanislav.anastasia.trade.Smart;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
 
 @Component("droneLauncher")
 public class DroneLauncherGrpc implements DroneLauncher {
 
     private final TradeDealingManager dealingManager;
     private final StrategiesDispatcher strategiesDispatcher;
-    private final ScheduledExecutorService scheduledExecutor;
+    private final ExecutorService executorService;
     private final ConcurrentHashMap<DroneCard, Drone> launched;
 
     @Autowired
     public DroneLauncherGrpc(TradeDealingManager dealingManager,
-                             ScheduledExecutorService scheduledExecutor,
+                             ExecutorService executorService,
                              StrategiesDispatcher strategiesDispatcher) {
         this.dealingManager = dealingManager;
-        this.scheduledExecutor = scheduledExecutor;
+        this.executorService = executorService;
         this.strategiesDispatcher = strategiesDispatcher;
         launched = new ConcurrentHashMap<>();
     }
@@ -37,14 +36,14 @@ public class DroneLauncherGrpc implements DroneLauncher {
     public void launchDrone(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> response) {
         DroneCard card = new DroneCard(request.getSecurity(), request.getStrategy());
         Drone drone = launched.get(card);
-        if (drone == null || ((GrpcFollowerDrone) drone).getScheduledFuture().isDone()) {
+        if (drone == null || ((GrpcFollowerDrone) drone).getFuture().isDone()) {
             TimeFrame.Scope timeFrame = TimeFrame.parse(request.getStrategy().getTimeFrame());
             TradeStrategy strategy = strategiesDispatcher
                     .getStrategySupplier(request.getStrategy().getName())
                     .supply(request.getSecurity(), timeFrame);
             drone = new GrpcFollowerDrone(dealingManager, strategy, request.getSecurity(), response);
-            var scheduledFuture = scheduledExecutor.schedule(drone, 1, TimeUnit.SECONDS);
-            ((GrpcFollowerDrone) drone).setScheduledFuture(scheduledFuture);
+            var future = executorService.submit(drone);
+            ((GrpcFollowerDrone) drone).setFuture(future);
             launched.put(card, drone);
         }
         drone.addAccount(request.getAccount());

@@ -9,9 +9,9 @@
 package com.stanislav.smart.domain.analysis.technical.sma;
 
 import com.stanislav.smart.domain.analysis.AnalysisAideSupplier;
-import com.stanislav.smart.domain.entities.Board;
-import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
+import com.stanislav.smart.entities.Board;
+import com.stanislav.smart.entities.TimeFrame;
+import com.stanislav.smart.entities.candles.PriceCandleBox;
 import com.stanislav.smart.domain.market.MarketDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

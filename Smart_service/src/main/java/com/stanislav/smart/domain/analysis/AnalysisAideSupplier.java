@@ -8,9 +8,8 @@
 
 package com.stanislav.smart.domain.analysis;
 
-import com.stanislav.smart.domain.analysis.AnalysisAide;
-import com.stanislav.smart.domain.entities.Board;
-import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.entities.Board;
+import com.stanislav.smart.entities.TimeFrame;
 
 public interface AnalysisAideSupplier<AA extends AnalysisAide> {
 

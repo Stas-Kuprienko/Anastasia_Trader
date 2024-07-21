@@ -5,8 +5,8 @@
 package com.stanislav.smart.domain.analysis.technical.support_resistance;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
-import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
+import com.stanislav.smart.entities.TimeFrame;
+import com.stanislav.smart.entities.candles.PriceCandleBox;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package com.stanislav.smart.domain.trade.utils;
 
-import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
+import com.stanislav.smart.entities.criteria.NewOrderCriteria;
 import com.stanislav.smart.domain.trade.TradingService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

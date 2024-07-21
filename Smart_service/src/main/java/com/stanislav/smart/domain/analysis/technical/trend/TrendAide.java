@@ -9,7 +9,7 @@
 package com.stanislav.smart.domain.analysis.technical.trend;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
-import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
+import com.stanislav.smart.entities.candles.PriceCandleBox;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

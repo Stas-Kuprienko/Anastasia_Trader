@@ -9,5 +9,4 @@ public class AnastasiaSmartServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AnastasiaSmartServiceApplication.class, args);
 	}
-
 }

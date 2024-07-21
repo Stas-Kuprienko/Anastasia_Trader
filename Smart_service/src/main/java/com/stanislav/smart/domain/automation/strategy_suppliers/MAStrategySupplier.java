@@ -4,8 +4,8 @@ import com.stanislav.smart.domain.analysis.technical.sma.SimpleMovingAverageSupp
 import com.stanislav.smart.domain.analysis.technical.sma.SimpleMovingAverageAide;
 import com.stanislav.smart.domain.automation.TradeStrategySupplier;
 import com.stanislav.smart.domain.automation.strategies.MovingAverageStrategy;
-import com.stanislav.smart.domain.entities.Board;
-import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.entities.Board;
+import com.stanislav.smart.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.OrderBookStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

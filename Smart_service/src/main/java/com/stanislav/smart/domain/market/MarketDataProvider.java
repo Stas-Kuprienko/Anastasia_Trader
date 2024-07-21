@@ -1,10 +1,10 @@
 package com.stanislav.smart.domain.market;
 
-import com.stanislav.smart.domain.entities.Board;
-import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.DayCandleBox;
-import com.stanislav.smart.domain.entities.candles.IntraDayCandleBox;
-import com.stanislav.smart.domain.entities.candles.PriceCandleBox;
+import com.stanislav.smart.entities.Board;
+import com.stanislav.smart.entities.TimeFrame;
+import com.stanislav.smart.entities.candles.DayCandleBox;
+import com.stanislav.smart.entities.candles.IntraDayCandleBox;
+import com.stanislav.smart.entities.candles.PriceCandleBox;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

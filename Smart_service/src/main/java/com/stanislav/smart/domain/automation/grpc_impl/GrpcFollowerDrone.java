@@ -2,17 +2,17 @@ package com.stanislav.smart.domain.automation.grpc_impl;
 
 import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.TradeStrategy;
-import com.stanislav.smart.domain.entities.Board;
-import com.stanislav.smart.domain.entities.Direction;
-import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
+import com.stanislav.smart.entities.Board;
+import com.stanislav.smart.entities.Direction;
+import com.stanislav.smart.entities.TimeFrame;
+import com.stanislav.smart.entities.criteria.NewOrderCriteria;
 import com.stanislav.smart.domain.trade.TradeDealingManager;
 import io.grpc.stub.StreamObserver;
 import stanislav.anastasia.trade.Smart;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Future;
 
 public class GrpcFollowerDrone implements Drone {
 
@@ -21,7 +21,7 @@ public class GrpcFollowerDrone implements Drone {
     private final Smart.Security security;
     private final StreamObserver<Smart.SubscribeTradeResponse> responseObserver;
     private final Set<Smart.Account> accounts;
-    private ScheduledFuture<?> scheduledFuture;
+    private Future<?> future;
 
     private boolean isActive;
 
@@ -115,8 +115,8 @@ public class GrpcFollowerDrone implements Drone {
 
     @Override
     public boolean stop() {
-        if (!scheduledFuture.isDone()) {
-            scheduledFuture.cancel(true);
+        if (!future.isDone()) {
+            future.cancel(true);
         }
         strategy.removeConsumer(this);
         if (strategy.isUseless()) {
@@ -126,12 +126,12 @@ public class GrpcFollowerDrone implements Drone {
         return true;
     }
 
-    public ScheduledFuture<?> getScheduledFuture() {
-        return scheduledFuture;
+    public Future<?> getFuture() {
+        return future;
     }
 
-    public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
-        this.scheduledFuture = scheduledFuture;
+    public void setFuture(Future<?> future) {
+        this.future = future;
     }
 
 

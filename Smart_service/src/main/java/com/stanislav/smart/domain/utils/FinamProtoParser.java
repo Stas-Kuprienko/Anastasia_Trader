@@ -1,6 +1,6 @@
 package com.stanislav.smart.domain.utils;
 
-import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.entities.TimeFrame;
 import proto.tradeapi.v1.Candles;
 
 public final class FinamProtoParser {

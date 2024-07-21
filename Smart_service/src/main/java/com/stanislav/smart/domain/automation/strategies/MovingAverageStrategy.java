@@ -7,8 +7,8 @@ package com.stanislav.smart.domain.automation.strategies;
 import com.stanislav.smart.domain.analysis.technical.sma.SimpleMovingAverageAide;
 import com.stanislav.smart.domain.automation.Drone;
 import com.stanislav.smart.domain.automation.TradeStrategy;
-import com.stanislav.smart.domain.entities.Direction;
-import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.entities.Direction;
+import com.stanislav.smart.entities.TimeFrame;
 import com.stanislav.smart.domain.market.event_stream.OrderBookStreamListener;
 
 import java.util.HashSet;

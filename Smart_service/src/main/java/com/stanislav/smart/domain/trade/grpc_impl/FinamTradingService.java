@@ -1,13 +1,13 @@
 package com.stanislav.smart.domain.trade.grpc_impl;
 
 import com.google.protobuf.DoubleValue;
-import com.stanislav.smart.domain.entities.Broker;
-import com.stanislav.smart.domain.entities.Direction;
-import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
+import com.stanislav.smart.entities.Broker;
+import com.stanislav.smart.entities.Direction;
+import com.stanislav.smart.entities.criteria.NewOrderCriteria;
 import com.stanislav.smart.domain.trade.TradingService;
 import com.stanislav.smart.domain.trade.grpc_impl.finam.NewOrderResponse;
-import com.stanislav.smart.service.grpc_impl.GRpcClient;
-import com.stanislav.smart.service.grpc_impl.security.AuthCallCredential;
+import com.stanislav.smart.configuration.grpc_impl.GRpcClient;
+import com.stanislav.smart.configuration.grpc_impl.security.AuthCallCredential;
 import grpc.tradeapi.v1.OrdersGrpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

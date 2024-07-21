@@ -5,8 +5,8 @@
 package com.stanislav.smart.domain.analysis.technical.sma;
 
 import com.stanislav.smart.domain.analysis.AnalysisAide;
-import com.stanislav.smart.domain.entities.TimeFrame;
-import com.stanislav.smart.domain.entities.candles.PriceCandle;
+import com.stanislav.smart.entities.TimeFrame;
+import com.stanislav.smart.entities.candles.PriceCandle;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

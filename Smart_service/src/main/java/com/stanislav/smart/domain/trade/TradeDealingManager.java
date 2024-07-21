@@ -1,7 +1,7 @@
 package com.stanislav.smart.domain.trade;
 
-import com.stanislav.smart.domain.entities.Broker;
-import com.stanislav.smart.domain.entities.criteria.NewOrderCriteria;
+import com.stanislav.smart.entities.Broker;
+import com.stanislav.smart.entities.criteria.NewOrderCriteria;
 import com.stanislav.smart.domain.trade.utils.AsyncTradeOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.stanislav.smart.domain.automation;
 
-import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.entities.TimeFrame;
 import stanislav.anastasia.trade.Smart;
 
 public interface TradeStrategySupplier<TS extends TradeStrategy> {

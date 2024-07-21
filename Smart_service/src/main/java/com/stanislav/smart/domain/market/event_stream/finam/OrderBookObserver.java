@@ -1,15 +1,14 @@
 package com.stanislav.smart.domain.market.event_stream.finam;
 
-import com.stanislav.smart.domain.exceptions.EventStreamException;
+import com.stanislav.smart.exceptions.EventStreamException;
 import io.grpc.stub.StreamObserver;
 import proto.tradeapi.v1.Events;
-
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Future;
 
 class OrderBookObserver implements StreamObserver<Events.Event> {
 
     private final FinamOrderBookCollector collector;
-    private ScheduledFuture<?> scheduledFuture;
+    private Future<?> future;
 
     public OrderBookObserver(FinamOrderBookCollector collector) {
         this.collector = collector;
@@ -27,20 +26,20 @@ class OrderBookObserver implements StreamObserver<Events.Event> {
 
     @Override
     public void onError(Throwable throwable) {
-        if (scheduledFuture != null && !scheduledFuture.isDone()) {
-            scheduledFuture.cancel(true);
+        if (future != null && !future.isDone()) {
+            future.cancel(true);
         }
         //TODO log
     }
 
     @Override
     public void onCompleted() {
-        if (scheduledFuture != null && !scheduledFuture.isDone()) {
-        scheduledFuture.cancel(true);
+        if (future != null && !future.isDone()) {
+        future.cancel(true);
         }
     }
 
-    public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
-        this.scheduledFuture = scheduledFuture;
+    public void setFuture(Future<?> future) {
+        this.future = future;
     }
 }

@@ -5,7 +5,7 @@ import grpc.tradeapi.v1.EventsGrpc;
 import proto.tradeapi.v1.Events;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Future;
 
 public class OrderBookRpcThreadListener implements OrderBookStreamListener {
 
@@ -15,7 +15,7 @@ public class OrderBookRpcThreadListener implements OrderBookStreamListener {
     private final EventsGrpc.EventsStub stub;
     private final OrderBookObserver observer;
     private final FinamOrderBookCollector collector;
-    private ScheduledFuture<?> scheduledFuture;
+    private Future<?> future;
 
 
     public OrderBookRpcThreadListener(Events.SubscriptionRequest subscribe, Events.SubscriptionRequest unsubscribe, EventsGrpc.EventsStub stub) {
@@ -53,8 +53,8 @@ public class OrderBookRpcThreadListener implements OrderBookStreamListener {
             stub.getEvents(observer).onCompleted();
             stub.getEvents(observer).onNext(unsubscribeRequest);
             stub.getEvents(observer).onCompleted();
-            if (!scheduledFuture.isDone()) {
-                scheduledFuture.cancel(true);
+            if (!future.isDone()) {
+                future.cancel(true);
             }
             return true;
         } else {
@@ -66,13 +66,13 @@ public class OrderBookRpcThreadListener implements OrderBookStreamListener {
         return new StreamObserveThread();
     }
 
-    public ScheduledFuture<?> getScheduledFuture() {
-        return scheduledFuture;
+    public Future<?> getFuture() {
+        return future;
     }
 
-    public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
-        this.scheduledFuture = scheduledFuture;
-        observer.setScheduledFuture(scheduledFuture);
+    public void setFuture(Future<?> future) {
+        this.future = future;
+        observer.setFuture(future);
     }
 
 

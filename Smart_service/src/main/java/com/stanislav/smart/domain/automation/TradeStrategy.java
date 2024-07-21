@@ -8,9 +8,9 @@
 
 package com.stanislav.smart.domain.automation;
 
-import com.stanislav.smart.domain.entities.Direction;
-import com.stanislav.smart.domain.entities.Stoppable;
-import com.stanislav.smart.domain.entities.TimeFrame;
+import com.stanislav.smart.entities.Direction;
+import com.stanislav.smart.entities.Stoppable;
+import com.stanislav.smart.entities.TimeFrame;
 
 public interface TradeStrategy extends Stoppable {
 

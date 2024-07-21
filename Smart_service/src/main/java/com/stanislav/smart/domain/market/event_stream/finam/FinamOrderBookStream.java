@@ -2,28 +2,27 @@ package com.stanislav.smart.domain.market.event_stream.finam;
 
 import com.stanislav.smart.domain.market.event_stream.OrderBookStream;
 import com.stanislav.smart.domain.market.event_stream.OrderBookStreamListener;
-import com.stanislav.smart.service.grpc_impl.GRpcClient;
+import com.stanislav.smart.configuration.grpc_impl.GRpcClient;
 import grpc.tradeapi.v1.EventsGrpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proto.tradeapi.v1.Events;
 import stanislav.anastasia.trade.Smart;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
 
 @Service("orderBookStream")
 public class FinamOrderBookStream implements OrderBookStream {
 
     private static final String ORDER_BOOK_REQUEST_ID = "32ef5786-e887";
 
-    private final ScheduledExecutorService scheduler;
+    private final ExecutorService executorService;
     private final EventsGrpc.EventsStub stub;
     private final ConcurrentHashMap<Smart.Security, OrderBookRpcThreadListener> eventStreamMap;
 
     @Autowired
-    public FinamOrderBookStream(ScheduledExecutorService scheduler, GRpcClient rpcClient) {
-        this.scheduler = scheduler;
+    public FinamOrderBookStream(ExecutorService executorService, GRpcClient rpcClient) {
+        this.executorService = executorService;
         this.stub = EventsGrpc.newStub(rpcClient.getChannel()).withCallCredentials(rpcClient.getAuthenticator());
         this.eventStreamMap = new ConcurrentHashMap<>();
     }
@@ -34,10 +33,8 @@ public class FinamOrderBookStream implements OrderBookStream {
         var subscribe = buildSubscribeRequest(security);
         var unsubscribe = buildUnsubscribeRequest(security);
         OrderBookRpcThreadListener listener = new OrderBookRpcThreadListener(subscribe, unsubscribe, stub);
-        var scheduledFuture = scheduler.scheduleAtFixedRate(
-                        listener.initStreamThread(), 1, 1, TimeUnit.SECONDS);
-
-        listener.setScheduledFuture(scheduledFuture);
+        var future = executorService.submit(listener.initStreamThread());
+        listener.setFuture(future);
         eventStreamMap.put(security, listener);
         return listener;
     }
@@ -51,7 +48,7 @@ public class FinamOrderBookStream implements OrderBookStream {
     public void unsubscribe(OrderBookStreamListener orderBookStreamListener, boolean isForced) {
         OrderBookRpcThreadListener listener = (OrderBookRpcThreadListener) orderBookStreamListener;
         if (isForced || !(listener.isUseless())) {
-            listener.getScheduledFuture().cancel(true);
+            listener.getFuture().cancel(true);
             listener.stop();
         }
     }

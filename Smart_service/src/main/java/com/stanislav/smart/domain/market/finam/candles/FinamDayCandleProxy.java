@@ -1,7 +1,7 @@
 package com.stanislav.smart.domain.market.finam.candles;
 
 import com.google.type.Date;
-import com.stanislav.smart.domain.entities.candles.DayCandle;
+import com.stanislav.smart.entities.candles.DayCandle;
 import proto.tradeapi.v1.Candles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
