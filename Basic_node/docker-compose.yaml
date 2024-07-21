@@ -17,7 +17,17 @@ services:
     ports:
       - '8080:8080'
 
-#  db:
+  smart:
+    build:
+      context: ../Smart_service/.
+      dockerfile: ../Smart_service/Dockerfile
+    container_name: smart_service
+    networks:
+      - app-networks
+    ports:
+      - '9090:9090'
+
+  #  db:
 #    image: mysql:8.0.38
 #    container_name: mysql
 #    networks:

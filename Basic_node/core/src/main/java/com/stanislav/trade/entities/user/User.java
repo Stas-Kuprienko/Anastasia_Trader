@@ -4,6 +4,7 @@
 
 package com.stanislav.trade.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -27,6 +28,7 @@ public final class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String login;
 
+    @JsonIgnore
     private String password;
 
     @Enumerated

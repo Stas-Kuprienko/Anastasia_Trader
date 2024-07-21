@@ -21,7 +21,6 @@ public final class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(nullable = false)
@@ -35,10 +34,10 @@ public final class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     private Broker broker;
 
+    @JsonIgnore
     private String token;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REFRESH)
-    @JsonIgnore
+    @OneToOne(mappedBy = "account", cascade = CascadeType.REFRESH)
     private RiskProfile riskProfile;
 
 
