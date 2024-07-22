@@ -1,22 +1,20 @@
 package com.stanislav.telegram_bot.domain.session;
 
-import org.springframework.beans.factory.support.AbstractBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.stanislav.telegram_bot.entities.user.ContextState;
+
 import java.util.HashMap;
 import java.util.Optional;
 
-@Component
-@Scope(AbstractBeanFactory.SCOPE_PROTOTYPE)
 public class SessionContext {
 
     private final HashMap<Attribute, Object> attributes;
     private long chatId;
+    private ContextState contextState;
     private long lastActivity;
 
 
     public SessionContext() {
-        this.attributes = new HashMap<>(Attribute.values().length);
+        this.attributes = new HashMap<>(Attribute.values().length << 1);
     }
 
 
@@ -50,6 +48,14 @@ public class SessionContext {
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public ContextState getContextState() {
+        return contextState;
+    }
+
+    public void setContextState(ContextState contextState) {
+        this.contextState = contextState;
     }
 
     public long getLastActivity() {

@@ -4,34 +4,26 @@
 
 package com.stanislav.telegram_bot.domain.session;
 
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import com.stanislav.telegram_bot.domain.service.UserDataService;
+import com.stanislav.telegram_bot.entities.user.UserChat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @Service
-@EnableScheduling
 public class SessionContextService {
 
+    //TODO REMAKE BY REDIS CACHE
     private final ConcurrentHashMap<Long, SessionContext> storage;
-    private static final long lifeCycle = TimeUnit.DAYS.toMillis(1);
 
-    public SessionContextService() {
+    private final UserDataService userDataService;
+
+    @Autowired
+    public SessionContextService(UserDataService userDataService) {
+        this.userDataService = userDataService;
         this.storage = new ConcurrentHashMap<>();
     }
 
-    //TODO !!!!!
-
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.HOURS)
-    public void startMonitor() {
-        long currentTime = System.currentTimeMillis();
-        for (SessionContext s : storage.values()) {
-            if ((currentTime - s.getLastActivity()) < SessionContextService.lifeCycle) {
-                storage.remove(s.getChatId());
-            }
-        }
-    }
 
     public SessionContext get(long chatId) {
         SessionContext context = storage.get(chatId);
@@ -42,8 +34,10 @@ public class SessionContextService {
     }
 
     public SessionContext create(long chatId) {
+        UserChat userChat = userDataService.findByChatId(chatId);
         SessionContext context = new SessionContext();
         context.setChatId(chatId);
+        context.setContextState(userChat.getContextState());
         storage.put(chatId, context);
         return context;
     }
