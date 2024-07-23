@@ -2,6 +2,7 @@ package com.stanislav.telegram_bot.domain;
 
 import com.stanislav.telegram_bot.domain.elements.MainMenuCustomizer;
 import com.stanislav.telegram_bot.domain.handler.CommandDispatcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+@Slf4j
 @Component
 public class TelegramBotController extends TelegramLongPollingBot {
 
@@ -43,9 +45,7 @@ public class TelegramBotController extends TelegramLongPollingBot {
                 execute(commandDispatcher.apply(update.getMessage()));
             }
         } catch (TelegramApiException e) {
-            //TODO logs
-//            throw new RuntimeException(e);
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 

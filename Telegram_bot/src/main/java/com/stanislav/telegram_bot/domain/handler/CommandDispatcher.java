@@ -53,7 +53,7 @@ public class CommandDispatcher {
             ResponseHandler handler = handlerMap.get(text);
             SessionContext context = sessionContextService.get(chatId);
             if (handler == null) {
-                handler = handlerMap.get(Commands.UNRECOGNIZED.pattern);
+                handler = handlerMap.get(Commands.DEFAULT.pattern);
             }
             return handler.handle(context, message);
         }

@@ -11,7 +11,7 @@ public enum Commands {
     RESET("/reset"),
     ACCOUNT("/accounts"),
     ORDER("/order"),
-    UNRECOGNIZED("unrecognized"),
+    DEFAULT("default"),
     ;
 
     public final String pattern;
