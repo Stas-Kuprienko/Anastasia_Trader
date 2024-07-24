@@ -2,15 +2,20 @@ package com.stanislav.trade.datasource;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.K;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -27,6 +32,7 @@ import java.util.Properties;
 @Slf4j
 @Configuration
 @EnableTransactionManagement
+@EnableCaching
 public class DatasourceConfig {
 
     private final Properties jpaProperties;
@@ -82,7 +88,7 @@ public class DatasourceConfig {
     // \/ <--------- Redis configuration ---------> \/ //
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory() {
 
         RedisStandaloneConfiguration configuration =
                 new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -104,6 +110,31 @@ public class DatasourceConfig {
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;
+    }
+
+    @Bean
+    public RedisCacheConfiguration redisCacheConfiguration() {
+        var keySerializer = RedisSerializationContext
+                .SerializationPair
+                .fromSerializer(new StringRedisSerializer());
+
+        var valueSerializer = RedisSerializationContext
+                .SerializationPair
+                .fromSerializer(new GenericJackson2JsonRedisSerializer());
+
+        return RedisCacheConfiguration
+                .defaultCacheConfig()
+                .serializeKeysWith(keySerializer)
+                .serializeValuesWith(valueSerializer);
+    }
+
+    @Bean
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory,
+                                     RedisCacheConfiguration redisCacheConfiguration) {
+        return RedisCacheManager
+                .builder(redisConnectionFactory)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
     }
 
     // /\ <--------- Redis configuration ---------> /\ //
