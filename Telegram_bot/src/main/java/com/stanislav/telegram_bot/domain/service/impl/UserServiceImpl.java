@@ -1,7 +1,7 @@
 package com.stanislav.telegram_bot.domain.service.impl;
 
 import com.stanislav.telegram_bot.datasource.repositories.UserChatRepository;
-import com.stanislav.telegram_bot.domain.service.UserDataService;
+import com.stanislav.telegram_bot.domain.service.UserService;
 import com.stanislav.telegram_bot.entities.user.User;
 import com.stanislav.telegram_bot.entities.user.UserChat;
 import com.stanislav.telegram_bot.exceptions.NotFoundException;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service("userDataService")
-public class UserDataServiceImpl implements UserDataService {
+public class UserServiceImpl implements UserService {
 
     //TODO TEMPORARY SOLUTION, NEED TO REWORK BY REDIS CACHE
     private final Cache cache;
@@ -19,7 +19,7 @@ public class UserDataServiceImpl implements UserDataService {
     private final UserChatRepository userChatRepository;
 
     @Autowired
-    public UserDataServiceImpl(Cache cache, UserChatRepository userChatRepository) {
+    public UserServiceImpl(Cache cache, UserChatRepository userChatRepository) {
         this.cache = cache;
         this.userChatRepository = userChatRepository;
     }

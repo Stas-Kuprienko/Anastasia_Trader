@@ -4,7 +4,7 @@
 
 package com.stanislav.telegram_bot.domain.handler;
 
-import com.stanislav.telegram_bot.domain.service.UserDataService;
+import com.stanislav.telegram_bot.domain.service.UserService;
 import com.stanislav.telegram_bot.domain.session.SessionContext;
 import com.stanislav.telegram_bot.domain.session.SessionContextService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +25,19 @@ public class CommandDispatcher {
     private static final String UNKNOWN = "unknown";
 
     private final Map<String, ResponseHandler> handlerMap;
-    private final UserDataService userDataService;
+    private final UserService userService;
     private final SessionContextService sessionContextService;
     private final MessageSource messageSource;
 
 
     @Autowired
-    public CommandDispatcher(ApplicationContext applicationContext, UserDataService userDataService,
+    public CommandDispatcher(ApplicationContext applicationContext, UserService userService,
                              SessionContextService sessionContextService, MessageSource messageSource) {
         this.handlerMap = Arrays
                 .stream(Commands.values())
                 .collect(Collectors.toMap(c -> c.pattern,
                         c -> applicationContext.getBean(c.pattern, ResponseHandler.class)));
-        this.userDataService = userDataService;
+        this.userService = userService;
         this.sessionContextService = sessionContextService;
         this.messageSource = messageSource;
     }
@@ -47,7 +47,7 @@ public class CommandDispatcher {
         Long chatId = message.getChatId();
         if (message.hasText()) {
             String text = message.getText();
-            if (!userDataService.isRegistered(chatId) && !text.equals("/start")) {
+            if (!userService.isRegistered(chatId) && !text.equals("/start")) {
                 return handlerMap.get("/start").handle(null, message);
             }
             ResponseHandler handler = handlerMap.get(text);

@@ -1,7 +1,7 @@
 package com.stanislav.telegram_bot.rest.controllers;
 
 import com.stanislav.telegram_bot.domain.TelegramBotController;
-import com.stanislav.telegram_bot.domain.service.UserDataService;
+import com.stanislav.telegram_bot.domain.service.UserService;
 import com.stanislav.telegram_bot.entities.user.ContextState;
 import com.stanislav.telegram_bot.entities.user.User;
 import com.stanislav.telegram_bot.entities.user.UserChat;
@@ -19,14 +19,14 @@ import java.util.Locale;
 @RequestMapping("/user")
 public class UserDataRestController {
 
-    private final UserDataService userDataService;
+    private final UserService userService;
     private final TelegramBotController controller;
     private final MessageSource messageSource;
 
 
     @Autowired
-    public UserDataRestController(UserDataService userDataService, TelegramBotController controller, MessageSource messageSource) {
-        this.userDataService = userDataService;
+    public UserDataRestController(UserService userService, TelegramBotController controller, MessageSource messageSource) {
+        this.userService = userService;
         this.controller = controller;
         this.messageSource = messageSource;
     }
@@ -38,7 +38,7 @@ public class UserDataRestController {
                             @RequestBody User user) {
         try {
             UserChat userChat = new UserChat(chatId, user, ContextState.CLEAR);
-            userDataService.save(userChat);
+            userService.save(userChat);
             String messageToUser = messageSource.getMessage("signed-up", null, Locale.of(locale));
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
