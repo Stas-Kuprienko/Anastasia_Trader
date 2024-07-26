@@ -4,7 +4,7 @@
 
 package com.stanislav.trade.web.controller;
 
-import com.stanislav.trade.domain.market.ExchangeData;
+import com.stanislav.trade.domain.market.ExchangeDataProvider;
 import com.stanislav.trade.domain.trading.OrderCriteria;
 import com.stanislav.trade.domain.trading.TradingService;
 import com.stanislav.trade.entities.Board;
@@ -17,9 +17,6 @@ import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.utils.GetQueryBuilder;
 import com.stanislav.trade.web.authentication.form.MyUserDetails;
 import com.stanislav.trade.web.configuration.WebApplicationConfig;
-import com.stanislav.trade.web.controller.service.ErrorCase;
-import com.stanislav.trade.web.controller.service.ErrorController;
-import com.stanislav.trade.web.controller.service.MVC;
 import com.stanislav.trade.web.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,19 +36,22 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/trade")
 public final class TradeController {
 
+    public static final String STOCK_URI = "stock";
+    public static final String FUTURES_URI = "futures";
+
     private static final String ORDER_VIEW = "order_view";
     private static final String ITEM = "item";
 
     private final AccountService accountService;
-    private final ExchangeData exchangeData;
+    private final ExchangeDataProvider exchangeDataProvider;
     private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
 
 
     @Autowired
-    public TradeController(@Qualifier("moexExchangeData") ExchangeData exchangeData,
+    public TradeController(@Qualifier("moexExchangeData") ExchangeDataProvider exchangeDataProvider,
                            List<TradingService> tradingServices, AccountService accountService) {
         this.tradingServiceMap = initTradingServiceMap(tradingServices);
-        this.exchangeData = exchangeData;
+        this.exchangeDataProvider = exchangeDataProvider;
         this.accountService = accountService;
     }
 
@@ -82,7 +82,7 @@ public final class TradeController {
             return ORDER_VIEW;
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
-            return ErrorController.FORWARD_ERROR + ErrorCase.BAD_REQUEST;
+            throw e;
         }
     }
 
@@ -149,7 +149,7 @@ public final class TradeController {
             Order order = tradingService.makeOrder(criteria, token);
             model.addAttribute("order", order);
             //TODO update page and path
-            GetQueryBuilder query = new GetQueryBuilder(MVC.REDIRECT + WebApplicationConfig.resource);
+            GetQueryBuilder query = new GetQueryBuilder("redirect:" + WebApplicationConfig.resource);
             query.appendToUrl("trade/order/")
                     .appendToUrl(order.getOrderId())
                     .add("clientId", account.getClientId())
@@ -157,7 +157,7 @@ public final class TradeController {
             return query.build();
         } catch (IllegalArgumentException e) {
             log.warn(e.getMessage());
-            return ErrorController.REDIRECT_ERROR + ErrorCase.BAD_REQUEST;
+            throw e;
         }
     }
 
@@ -167,19 +167,17 @@ public final class TradeController {
                            @RequestParam("type") String type, Model model) {
         List<Account> accounts = accountService.findByLogin(userDetails.getUsername());
         model.addAttribute("accounts", accounts);
-        if (type.equals(MarketController.STOCK_URI)) {
-            Optional<Stock> stock = exchangeData.getStock(ticker);
+        if (type.equals(STOCK_URI)) {
+            Optional<Stock> stock = exchangeDataProvider.getStock(ticker);
             stock.ifPresent(s -> model.addAttribute(ITEM, s));
-        } else if (type.equals(MarketController.FUTURES_URI)) {
-            Optional<Futures> futures = exchangeData.getFutures(ticker);
+        } else if (type.equals(FUTURES_URI)) {
+            Optional<Futures> futures = exchangeDataProvider.getFutures(ticker);
             futures.ifPresent(f -> model.addAttribute(ITEM, f));
         } else {
             log.error("type of security = " + type);
-            return ErrorController.FORWARD_ERROR + ErrorCase.BAD_REQUEST;
         }
         if (model.getAttribute(ITEM) == null) {
             log.info("ticker=" + ticker + " is not found");
-            return ErrorController.FORWARD_ERROR + ErrorCase.BAD_REQUEST;
         }
         return "new_order";
     }
@@ -197,7 +195,7 @@ public final class TradeController {
         tradingService.cancelOrder(clientId, token, orderId);
 
         GetQueryBuilder query = new GetQueryBuilder(
-                MVC.REDIRECT + WebApplicationConfig.resource + "trade/orders/" + clientId);
+                "redirect:" + WebApplicationConfig.resource + "trade/orders/" + clientId);
         query.add("broker", broker)
                 .add("matches", true)
                 .add("canceled", true)

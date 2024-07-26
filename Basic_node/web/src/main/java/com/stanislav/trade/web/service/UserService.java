@@ -10,5 +10,7 @@ public interface UserService {
 
     User findUserByLogin(String login);
 
+    User findUserByLoginAndPassword(String login, String password);
+
     boolean addTelegramChatId(User user, Long chatId);
 }

@@ -58,6 +58,17 @@ public class UserServiceTransactionAnnotatedImpl implements UserService {
     }
 
     @Override
+    public User findUserByLoginAndPassword(String login, String password) {
+        User user = userDao.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("login=" + login));
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            return user;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
     public boolean addTelegramChatId(User user, Long chatId) {
         Optional<TelegramChatId> chat = userDao.findTelegramChatId(chatId);
         if (chat.isPresent() && chat.get().getUser().equals(user)) {

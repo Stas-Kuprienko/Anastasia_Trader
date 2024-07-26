@@ -3,6 +3,8 @@ package com.stanislav.trade.web.rest;
 import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.web.rest.resquest.LogInUserForm;
+import com.stanislav.trade.web.rest.resquest.SignUpUserForm;
 import com.stanislav.trade.web.service.AccountService;
 import com.stanislav.trade.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserDataRestApi {
 
     private final UserService userService;
@@ -24,18 +26,34 @@ public class UserDataRestApi {
     }
 
 
+    @PostMapping("/user")
+    public ResponseEntity<User> signUp(SignUpUserForm form) {
+        User user = userService.createUser(
+                form.login(),
+                form.password(),
+                form.name());
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/user")
-    public ResponseEntity<User> getUser(@RequestParam Long userId) {
+    public ResponseEntity<User> logIn(LogInUserForm form) {
+        User user = userService.findUserByLoginAndPassword(form.login(), form.password());
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(userService.findUserById(userId));
     }
 
-    @GetMapping("/accounts")
-    public List<Account> getAccounts(@RequestParam Long userId) {
-        return accountService.findByUserId(userId);
+    @GetMapping("/user/{userId}/accounts")
+    public ResponseEntity<List<Account>> getAccounts(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(accountService.findByUserId(userId));
     }
 
-    @GetMapping("/account/{account}")
-    public ResponseEntity<Account> getAccount(@PathVariable("account") String accountParams, @RequestParam("userId") Long userId) {
+    @GetMapping("/user/{userId}/accounts/account/{account}")
+    public ResponseEntity<Account> getAccount(@PathVariable("userId") Long userId,
+                                              @PathVariable("account") String accountParams) {
         String[] accountData = accountParams.split(":");
         if (accountData.length != 2) {
             return ResponseEntity.badRequest().build();
