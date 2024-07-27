@@ -8,7 +8,7 @@
     <option name="adminPort" value="8006" />
     <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\Anastasia_Trader\basic_node" />
     <option name="contextPath" value="/anastasia" />
-    <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Basic_node\web\src\main\webapp" />
+    <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Basic_node\Trade_service\src\main\webapp" />
     <option name="envOptions">
       <map />
     </option>
@@ -22,7 +22,7 @@
       </TomcatInfo>
     </option>
     <option name="vmOptions" value="" />
-    <module name="web" />
+    <module name="Trade_service" />
     <method v="2" />
   </configuration>
 </component>

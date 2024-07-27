@@ -8,13 +8,12 @@
         <version>1.0</version>
     </parent>
     <modules>
-        <module>core</module>
-        <module>web</module>
-        <module>app_ui</module>
+        <module>Trade_service</module>
+        <module>App_UI</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>trade</artifactId>
+    <artifactId>trade_service</artifactId>
     <name>basic_node</name>
     <packaging>pom</packaging>
 
