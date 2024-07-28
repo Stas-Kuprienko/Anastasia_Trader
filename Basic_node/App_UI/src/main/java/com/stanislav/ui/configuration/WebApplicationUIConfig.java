@@ -33,7 +33,7 @@ import static com.stanislav.ui.configuration.WebApplicationUIConfig.Requests.*;
 public class WebApplicationUIConfig extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer {
 
 
-    public static final String resource = "http://localhost:8081/anastasia/";
+    public static final String resource = "http://localhost:8080/anastasia/";
     public static final String entryPage = "login";
 
 

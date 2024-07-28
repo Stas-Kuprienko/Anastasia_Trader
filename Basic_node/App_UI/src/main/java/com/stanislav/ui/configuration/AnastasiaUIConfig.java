@@ -20,8 +20,8 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-@ComponentScan("com.stanislav.ui")
 @PropertySource("classpath:application.properties")
+@ComponentScan("com.stanislav.ui")
 public class AnastasiaUIConfig {
 
     public static final String BACKEND_RESOURCE = "http://localhost:8081/anastasia/api/";

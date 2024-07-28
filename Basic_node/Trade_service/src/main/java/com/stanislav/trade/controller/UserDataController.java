@@ -14,13 +14,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserDataRestApi {
+public class UserDataController {
 
     private final UserService userService;
     private final AccountService accountService;
 
     @Autowired
-    public UserDataRestApi(UserService userService, AccountService accountService) {
+    public UserDataController(UserService userService, AccountService accountService) {
         this.userService = userService;
         this.accountService = accountService;
     }
@@ -35,15 +35,20 @@ public class UserDataRestApi {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/user/login")
     public ResponseEntity<User> logIn(LogInUserForm form) {
         User user = userService.findUserByLoginAndPassword(form.login(), form.password());
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<User> getUserById(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(userService.findUserById(userId));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<User> getUserByLogin(@RequestParam("login") String login) {
+        return ResponseEntity.ok(userService.findUserByLogin(login));
     }
 
     @GetMapping("/user/{userId}/accounts")

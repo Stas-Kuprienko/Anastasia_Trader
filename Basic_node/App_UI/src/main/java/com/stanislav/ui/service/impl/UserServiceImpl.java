@@ -2,6 +2,8 @@ package com.stanislav.ui.service.impl;
 
 import com.stanislav.ui.configuration.AnastasiaUIConfig;
 import com.stanislav.ui.configuration.auth.TokenAuthService;
+import com.stanislav.ui.exception.BadRequestException;
+import com.stanislav.ui.exception.NotFoundException;
 import com.stanislav.ui.model.user.User;
 import com.stanislav.ui.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,8 @@ public class UserServiceImpl implements UserService {
             parameters.add("name", name);
         }
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parameters, authorizeHeaders);
-        ResponseEntity<User> response = restTemplate.exchange(resource, HttpMethod.POST, httpEntity, User.class);
+        ResponseEntity<User> response = restTemplate
+                .exchange(resource, HttpMethod.POST, httpEntity, User.class);
         User user = response.getBody();
         if (user != null) {
             cacheById.put(user.getId(), user);
@@ -78,14 +81,15 @@ public class UserServiceImpl implements UserService {
             parameters.add("login", login);
             parameters.add("password", password);
             HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parameters, authorizeHeaders);
-            ResponseEntity<User> response = restTemplate.exchange(resource, HttpMethod.GET, httpEntity, User.class);
+            ResponseEntity<User> response = restTemplate
+                    .exchange(resource + "login", HttpMethod.GET, httpEntity, User.class);
             user = response.getBody();
             if (user != null) {
                 cacheByLogin.put(user.getLogin(), user);
                 cacheById.put(user.getId(), user);
                 return user;
             } else {
-                throw new IllegalArgumentException();
+                throw new BadRequestException("login=" + login + " password=" + password);
             }
         }
     }
@@ -105,7 +109,7 @@ public class UserServiceImpl implements UserService {
                 cacheByLogin.put(u.getLogin(), u);
                 return u;
             } else {
-                throw new NoSuchElementException();
+                throw new NotFoundException("user id = " + id);
             }
         }
     }

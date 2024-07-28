@@ -39,8 +39,10 @@ build/
 /.idea/
 /Telegram_bot/src/main/resources/application.properties
 /Smart_service/src/main/resources/application.properties
-/Basic_node/local-tomcat/
 /Basic_node/Trade_service/src/main/resources/application.properties
 /Basic_node/Trade_service/src/main/java/com/stanislav/trade/Example.java
 /Smart_service/src/main/java/com/stanislav/smart/Example.java
 **/.smarttomcat/
+/Basic_node/App_UI/src/main/resources/application.properties
+/Basic_node/App_UI/local-tomcat/
+/Basic_node/Trade_service/local-tomcat/
