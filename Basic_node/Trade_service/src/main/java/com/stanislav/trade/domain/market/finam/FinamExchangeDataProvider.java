@@ -11,7 +11,7 @@ import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.utils.ApiDataParser;
-import com.stanislav.trade.utils.GetQueryBuilder;
+import com.stanislav.trade.utils.GetRequestParametersBuilder;
 import com.stanislav.trade.utils.RestConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -53,7 +53,7 @@ public class FinamExchangeDataProvider implements ExchangeDataProvider {
 
     @Override
     public Optional<Stock> getStock(String ticker) {
-        GetQueryBuilder query = new GetQueryBuilder(SECURITIES.value);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(SECURITIES.value);
         query.add(BOARD.value, Board.TQBR).add(SEC_CODE.value, ticker);
         try {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
@@ -73,7 +73,7 @@ public class FinamExchangeDataProvider implements ExchangeDataProvider {
 
     @Override
     public List<Stock> getStocks() {
-        GetQueryBuilder query = new GetQueryBuilder(SECURITIES.value);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(SECURITIES.value);
         query.add(BOARD.value, Board.TQBR);
         try {
             String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);

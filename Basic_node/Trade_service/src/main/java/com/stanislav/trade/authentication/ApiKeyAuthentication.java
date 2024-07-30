@@ -14,6 +14,8 @@ public class ApiKeyAuthentication extends AbstractAuthenticationToken {
         this.serviceName = serviceName;
     }
 
+    //TODO to add more of user data
+
     @Override
     public Object getCredentials() {
         return serviceName;

@@ -8,7 +8,7 @@ import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Stock;
 import com.stanislav.trade.utils.ApiDataParser;
-import com.stanislav.trade.utils.GetQueryBuilder;
+import com.stanislav.trade.utils.GetRequestParametersBuilder;
 import com.stanislav.trade.utils.RestConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -86,7 +86,7 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
                 return stocks;
             }
         }
-        GetQueryBuilder query = new GetQueryBuilder(STOCKS_URL);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(STOCKS_URL);
         List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
         var dto = dtoLists.get(0);
         var marketData = dtoLists.get(1);
@@ -136,7 +136,7 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
                 return futuresList;
             }
         }
-        GetQueryBuilder query = new GetQueryBuilder(FUTURES_LIST_URL);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(FUTURES_LIST_URL);
         List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
         var dto = dtoLists.get(0);
         var marketData = dtoLists.get(1);
@@ -155,12 +155,12 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
 
 
     private List<List<Object[]>> getSecurity(String uri) {
-        GetQueryBuilder query = new GetQueryBuilder(uri);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(uri);
         query.add(marketdata.toString(), 1);
         return getListOfLists(query.build());
     }
 
-    private List<List<Object[]>> getSecurities(GetQueryBuilder query, SortByColumn sortByColumn, SortOrder sortOrder) {
+    private List<List<Object[]>> getSecurities(GetRequestParametersBuilder query, SortByColumn sortByColumn, SortOrder sortOrder) {
         query.add(marketdata.toString(), 1);
         query.add(leaders.toString(), 1);
         if (!sortByColumn.equals(SortByColumn.NONE)) {

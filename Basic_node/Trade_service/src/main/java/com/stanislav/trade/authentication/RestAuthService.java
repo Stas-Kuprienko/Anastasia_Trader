@@ -4,12 +4,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class RestAuthService {
 
@@ -17,8 +19,7 @@ public class RestAuthService {
     private final String id;
 
     @Autowired
-    public RestAuthService(JwtParser jwtParser,
-                           @Value("${api.id}") String id) {
+    public RestAuthService(@Value("${api.id}") String id, JwtParser jwtParser) {
         this.jwtParser = jwtParser;
         this.id = id;
     }
@@ -33,7 +34,7 @@ public class RestAuthService {
         try {
             claims = jwtParser.parseSignedClaims(token).getPayload();
         } catch (JwtException | IllegalArgumentException e) {
-            //TODO logs
+            log.warn(e.getMessage());
             throw new BadCredentialsException(e.getMessage());
         }
         if (claims.getId().equals(id)) {
@@ -43,6 +44,7 @@ public class RestAuthService {
             return authentication;
         } else throw new BadCredentialsException("Token ID is wrong.");
     }
+
 
     public enum AuthType {
 

@@ -12,6 +12,7 @@
 	<groupId>com.stanislav</groupId>
 	<artifactId>telegram_bot</artifactId>
 	<version>1.0.0</version>
+	<name>telegram_bot</name>
 
 	<properties>
 		<java.version>21</java.version>
@@ -72,7 +73,7 @@
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+			<artifactId>slf4j-reload4j</artifactId>
 			<version>2.0.7</version>
 		</dependency>
 

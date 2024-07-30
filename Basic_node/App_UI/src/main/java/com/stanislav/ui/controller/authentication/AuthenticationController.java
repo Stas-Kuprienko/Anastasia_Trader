@@ -79,6 +79,9 @@ public class AuthenticationController {
 
     @GetMapping("/user")
     public String mainPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return MVC.FORWARD + "/login";
+        }
         User user = userService.findById(((MyUserDetails) userDetails).getId());
         model.addAttribute("user", user);
         return "main";

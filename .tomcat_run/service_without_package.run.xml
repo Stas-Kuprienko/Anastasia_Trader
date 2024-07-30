@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="service_without_package" type="com.poratu.idea.plugins.tomcat" singleton="false">
+    <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
+    <predefined_log_file enabled="true" id="Tomcat Access Log" />
+    <predefined_log_file id="Tomcat Catalina Log" />
+    <predefined_log_file id="Tomcat Manager Log" />
+    <predefined_log_file id="Tomcat Host Manager Log" />
+    <option name="adminPort" value="8006" />
+    <option name="catalinaBase" value="" />
+    <option name="contextPath" value="/anastasia" />
+    <option name="docBase" value="C:\Development_Java\Anastasia_Trader\Basic_node\Trade_service\src\main\webapp" />
+    <option name="extraClassPath" value="" />
+    <option name="port" value="8081" />
+    <option name="tomcatInfo">
+      <TomcatInfo>
+        <option name="name" value="Back" />
+        <option name="path" value="$PROJECT_DIR$/Basic_node/Trade_service/local-tomcat/apache-tomcat-11.0.0" />
+        <option name="version" value="11.0.0.0" />
+      </TomcatInfo>
+    </option>
+    <option name="vmOptions" value="" />
+    <module name="Trade_service" />
+    <method v="2" />
+  </configuration>
+</component>

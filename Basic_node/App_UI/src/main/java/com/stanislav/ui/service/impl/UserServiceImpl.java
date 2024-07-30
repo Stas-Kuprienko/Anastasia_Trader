@@ -6,12 +6,12 @@ import com.stanislav.ui.exception.BadRequestException;
 import com.stanislav.ui.exception.NotFoundException;
 import com.stanislav.ui.model.user.User;
 import com.stanislav.ui.service.UserService;
+import com.stanislav.ui.utils.GetRequestParametersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -23,9 +23,8 @@ import java.util.Optional;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-    private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "users/user/";
+    private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "users/user";
 
-    private final PasswordEncoder passwordEncoder;
     private final HttpHeaders authorizeHeaders;
     private final RestTemplate restTemplate;
 
@@ -35,10 +34,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder,
-                           TokenAuthService tokenAuthService,
+    public UserServiceImpl(TokenAuthService tokenAuthService,
                            RestTemplate restTemplate) {
-        this.passwordEncoder = passwordEncoder;
         this.authorizeHeaders = tokenAuthService.authorize();
         this.restTemplate = restTemplate;
         cacheById = new HashMap<>();
@@ -71,18 +68,13 @@ public class UserServiceImpl implements UserService {
     public User logIn(String login, String password) {
         User user = cacheByLogin.get(login);
         if (user != null) {
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return user;
-            } else {
-                throw new IllegalArgumentException();
-            }
+            return user;
         } else {
-            MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-            parameters.add("login", login);
-            parameters.add("password", password);
-            HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parameters, authorizeHeaders);
+            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource + "/login");
+            getRequest.add("login", login)
+                    .add("password", password);
             ResponseEntity<User> response = restTemplate
-                    .exchange(resource + "login", HttpMethod.GET, httpEntity, User.class);
+                    .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorizeHeaders), User.class);
             user = response.getBody();
             if (user != null) {
                 cacheByLogin.put(user.getLogin(), user);
@@ -101,7 +93,7 @@ public class UserServiceImpl implements UserService {
             return user.get();
         } else {
             ResponseEntity<User> response = restTemplate
-                    .exchange(resource + id, HttpMethod.GET, new HttpEntity<>(authorizeHeaders), User.class);
+                    .exchange(resource + '/' + id, HttpMethod.GET, new HttpEntity<>(authorizeHeaders), User.class);
             user = Optional.ofNullable(response.getBody());
             if (user.isPresent()) {
                 User u = user.get();
@@ -120,11 +112,10 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-            parameters.add("login", login);
-            HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parameters, authorizeHeaders);
+            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);
+            getRequest.add("login", login);
             ResponseEntity<User> response = restTemplate
-                    .exchange(resource, HttpMethod.GET, httpEntity, User.class);
+                    .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorizeHeaders), User.class);
             user = Optional.ofNullable(response.getBody());
             if (user.isPresent()) {
                 User u = user.get();

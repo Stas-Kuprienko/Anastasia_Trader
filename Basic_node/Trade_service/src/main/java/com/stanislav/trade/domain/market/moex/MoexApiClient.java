@@ -4,7 +4,8 @@
 
 package com.stanislav.trade.domain.market.moex;
 
-import com.stanislav.trade.utils.GetQueryBuilder;
+import com.stanislav.trade.utils.GetRequestParametersBuilder;
+
 import java.util.Map;
 
 public class MoexApiClient {
@@ -97,7 +98,7 @@ public class MoexApiClient {
     }
 
     public String build(Map<String, Object> parameters) {
-        GetQueryBuilder query = new GetQueryBuilder(url.append(format).toString());
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(url.append(format).toString());
         for (Map.Entry<String, Object> e : parameters.entrySet()) {
             query.add(e.getKey(), e.getValue());
         }

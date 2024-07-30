@@ -15,7 +15,7 @@ import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.orders.Stop;
 import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.utils.ApiDataParser;
-import com.stanislav.trade.utils.GetQueryBuilder;
+import com.stanislav.trade.utils.GetRequestParametersBuilder;
 import com.stanislav.trade.utils.JsonDataParser;
 import com.stanislav.trade.utils.RestConsumer;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +61,7 @@ public class FinamTradingService implements TradingService {
 
     @Override
     public Portfolio getPortfolio(String clientId, String token, boolean withPositions) {
-        GetQueryBuilder query = new GetQueryBuilder(Resource.PORTFOLIO.value);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(Resource.PORTFOLIO.value);
         query.add(CLIENT.value, clientId)
                 .add(POSITIONS.value, withPositions)
                 .add(CURRENCIES.value, true)
@@ -78,7 +78,7 @@ public class FinamTradingService implements TradingService {
 
     @Override
     public List<Order> getOrders(String clientId, String token, boolean matched, boolean canceled, boolean active) {
-        GetQueryBuilder query = new GetQueryBuilder(Resource.ORDERS.value);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(Resource.ORDERS.value);
         query.add(CLIENT.value, clientId)
                 .add(MATCHED.value, matched)
                 .add(CANCELED.value, canceled)

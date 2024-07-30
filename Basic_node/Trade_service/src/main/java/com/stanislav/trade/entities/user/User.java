@@ -37,6 +37,7 @@ public final class User implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JsonIgnore
     private List<Account> accounts = new ArrayList<>();
 
 

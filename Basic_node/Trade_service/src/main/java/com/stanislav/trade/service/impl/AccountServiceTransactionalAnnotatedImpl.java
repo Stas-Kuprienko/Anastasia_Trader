@@ -57,10 +57,9 @@ public class AccountServiceTransactionalAnnotatedImpl implements AccountService 
     @Override
     @Transactional
     public List<Account> findByUserId(long userId) {
-        Optional<User> user = userDao.findById(userId);
-        return user.orElseThrow(
-                        () -> new NotFoundException("userId=" + userId))
-                .getAccounts();
+        User user = userDao.findById(userId).orElseThrow(
+                () -> new NotFoundException("userId=" + userId));
+        return accountDao.findAllByUser(user);
     }
 
     @Override

@@ -6,12 +6,12 @@ package com.stanislav.trade.utils;
 
 import java.util.ArrayList;
 
-public class GetQueryBuilder {
+public class GetRequestParametersBuilder {
 
     private final StringBuilder uri;
     private final ArrayList<Parameter> parameters;
 
-    public GetQueryBuilder(String url) {
+    public GetRequestParametersBuilder(String url) {
         uri = new StringBuilder();
         if (url != null) {
             uri.append(url);
@@ -20,19 +20,19 @@ public class GetQueryBuilder {
     }
 
 
-    public GetQueryBuilder() {
+    public GetRequestParametersBuilder() {
         uri = new StringBuilder();
         this.parameters = new ArrayList<>();
     }
 
-    public GetQueryBuilder appendToUrl(Object str) {
+    public GetRequestParametersBuilder appendToUrl(Object str) {
         if (str != null) {
             uri.append(str);
         }
         return this;
     }
 
-    public GetQueryBuilder add(String key, Object value) {
+    public GetRequestParametersBuilder add(String key, Object value) {
         if (value != null) {
             parameters.add(new Parameter(key, value));
         }
@@ -57,7 +57,7 @@ public class GetQueryBuilder {
 
     @Override
     public String toString() {
-        return "GetQueryBuilder{" +
+        return "GetRequestParametersBuilder{" +
                 "uri=" + uri +
                 ", parameters=" + parameters +
                 '}';

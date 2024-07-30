@@ -5,11 +5,16 @@ import com.stanislav.trade.controller.form.SignUpUserForm;
 import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
+import com.stanislav.trade.model.AccountDto;
+import com.stanislav.trade.model.UserDto;
+import com.stanislav.trade.model.convertors.AccountDtoConverter;
+import com.stanislav.trade.model.convertors.UserDtoConvertor;
 import com.stanislav.trade.service.AccountService;
 import com.stanislav.trade.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,11 +23,18 @@ public class UserDataController {
 
     private final UserService userService;
     private final AccountService accountService;
+    private final UserDtoConvertor userDtoConvertor;
+    private final AccountDtoConverter accountDtoConverter;
 
     @Autowired
-    public UserDataController(UserService userService, AccountService accountService) {
+    public UserDataController(UserService userService,
+                              AccountService accountService,
+                              UserDtoConvertor userDtoConvertor,
+                              AccountDtoConverter accountDtoConverter) {
         this.userService = userService;
+        this.userDtoConvertor = userDtoConvertor;
         this.accountService = accountService;
+        this.accountDtoConverter = accountDtoConverter;
     }
 
 
@@ -36,28 +48,35 @@ public class UserDataController {
     }
 
     @GetMapping("/user/login")
-    public ResponseEntity<User> logIn(LogInUserForm form) {
+    public ResponseEntity<UserDto> logIn(LogInUserForm form) {
         User user = userService.findUserByLoginAndPassword(form.login(), form.password());
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userDtoConvertor.convert(user));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(userService.findUserById(userId));
+    public ResponseEntity<UserDto> getUserById(@PathVariable("userId") Long userId) {
+        User user = userService.findUserById(userId);
+        return ResponseEntity.ok(userDtoConvertor.convert(user));
     }
 
     @GetMapping("/user")
-    public ResponseEntity<User> getUserByLogin(@RequestParam("login") String login) {
-        return ResponseEntity.ok(userService.findUserByLogin(login));
+    public ResponseEntity<UserDto> getUserByLogin(@RequestParam("login") String login) {
+        User user = userService.findUserByLogin(login);
+        return ResponseEntity.ok(userDtoConvertor.convert(user));
     }
 
     @GetMapping("/user/{userId}/accounts")
-    public ResponseEntity<List<Account>> getAccounts(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(accountService.findByUserId(userId));
+    public ResponseEntity<List<AccountDto>> getAccounts(@PathVariable("userId") Long userId) {
+        List<Account> accounts = accountService.findByUserId(userId);
+        List<AccountDto> dtoList = new ArrayList<>();
+        for (Account a : accounts) {
+            dtoList.add(accountDtoConverter.convert(a));
+        }
+        return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/user/{userId}/accounts/account/{account}")
-    public ResponseEntity<Account> getAccount(@PathVariable("userId") Long userId,
+    public ResponseEntity<AccountDto> getAccount(@PathVariable("userId") Long userId,
                                               @PathVariable("account") String accountParams) {
         String[] accountData = accountParams.split(":");
         if (accountData.length != 2) {
@@ -66,6 +85,6 @@ public class UserDataController {
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
-        return ResponseEntity.ok(account);
+        return ResponseEntity.ok(accountDtoConverter.convert(account));
     }
 }
