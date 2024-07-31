@@ -2,10 +2,10 @@
   <configuration default="false" name="Stop" type="ShConfigurationType">
     <option name="SCRIPT_TEXT" value="" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
-    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/Basic_node/local-tomcat/apache-tomcat-11.0.0/bin/shutdown.bat" />
+    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/Basic_node/Trade_service/local-tomcat/apache-tomcat-11.0.0/bin/shutdown.bat" />
     <option name="SCRIPT_OPTIONS" value="" />
     <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="false" />
-    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$/Basic_node/local-tomcat/apache-tomcat-11.0.0" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$/Basic_node/Trade_service/local-tomcat/apache-tomcat-11.0.0" />
     <option name="INDEPENDENT_INTERPRETER_PATH" value="false" />
     <option name="INTERPRETER_PATH" value="$PROJECT_DIR$/../../Windows/System32/WindowsPowerShell/v1.0/powershell.exe" />
     <option name="INTERPRETER_OPTIONS" value="" />

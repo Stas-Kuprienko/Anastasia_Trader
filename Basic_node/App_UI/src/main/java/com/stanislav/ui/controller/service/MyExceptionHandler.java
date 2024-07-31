@@ -1,5 +1,6 @@
 package com.stanislav.ui.controller.service;
 
+import com.stanislav.ui.exception.NotFoundException;
 import com.stanislav.ui.model.ResponseError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,6 @@ import java.util.Locale;
 @ControllerAdvice
 public class MyExceptionHandler extends ResponseEntityExceptionHandler {
 
-    //TODO . NOT WORKING, NEEDED TO FIX!
-
     private final MessageSource messageSource;
 
     @Autowired
@@ -26,8 +25,8 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler {
         setMessageSource(messageSource);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handle(Exception e, WebRequest request) throws Exception {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> notFoundHandle(Exception e, WebRequest request) throws Exception {
         log.info(e.getMessage());
         ResponseError error = new ResponseError(messageSource.getMessage(ErrorCase.NOT_FOUND.toString(), null, Locale.of("RU")), 404);
         request.setAttribute("error", error, WebRequest.SCOPE_REQUEST);
