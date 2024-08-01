@@ -10,7 +10,6 @@ import com.stanislav.ui.model.Direction;
 import lombok.Builder;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public final class Order implements Serializable {
@@ -33,11 +32,11 @@ public final class Order implements Serializable {
 
     private String status;
 
-    private LocalDateTime created;
+    private String created;
 
     @Builder
     public Order(int orderId, String clientId, Broker broker, String ticker, Board board,
-                 BigDecimal price, long quantity, Direction direction, String status, LocalDateTime created) {
+                 BigDecimal price, long quantity, Direction direction, String status, String created) {
         this.orderId = orderId;
         this.clientId = clientId;
         this.broker = broker;
@@ -125,11 +124,11 @@ public final class Order implements Serializable {
         this.status = status;
     }
 
-    public LocalDateTime getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 

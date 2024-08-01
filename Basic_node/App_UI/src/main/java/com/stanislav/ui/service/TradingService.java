@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface TradingService {
 
-    List<Order> getOrder(Broker broker, String clientId, String token, boolean includeMatched, boolean includeCanceled, boolean includeActive);
+    List<Order> getOrders(long userId, Broker broker, String clientId, boolean includeMatched, boolean includeCanceled, boolean includeActive);
 
-    Order getOrder(Broker broker, String clientId, String token, Integer orderId);
+    Order getOrder(long userId, Broker broker, String clientId, Integer orderId);
 
-    Order makeOrder(OrderCriteria criteria, String token);
+    Order makeOrder(long userId, OrderCriteria criteria, String token);
 
-    void cancelOrder(Broker broker, String clientId, String token, Integer orderId);
+    void cancelOrder(long userId, Broker broker, String clientId, String token, Integer orderId);
 }

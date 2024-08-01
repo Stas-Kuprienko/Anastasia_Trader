@@ -31,7 +31,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/trade")
-public final class TradeController {
+public final class TradingController {
 
     public static final String STOCK_TYPE = "stock";
     public static final String FUTURES_TYPE = "futures";
@@ -48,7 +48,7 @@ public final class TradeController {
 
 
     @Autowired
-    public TradeController(AccountService accountService, TradingService tradingService, MarketDataService marketDataService) {
+    public TradingController(AccountService accountService, TradingService tradingService, MarketDataService marketDataService) {
         this.tradingService = tradingService;
         this.accountService = accountService;
         this.marketDataService = marketDataService;
@@ -70,17 +70,15 @@ public final class TradeController {
         String clientId = accountData[1];
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, Broker.valueOf(broker));
-        String token = accountService.decodeToken(account.getToken());
-        var orders = tradingService.getOrder(
+        var orders = tradingService.getOrders(
+                userId,
                 account.getBroker(),
                 account.getClientId(),
-                token,
                 includeMatched,
                 includeCanceled,
                 includeActive);
         model.addAttribute("orders", orders);
-        model.addAttribute("accountId", account.getId());
-        //TODO update page
+        model.addAttribute("account", accountParam);
         return ORDER_VIEW;
     }
 
@@ -97,9 +95,9 @@ public final class TradeController {
         String clientId = accountData[1];
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, Broker.valueOf(broker));
-        String token = accountService.decodeToken(account.getToken());
-        Order order = tradingService.getOrder(Broker.valueOf(broker), clientId, token, orderId);
+        Order order = tradingService.getOrder(userId, account.getBroker(), account.getClientId(), orderId);
         model.addAttribute("order", order);
+        model.addAttribute("account", accountParam);
         return ORDER_VIEW;
     }
 
@@ -152,8 +150,9 @@ public final class TradeController {
             criteria.setValidBefore(OrderCriteria.ValidBefore.TillEndSession);
         }
         String token = accountService.decodeToken(account.getToken());
-        Order order = tradingService.makeOrder(criteria, token);
+        Order order = tradingService.makeOrder(userId, criteria, token);
         model.addAttribute("order", order);
+        model.addAttribute("account", accountParam);
         return MVC.REDIRECT + ORDER_VIEW;
     }
 
@@ -191,7 +190,7 @@ public final class TradeController {
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, Broker.valueOf(broker));
         String token = accountService.decodeToken(account.getToken());
-        tradingService.cancelOrder(Broker.valueOf(broker), clientId, token, orderId);
+        tradingService.cancelOrder(userId, Broker.valueOf(broker), clientId, token, orderId);
         return MVC.REDIRECT + resource + '/' + accountParam + ORDERS_URI;
     }
 }

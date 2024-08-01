@@ -15,6 +15,6 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<RestErrorResponse> notFoundHandle(Exception ex) {
         //TODO
         log.info(ex.getMessage());
-        return ResponseEntity.badRequest().body(new RestErrorResponse(ex.getMessage(), 404));
+        return ResponseEntity.status(404).body(new RestErrorResponse(ex.getMessage()));
     }
 }

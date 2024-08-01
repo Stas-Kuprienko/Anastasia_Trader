@@ -47,13 +47,13 @@ public class UserDataController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/user/login")
+    @GetMapping("/login")
     public ResponseEntity<UserDto> logIn(LogInUserForm form) {
         User user = userService.findUserByLoginAndPassword(form.login(), form.password());
         return ResponseEntity.ok(userDtoConvertor.convert(user));
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable("userId") Long userId) {
         User user = userService.findUserById(userId);
         return ResponseEntity.ok(userDtoConvertor.convert(user));
@@ -65,7 +65,7 @@ public class UserDataController {
         return ResponseEntity.ok(userDtoConvertor.convert(user));
     }
 
-    @GetMapping("/user/{userId}/accounts")
+    @GetMapping("/{userId}/accounts")
     public ResponseEntity<List<AccountDto>> getAccounts(@PathVariable("userId") Long userId) {
         List<Account> accounts = accountService.findByUserId(userId);
         List<AccountDto> dtoList = new ArrayList<>();
@@ -75,7 +75,7 @@ public class UserDataController {
         return ResponseEntity.ok(dtoList);
     }
 
-    @GetMapping("/user/{userId}/accounts/account/{account}")
+    @GetMapping("/{userId}/accounts/account/{account}")
     public ResponseEntity<AccountDto> getAccount(@PathVariable("userId") Long userId,
                                               @PathVariable("account") String accountParams) {
         String[] accountData = accountParams.split(":");

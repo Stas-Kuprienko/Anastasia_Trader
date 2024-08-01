@@ -19,13 +19,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @RestController
 @RequestMapping("/api/trade")
-public class TradeController {
+public class TradingController {
 
     private final AccountService accountService;
     private final ConcurrentHashMap<Broker, TradingService> tradingServiceMap;
 
     @Autowired
-    public TradeController(List<TradingService> tradingServices, AccountService accountService) {
+    public TradingController(List<TradingService> tradingServices, AccountService accountService) {
         this.tradingServiceMap = new ConcurrentHashMap<>();
         for (var ts : tradingServices) {
             tradingServiceMap.put(ts.getBroker(), ts);
@@ -37,9 +37,9 @@ public class TradeController {
     @GetMapping("/{userId}/accounts/{account}/orders")
     public List<Order> getOrders(@PathVariable("userId") Long userId,
                                  @PathVariable("account") String accountParam,
-                                 @RequestParam("matches") boolean includeMatched,
-                                 @RequestParam("canceled") boolean includeCanceled,
-                                 @RequestParam("active") boolean includeActive) {
+                                 @RequestParam(value = "matches", required = false, defaultValue = "false") boolean includeMatched,
+                                 @RequestParam(value = "canceled", required = false, defaultValue = "false") boolean includeCanceled,
+                                 @RequestParam(value = "active", required = false, defaultValue = "true") boolean includeActive) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             log.error("account parameters = " + accountParam);
@@ -58,10 +58,10 @@ public class TradeController {
                 includeActive);
     }
 
-    @GetMapping("/{userId}/accounts/{account}/orders/order/{orderId}")
+    @GetMapping("/{userId}/accounts/{account}/orders/{orderId}")
     public ResponseEntity<Order> getOrder(@PathVariable("userId") Long userId,
                                           @PathVariable("account") String accountParam,
-                                          @PathVariable("orderId") long orderId) {
+                                          @PathVariable("orderId") Integer orderId) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             log.error("account parameters = " + accountParam);
@@ -69,14 +69,20 @@ public class TradeController {
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
+        String token = accountService.decodeToken(account.getToken());
 
-        return ResponseEntity.ok(new Order());
+        TradingService ts = tradingServiceMap.get(broker);
+
+        var orders = ts.getOrders(clientId, token, true, true, true);
+        var findable = orders.stream().filter(o -> o.getOrderId() == orderId).findFirst();
+
+        return findable.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(404).build());
     }
 
     @PostMapping("/{userId}/accounts/{account}/orders/order")
-    public ResponseEntity<Order> newOrderHandle(@PathVariable("userId") Long userId,
-                                                @PathVariable("account") String accountParam,
-                                                NewOrderForm form) {
+    public ResponseEntity<Order> newOrder(@PathVariable("userId") Long userId,
+                                          @PathVariable("account") String accountParam,
+                                          NewOrderForm form) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             log.error("account parameters = " + accountParam);
@@ -84,6 +90,7 @@ public class TradeController {
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
+
         OrderCriteria criteria = OrderCriteria.builder()
                 .broker(account.getBroker())
                 .clientId(account.getClientId())
@@ -98,6 +105,7 @@ public class TradeController {
                 OrderCriteria.PriceType.Limit :
                 OrderCriteria.PriceType.MarketPrice;
         criteria.setPriceType(priceType);
+
         if (form.delayTime() != null) {
             criteria.setDelayTime(form.delayTime());
             criteria.setPriceType(OrderCriteria.PriceType.Delayed);
@@ -118,7 +126,7 @@ public class TradeController {
         return ResponseEntity.ok(order);
     }
 
-    @DeleteMapping("/{userId}/accounts/{account}/orders/order/{orderId}")
+    @DeleteMapping("/{userId}/accounts/{account}/orders/{orderId}")
     public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") Long userId,
                                                @PathVariable("account") String accountParam,
                                                @PathVariable("orderId") Integer orderId) {
@@ -130,6 +138,7 @@ public class TradeController {
         String clientId = accountData[1];
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
         String token = accountService.decodeToken(account.getToken());
+
         TradingService tradingService = tradingServiceMap.get(account.getBroker());
         tradingService.cancelOrder(clientId, token, orderId);
         return ResponseEntity.ok(true);

@@ -601,7 +601,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
             <c:if test="${orders != null}">
                 <div class="t508__container t-container">
                     <c:forEach items="${orders}" var="order" begin="0" end="20">
-                        <div class="my-class"><a href="/anastasia/trade/order/${order.orderId}?accountId=${accountId}">
+                        <div class="my-class"><a href="/anastasia/trade/${account}/order/${order.orderId}">
                             <div class="t-col t-col_6 t-prefix_3 t-item t-list__item ">
                                 <div class="t508__textwrapper t-cell t-valign_top" style="">
                                     <div class="t-name t-name_md t508__bottommargin" field="li_title__1476889049104">

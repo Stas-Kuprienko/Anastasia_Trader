@@ -23,7 +23,7 @@ import java.util.Optional;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-    private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "users/user";
+    private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "users/";
 
     private final HttpHeaders authorizeHeaders;
     private final RestTemplate restTemplate;
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         }
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parameters, authorizeHeaders);
         ResponseEntity<User> response = restTemplate
-                .exchange(resource, HttpMethod.POST, httpEntity, User.class);
+                .exchange(resource + "user", HttpMethod.POST, httpEntity, User.class);
         User user = response.getBody();
         if (user != null) {
             cacheById.put(user.getId(), user);
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             return user;
         } else {
-            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource + "/login");
+            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource + "login");
             getRequest.add("login", login)
                     .add("password", password);
             ResponseEntity<User> response = restTemplate
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
             return user.get();
         } else {
             ResponseEntity<User> response = restTemplate
-                    .exchange(resource + '/' + id, HttpMethod.GET, new HttpEntity<>(authorizeHeaders), User.class);
+                    .exchange(resource + id, HttpMethod.GET, new HttpEntity<>(authorizeHeaders), User.class);
             user = Optional.ofNullable(response.getBody());
             if (user.isPresent()) {
                 User u = user.get();
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);
+            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource + "user");
             getRequest.add("login", login);
             ResponseEntity<User> response = restTemplate
                     .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorizeHeaders), User.class);
