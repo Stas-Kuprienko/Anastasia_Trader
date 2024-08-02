@@ -44,7 +44,8 @@ public class AccountServiceTransactionalAnnotatedImpl implements AccountService 
 
     @Override
     @Transactional
-    public Account createAccount(User user, String clientId, String token, String broker) {
+    public Account createAccount(long userId, String clientId, String token, String broker) {
+        User user = userDao.findById(userId).orElseThrow(() -> new NotFoundException("user id=" + userId));
         Account account = new Account();
         account.setUser(user);
         account.setClientId(clientId);

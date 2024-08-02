@@ -16,6 +16,4 @@ public interface AccountService {
     List<Account> findByLogin(String userLogin);
 
     void deleteAccount(String userLogin, Long accountId);
-
-    String decodeToken(String token);
 }

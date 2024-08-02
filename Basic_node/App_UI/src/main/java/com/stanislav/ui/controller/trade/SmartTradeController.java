@@ -67,9 +67,8 @@ public class SmartTradeController {
         String clientId = accountData[1];
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
-        String token = accountService.decodeToken(account.getToken());
         TimeFrame.Scope tf = TimeFrame.valueOf(timeFrame);
-        smartAutoTradeService.subscribe(account.getClientId(), account.getBroker(), "SBER", Board.TQBR, strategy, tf, token);
+        smartAutoTradeService.subscribe(account.getClientId(), account.getBroker(), "SBER", Board.TQBR, strategy, tf);
         return "ok";
     }
 

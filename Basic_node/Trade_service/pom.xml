@@ -95,7 +95,7 @@
 
 
     <build>
-        <finalName>anastasia</finalName>
+        <finalName>anastasia_api</finalName>
         <extensions>
             <extension>
                 <groupId>kr.motd.maven</groupId>

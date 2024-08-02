@@ -13,6 +13,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account createAccount(User user, String clientId, String token, String broker) {
+
         return null;
     }
 
@@ -34,10 +35,5 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void deleteAccount(String userLogin, Long accountId) {
 
-    }
-
-    @Override
-    public String decodeToken(String token) {
-        return null;
     }
 }

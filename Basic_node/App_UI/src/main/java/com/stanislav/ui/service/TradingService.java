@@ -2,8 +2,7 @@ package com.stanislav.ui.service;
 
 import com.stanislav.ui.model.Broker;
 import com.stanislav.ui.model.trade.Order;
-import com.stanislav.ui.model.trade.OrderCriteria;
-
+import com.stanislav.ui.model.trade.NewOrderForm;
 import java.util.List;
 
 public interface TradingService {
@@ -12,7 +11,7 @@ public interface TradingService {
 
     Order getOrder(long userId, Broker broker, String clientId, Integer orderId);
 
-    Order makeOrder(long userId, OrderCriteria criteria, String token);
+    Order makeOrder(long userId, Broker broker, String clientId, NewOrderForm newOrderForm);
 
-    void cancelOrder(long userId, Broker broker, String clientId, String token, Integer orderId);
+    boolean cancelOrder(long userId, Broker broker, String clientId, Integer orderId);
 }

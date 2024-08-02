@@ -10,7 +10,7 @@ volumes:
 services:
   app:
     build:
-      context: .
+      context: ./Basic_node
       dockerfile: Dockerfile
     container_name: anastasia
     networks:
@@ -24,7 +24,7 @@ services:
 
   smart:
     build:
-      context: ../Smart_service/.
+      context: ./Smart_service
       dockerfile: Dockerfile
     container_name: smart_service
     networks:
@@ -34,7 +34,7 @@ services:
 
   telegram:
     build:
-      context: ../Telegram_bot/.
+      context: ./Telegram_bot
       dockerfile: Dockerfile
     container_name: telegram_bot
     depends_on:
@@ -46,7 +46,7 @@ services:
 
   mysql:
     image: mysql:8.0.38
-    container_name: db
+    container_name: mysql_db
     networks:
       - app-networks
     environment:
@@ -57,7 +57,7 @@ services:
     ports:
       - '3307:3306'
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./Basic_node/.resource_files/setup.sql:/docker-entrypoint-initdb.d/setup.sql
 
   redis:
     image: redis:7.2-rc-alpine

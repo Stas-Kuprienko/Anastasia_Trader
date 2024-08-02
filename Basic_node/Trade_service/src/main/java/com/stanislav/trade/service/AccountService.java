@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AccountService {
 
-    Account createAccount(User user, String clientId, String token, String broker);
+    Account createAccount(long userId, String clientId, String token, String broker);
 
     List<Account> findByUserId(long userId);
 

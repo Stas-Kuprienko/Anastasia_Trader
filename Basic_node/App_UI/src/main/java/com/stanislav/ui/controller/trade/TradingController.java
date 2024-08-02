@@ -7,13 +7,11 @@ package com.stanislav.ui.controller.trade;
 import com.stanislav.ui.configuration.WebApplicationUIConfig;
 import com.stanislav.ui.configuration.auth.form.MyUserDetails;
 import com.stanislav.ui.controller.service.MVC;
-import com.stanislav.ui.model.Board;
 import com.stanislav.ui.model.Broker;
-import com.stanislav.ui.model.Direction;
 import com.stanislav.ui.model.market.Futures;
 import com.stanislav.ui.model.market.Stock;
+import com.stanislav.ui.model.trade.NewOrderForm;
 import com.stanislav.ui.model.trade.Order;
-import com.stanislav.ui.model.trade.OrderCriteria;
 import com.stanislav.ui.model.user.Account;
 import com.stanislav.ui.service.AccountService;
 import com.stanislav.ui.service.MarketDataService;
@@ -106,8 +104,8 @@ public final class TradingController {
                                  @PathVariable("account") String accountParam,
                                  @PathVariable("ticker") String ticker,
                                  @RequestParam("board") String board,
-                                 @RequestParam("price") double price,
-                                 @RequestParam("quantity") long quantity,
+                                 @RequestParam("price") Double price,
+                                 @RequestParam("quantity") Integer quantity,
                                  @RequestParam("direction") String direction,
                                  @RequestParam(name = "cancelUnfulfilled", required = false, defaultValue = "false") boolean cancelUnfulfilled,
                                  @RequestParam(name = "isTillCancel", required = false, defaultValue = "false") boolean isTillCancel,
@@ -121,36 +119,9 @@ public final class TradingController {
         String clientId = accountData[1];
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, Broker.valueOf(broker));
-        OrderCriteria criteria = OrderCriteria.builder()
-                .broker(account.getBroker())
-                .clientId(account.getClientId())
-                .ticker(ticker)
-                .board(Board.valueOf(board))
-                .quantity(quantity)
-                .price(price)
-                .direction(Direction.valueOf(direction))
-                .isMargin(false)
-                .build();
-        OrderCriteria.PriceType priceType = price > 0 ?
-                OrderCriteria.PriceType.Limit :
-                OrderCriteria.PriceType.MarketPrice;
-        criteria.setPriceType(priceType);
-        if (delayTime != null) {
-            criteria.setDelayTime(delayTime);
-            criteria.setPriceType(OrderCriteria.PriceType.Delayed);
-        }
-        if (cancelUnfulfilled) {
-            criteria.setFulFillProperty(OrderCriteria.FulFillProperty.PutInQueue);
-        } else {
-            criteria.setFulFillProperty(OrderCriteria.FulFillProperty.CancelUnfulfilled);
-        }
-        if (isTillCancel) {
-            criteria.setValidBefore(OrderCriteria.ValidBefore.TillCancelled);
-        } else {
-            criteria.setValidBefore(OrderCriteria.ValidBefore.TillEndSession);
-        }
-        String token = accountService.decodeToken(account.getToken());
-        Order order = tradingService.makeOrder(userId, criteria, token);
+        NewOrderForm form = new NewOrderForm(
+                ticker, board, price, quantity, direction, cancelUnfulfilled, isTillCancel, delayTime);
+        Order order = tradingService.makeOrder(userId, account.getBroker(), account.getClientId(), form);
         model.addAttribute("order", order);
         model.addAttribute("account", accountParam);
         return MVC.REDIRECT + ORDER_VIEW;
@@ -180,7 +151,8 @@ public final class TradingController {
     @DeleteMapping("/{account}/order/{orderId}")
     public String cancelOrder(@AuthenticationPrincipal UserDetails userDetails,
                               @PathVariable("account") String accountParam,
-                              @PathVariable("orderId") Integer orderId) {
+                              @PathVariable("orderId") Integer orderId,
+                              Model model) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             throw new IllegalArgumentException(accountParam);
@@ -189,8 +161,8 @@ public final class TradingController {
         String clientId = accountData[1];
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, Broker.valueOf(broker));
-        String token = accountService.decodeToken(account.getToken());
-        tradingService.cancelOrder(userId, Broker.valueOf(broker), clientId, token, orderId);
+        boolean isCanceled = tradingService.cancelOrder(userId, account.getBroker(), account.getClientId(), orderId);
+        model.addAttribute("isCanceled", isCanceled);
         return MVC.REDIRECT + resource + '/' + accountParam + ORDERS_URI;
     }
 }

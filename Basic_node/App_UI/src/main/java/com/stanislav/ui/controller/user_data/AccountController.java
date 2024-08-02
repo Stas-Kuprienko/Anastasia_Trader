@@ -46,7 +46,6 @@ public class AccountController {
 
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, Broker.valueOf(broker));
-        String token = accountService.decodeToken(account.getToken());
 //        Portfolio portfolio = tradingService.getPortfolio(account.getClientId(), token, true);
         model.addAttribute("account", account);
 //        model.addAttribute("balance", portfolio.getBalance());
