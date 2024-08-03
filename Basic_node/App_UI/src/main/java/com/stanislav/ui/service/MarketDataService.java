@@ -1,22 +1,23 @@
 package com.stanislav.ui.service;
 
+import com.stanislav.ui.model.ExchangeMarket;
 import com.stanislav.ui.model.market.Futures;
 import com.stanislav.ui.model.market.Stock;
 import java.util.List;
 
 public interface MarketDataService {
 
-    Stock getStock(String ticker);
+    Stock getStock(ExchangeMarket exchangeMarket, String ticker);
 
-    List<Stock> getStocks();
+    List<Stock> getStocks(ExchangeMarket exchangeMarket);
 
-    List<Stock> getStocks(SortByColumn sortByColumn, SortOrder sortOrder);
+    List<Stock> getStocks(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder);
 
-    Futures getFutures(String ticker);
+    Futures getFutures(ExchangeMarket exchangeMarket, String ticker);
 
-    List<Futures> getFuturesList();
+    List<Futures> getFuturesList(ExchangeMarket exchangeMarket);
 
-    List<Futures> getFuturesList(SortByColumn sortByColumn, SortOrder sortOrder);
+    List<Futures> getFuturesList(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder);
 
 
     enum SortByColumn {

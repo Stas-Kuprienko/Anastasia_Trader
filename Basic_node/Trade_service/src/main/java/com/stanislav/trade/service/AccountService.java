@@ -17,7 +17,9 @@ public interface AccountService {
 
     Account findByClientIdAndBroker(long userId, String clientId, Broker broker) throws AccessDeniedException;
 
-    void deleteAccount(String login, long accountId);
+    void deleteAccount(long userId, long accountId);
+
+    void deleteByClientIdAndBroker(long userId, String clientId, Broker broker);
 
     String decodeToken(String token) throws IllegalArgumentException;
 }

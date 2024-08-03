@@ -48,7 +48,8 @@ public class SmartTradeController {
 
     @GetMapping("/subscribe")
     public String subscribePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        List<Account> accounts = accountService.findByLogin(userDetails.getUsername());
+        long userId = ((MyUserDetails) userDetails).getId();
+        List<Account> accounts = accountService.findByUserId(userId);
         model.addAttribute("accounts", accounts);
         return "smart";
     }
@@ -68,7 +69,8 @@ public class SmartTradeController {
         long userId = ((MyUserDetails) userDetails).getId();
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
         TimeFrame.Scope tf = TimeFrame.valueOf(timeFrame);
-        smartAutoTradeService.subscribe(account.getClientId(), account.getBroker(), "SBER", Board.TQBR, strategy, tf);
+        smartAutoTradeService
+                .subscribe(userId, account.getClientId(), account.getBroker(), "SBER", Board.TQBR, strategy, tf);
         return "ok";
     }
 

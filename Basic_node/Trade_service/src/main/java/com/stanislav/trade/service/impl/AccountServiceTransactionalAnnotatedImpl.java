@@ -97,13 +97,20 @@ public class AccountServiceTransactionalAnnotatedImpl implements AccountService 
 
     @Override
     @Transactional
-    public void deleteAccount(String login, long accountId) {
+    public void deleteAccount(long userId, long accountId) {
         var account = accountDao.findById(accountId);
         if (account.isPresent()) {
-            if (account.get().getUser().getLogin().equals(login)) {
+            if (account.get().getUser().getId() == userId) {
                 accountDao.delete(account.get());
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteByClientIdAndBroker(long userId, String clientId, Broker broker) {
+        Account account = findByClientIdAndBroker(userId, clientId, broker);
+        accountDao.delete(account);
     }
 
     @Override

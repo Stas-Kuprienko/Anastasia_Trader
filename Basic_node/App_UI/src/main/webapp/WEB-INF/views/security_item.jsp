@@ -643,7 +643,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
             <div class="t-section__container t-container">
                 <div class="t-col t-col_12">
                     <div class="t-section__bottomwrapper t-clear t-align_center">
-                    <a href="/anastasia/trade/new-order/${secItem.ticker}?type=${type}" target="" class="t-btn t-btn_md"
+                    <a href="/anastasia/trade/new-order/${secItem.exchangeMarket}/${secItem.ticker}?type=${type}" target="" class="t-btn t-btn_md"
                        style="color:#ffffff;border:2px solid #d4dade;background-color:#b9789f;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;box-shadow:0px 10px 20px rgba(0,11,48,0.25);"
                        data-buttonfieldset="bbutton">
                         <table style="width:100%; height:100%;">

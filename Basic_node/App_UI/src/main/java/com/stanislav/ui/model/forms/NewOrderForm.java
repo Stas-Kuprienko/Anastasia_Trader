@@ -1,4 +1,4 @@
-package com.stanislav.ui.model.trade;
+package com.stanislav.ui.model.forms;
 
 import java.time.LocalDateTime;
 

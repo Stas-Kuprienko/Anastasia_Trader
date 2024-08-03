@@ -7,6 +7,7 @@ import com.stanislav.trade.entities.Broker;
 import com.stanislav.trade.entities.Direction;
 import com.stanislav.trade.entities.orders.Order;
 import com.stanislav.trade.entities.user.Account;
+import com.stanislav.trade.entities.user.Portfolio;
 import com.stanislav.trade.service.AccountService;
 import com.stanislav.trade.controller.form.NewOrderForm;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,24 @@ public class TradingController {
     }
 
 
+    @GetMapping("/{userId}/accounts/{account}/portfolio")
+    public ResponseEntity<Portfolio> getPortfolio(@PathVariable("userId") Long userId,
+                                                  @PathVariable("account") String accountParam,
+                                                  @RequestParam(value = "withPositions", required = false, defaultValue = "false") boolean withPositions) {
+        String[] accountData = accountParam.split(":");
+        if (accountData.length != 2) {
+            throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
+        }
+        Broker broker = Broker.valueOf(accountData[0]);
+        String clientId = accountData[1];
+        Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
+        String token = accountService.decodeToken(account.getToken());
+
+        TradingService ts = tradingServiceMap.get(account.getBroker());
+
+        return ResponseEntity.ok(ts.getPortfolio(account.getClientId(), token, withPositions));
+    }
+
     @GetMapping("/{userId}/accounts/{account}/orders")
     public List<Order> getOrders(@PathVariable("userId") Long userId,
                                  @PathVariable("account") String accountParam,
@@ -42,15 +61,16 @@ public class TradingController {
                                  @RequestParam(value = "active", required = false, defaultValue = "true") boolean includeActive) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
-            log.error("account parameters = " + accountParam);
+            throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
         }
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
-        TradingService tradingService;
-        tradingService = tradingServiceMap.get(account.getBroker());
         String token = accountService.decodeToken(account.getToken());
-        return tradingService.getOrders(
+
+        TradingService ts = tradingServiceMap.get(account.getBroker());
+
+        return ts.getOrders(
                 account.getClientId(),
                 token,
                 includeMatched,
@@ -64,7 +84,7 @@ public class TradingController {
                                           @PathVariable("orderId") Integer orderId) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
-            log.error("account parameters = " + accountParam);
+            throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
         }
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
@@ -85,7 +105,7 @@ public class TradingController {
                                           NewOrderForm form) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
-            log.error("account parameters = " + accountParam);
+            throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
         }
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
@@ -132,7 +152,7 @@ public class TradingController {
                                                @PathVariable("orderId") Integer orderId) {
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
-            log.error("account parameters = " + accountParam);
+            throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
         }
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];

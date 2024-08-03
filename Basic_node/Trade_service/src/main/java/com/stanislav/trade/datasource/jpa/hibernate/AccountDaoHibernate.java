@@ -70,11 +70,6 @@ public class AccountDaoHibernate implements AccountDao {
     }
 
     @Override
-    public Optional<Account> update(Long id, Consumer<Account> updating) {
-        return Optional.empty();
-    }
-
-    @Override
     public void delete(Account object) {
 
     }

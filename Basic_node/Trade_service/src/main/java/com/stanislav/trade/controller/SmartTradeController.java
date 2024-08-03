@@ -29,22 +29,21 @@ public class SmartTradeController {
 
 
     @GetMapping("/strategies")
-    public Set<String> selectSmart() {
+    public Set<String> getStrategies() {
         return smartAutoTradeService.getStrategies();
     }
 
     @PostMapping("/{userId}/accounts/{account}/subscribe/{strategy}")
     public ResponseEntity<SmartSubscriptionResponse> subscribe(@PathVariable("userId") Long userId,
-                                                               @PathVariable("account") String accountParam,
+                                                               @PathVariable("account") String accountParams,
                                                                @PathVariable("strategy") String strategy,
                                                                @RequestParam("ticker") String ticker,
                                                                @RequestParam("board") String board,
                                                                @RequestParam(value = "time_frame", required = false) String timeFrame) {
-        String[] accountData = accountParam.split(":");
+        String[] accountData = accountParams.split(":");
         if (accountData.length != 2) {
-            log.error("account data = " + accountParam);
+            throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParams));
         }
-        //TODO TEMPORARY, JUST FOR SAMPLE
         Broker broker = Broker.valueOf(accountData[0]);
         String clientId = accountData[1];
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
@@ -53,12 +52,12 @@ public class SmartTradeController {
         //TODO
         smartAutoTradeService.subscribe(
                 clientId,
-                broker,
-                ticker,
-                Board.valueOf(board),
-                strategy,
-                tf,
-                token);
+                    broker,
+                        ticker,
+                            Board.valueOf(board),
+                                strategy,
+                                    tf,
+                                        token);
         SmartSubscriptionResponse response = new SmartSubscriptionResponse();
         return ResponseEntity.ok(response);
     }

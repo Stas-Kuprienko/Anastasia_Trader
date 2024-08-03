@@ -4,29 +4,21 @@
 
 package com.stanislav.trade.entities.markets;
 
-import lombok.Builder;
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.Currency;
+import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.Market;
-import org.springframework.data.redis.core.RedisHash;
-
+import lombok.Builder;
 import java.util.Objects;
 
-@RedisHash
-public final class Stock implements Securities {
+public final class Stock extends Securities {
 
-    private String ticker;
-    private String name;
-    private PriceAtTheDate price;
     private int lotSize;
-    private long dayTradeVolume;
-    private Currency currency;
-    private Market market;
-    private Board board;
 
 
     @Builder
-    public Stock(String ticker, String name, Currency currency, PriceAtTheDate price, int lotSize, long dayTradeVolume, Market market, Board board) {
+    public Stock(String ticker, String name, Currency currency, PriceAtTheDate price, int lotSize,
+                 long dayTradeVolume, Market market, Board board, ExchangeMarket exchangeMarket) {
         this.ticker = ticker;
         this.name = name;
         this.currency = currency;
@@ -35,26 +27,11 @@ public final class Stock implements Securities {
         this.dayTradeVolume = dayTradeVolume;
         this.market = market;
         this.board = board;
+        this.exchangeMarket = exchangeMarket;
     }
 
     public Stock() {}
 
-
-    public String getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getLotSize() {
         return lotSize;
@@ -62,46 +39,6 @@ public final class Stock implements Securities {
 
     public void setLotSize(int lotSize) {
         this.lotSize = lotSize;
-    }
-
-    public long getDayTradeVolume() {
-        return dayTradeVolume;
-    }
-
-    public void setDayTradeVolume(long dayTradeVolume) {
-        this.dayTradeVolume = dayTradeVolume;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
-
-    public Market getMarket() {
-        return market;
-    }
-
-    public void setMarket(Market market) {
-        this.market = market;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
-    public PriceAtTheDate getPrice() {
-        return price;
-    }
-
-    public void setPrice(PriceAtTheDate price) {
-        this.price = price;
     }
 
     @Override
@@ -116,11 +53,6 @@ public final class Stock implements Securities {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(ticker, name, currency, market, board);
-    }
-
-    @Override
     public String toString() {
         return "Stock{" +
                 "ticker='" + ticker + '\'' +
@@ -130,12 +62,7 @@ public final class Stock implements Securities {
                 ", currency=" + currency +
                 ", market=" + market +
                 ", board=" + board +
+                ", exchangeMarket=" + exchangeMarket +
                 '}';
-    }
-
-    @Override
-    public int compareTo(Securities o) {
-        Stock stock = (Stock) o;
-        return Long.compare(stock.dayTradeVolume, dayTradeVolume);
     }
 }

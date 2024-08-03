@@ -8,9 +8,10 @@ import com.stanislav.ui.configuration.WebApplicationUIConfig;
 import com.stanislav.ui.configuration.auth.form.MyUserDetails;
 import com.stanislav.ui.controller.service.MVC;
 import com.stanislav.ui.model.Broker;
+import com.stanislav.ui.model.ExchangeMarket;
 import com.stanislav.ui.model.market.Futures;
 import com.stanislav.ui.model.market.Stock;
-import com.stanislav.ui.model.trade.NewOrderForm;
+import com.stanislav.ui.model.forms.NewOrderForm;
 import com.stanislav.ui.model.trade.Order;
 import com.stanislav.ui.model.user.Account;
 import com.stanislav.ui.service.AccountService;
@@ -99,7 +100,7 @@ public final class TradingController {
         return ORDER_VIEW;
     }
 
-    @PostMapping("/{account}/order/{ticker}")
+    @PostMapping("/{account}/order/{exchange}/{ticker}")
     public String newOrderHandle(@AuthenticationPrincipal UserDetails userDetails,
                                  @PathVariable("account") String accountParam,
                                  @PathVariable("ticker") String ticker,
@@ -127,17 +128,20 @@ public final class TradingController {
         return MVC.REDIRECT + ORDER_VIEW;
     }
 
-    @GetMapping("/new-order/{ticker}")
-    public String newOrder(@AuthenticationPrincipal UserDetails userDetails,
-                           @PathVariable("ticker") String ticker,
-                           @RequestParam("type") String type, Model model) {
-        List<Account> accounts = accountService.findByLogin(userDetails.getUsername());
+    @GetMapping("/new-order/{exchange}/{ticker}")
+    public String newOrderPage(@AuthenticationPrincipal UserDetails userDetails,
+                               @PathVariable("exchange") String exchange,
+                               @PathVariable("ticker") String ticker,
+                               @RequestParam("type") String type, Model model) {
+        long userId = ((MyUserDetails) userDetails).getId();
+        ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
+        List<Account> accounts = accountService.findByUserId(userId);
         model.addAttribute("accounts", accounts);
         if (type.equals(STOCK_TYPE)) {
-            Stock stock = marketDataService.getStock(ticker);
+            Stock stock = marketDataService.getStock(exchangeMarket, ticker);
             model.addAttribute(ITEM, stock);
         } else if (type.equals(FUTURES_TYPE)) {
-            Futures futures = marketDataService.getFutures(ticker);
+            Futures futures = marketDataService.getFutures(exchangeMarket, ticker);
             model.addAttribute(ITEM, futures);
         } else {
             log.error("type of security = " + type);

@@ -2,16 +2,24 @@ package com.stanislav.trade.entities;
 
 public enum Broker {
 
-    Finam("Финам");
+    Finam("Финам", ExchangeMarket.MOEX);
 
     
     private final String title;
+    private final ExchangeMarket exchange;
 
-    Broker(String title) {
+
+    Broker(String title, ExchangeMarket exchange) {
         this.title = title;
+        this.exchange = exchange;
     }
 
-    public String getTitle() {
+
+    public String title() {
         return title;
+    }
+
+    public ExchangeMarket exchangeMarket() {
+        return exchange;
     }
 }

@@ -65,13 +65,6 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public Optional<User> update(Long id, Consumer<User> updating) {
-        Optional<User> user = Optional.ofNullable(entityManager.find(User.class, id));
-        user.ifPresent(updating);
-        return user;
-    }
-
-    @Override
     public void delete(User user) {
         entityManager.remove(user);
     }

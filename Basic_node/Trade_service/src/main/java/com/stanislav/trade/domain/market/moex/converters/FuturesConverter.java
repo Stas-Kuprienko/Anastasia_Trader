@@ -2,6 +2,7 @@ package com.stanislav.trade.domain.market.moex.converters;
 
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.Currency;
+import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.Market;
 import com.stanislav.trade.entities.markets.Futures;
 import com.stanislav.trade.entities.markets.Securities;
@@ -97,6 +98,7 @@ public enum FuturesConverter {
                 .expiration(expiration)
                 .board(Board.valueOf((String) dto[BOARDID.ordinal()]))
                 .market(Market.Forts)
+                .exchangeMarket(ExchangeMarket.MOEX)
                 .build();
     }
 

@@ -9,18 +9,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/market")
-public class MarketRestApi {
+public class MarketDataController {
 
     private final HashMap<ExchangeMarket, ExchangeDataProvider> exchangeDataMap;
 
     @Autowired
-    public MarketRestApi(List<ExchangeDataProvider> exchangeDataProviderList) {
+    public MarketDataController(List<ExchangeDataProvider> exchangeDataProviderList) {
         exchangeDataMap = new HashMap<>();
         for (var e : exchangeDataProviderList) {
             exchangeDataMap.put(e.getExchange(), e);
@@ -30,7 +31,7 @@ public class MarketRestApi {
 
     @GetMapping("/{exchange}/securities/stock/{ticker}")
     public ResponseEntity<Stock> getStock(@PathVariable("exchange") String exchange,
-                                   @PathVariable("ticker") String ticker) {
+                                          @PathVariable("ticker") String ticker) {
         ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
         ExchangeDataProvider exchangeDataProvider = exchangeDataMap.get(exchangeMarket);
         Stock stock = exchangeDataProvider.getStock(ticker).orElseThrow(() -> new NotFoundException(ticker));
@@ -64,7 +65,7 @@ public class MarketRestApi {
 
     @GetMapping("/{exchange}/securities/futures/{ticker}")
     public ResponseEntity<Futures> getFutures(@PathVariable("exchange") String exchange,
-                              @PathVariable("ticker") String ticker) {
+                                              @PathVariable("ticker") String ticker) {
         ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
         ExchangeDataProvider exchangeDataProvider = exchangeDataMap.get(exchangeMarket);
         Futures futures = exchangeDataProvider.getFutures(ticker).orElseThrow(() -> new NotFoundException(ticker));

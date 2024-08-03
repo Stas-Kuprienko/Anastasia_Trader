@@ -13,7 +13,5 @@ public interface EntityDao<ENTITY, ID> {
 
     Optional<ENTITY> findById(ID id);
 
-    Optional<ENTITY> update(ID id, Consumer<ENTITY> updating);
-
     void delete(ENTITY object);
 }

@@ -1,7 +1,7 @@
 package com.stanislav.ui.controller.service;
 
 import com.stanislav.ui.exception.NotFoundException;
-import com.stanislav.ui.model.ResponseError;
+import com.stanislav.ui.model.forms.ResponseError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

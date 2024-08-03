@@ -30,9 +30,7 @@ public interface ExchangeDataProvider {
     enum SortByColumn {
 
         NONE,
-//        TICKER,
         TRADE_VOLUME,
-//        CHANGE_PERCENT
     }
 
     enum SortOrder {

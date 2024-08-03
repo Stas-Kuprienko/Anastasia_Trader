@@ -5,31 +5,25 @@
 package com.stanislav.ui.model.market;
 
 import com.stanislav.ui.model.Board;
+import com.stanislav.ui.model.ExchangeMarket;
 import com.stanislav.ui.model.Market;
 import lombok.Builder;
 import java.time.LocalDate;
 import java.util.Currency;
 import java.util.Objects;
 
-public final class Futures implements Securities {
+public final class Futures extends Securities {
 
 
-    private String ticker;
-    private String name;
     private String asset;
     private double minStep;
     private double stepPrice;
-    private Currency currency;
-    private PriceAtTheDate price;
-    private long dayTradeVolume;
     private LocalDate expiration;
-    private Market market;
-    private Board board;
 
 
     @Builder
     public Futures(String ticker, String name, String asset, double minStep, double stepPrice, Currency currency,
-                   PriceAtTheDate price, long dayTradeVolume, LocalDate expiration, Market market, Board board) {
+                   PriceAtTheDate price, long dayTradeVolume, LocalDate expiration, Market market, Board board, ExchangeMarket exchangeMarket) {
         this.ticker = ticker;
         this.name = name;
         this.asset = asset;
@@ -41,26 +35,11 @@ public final class Futures implements Securities {
         this.expiration = expiration;
         this.market = market;
         this.board = board;
+        this.exchangeMarket = exchangeMarket;
     }
 
     public Futures() {}
 
-
-    public String getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getAsset() {
         return asset;
@@ -86,52 +65,12 @@ public final class Futures implements Securities {
         this.stepPrice = stepPrice;
     }
 
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
-
     public LocalDate getExpiration() {
         return expiration;
     }
 
     public void setExpiration(LocalDate expiration) {
         this.expiration = expiration;
-    }
-
-    public PriceAtTheDate getPrice() {
-        return price;
-    }
-
-    public void setPrice(PriceAtTheDate price) {
-        this.price = price;
-    }
-
-    public long getDayTradeVolume() {
-        return dayTradeVolume;
-    }
-
-    public void setDayTradeVolume(long dayTradeVolume) {
-        this.dayTradeVolume = dayTradeVolume;
-    }
-
-    public Market getMarket() {
-        return market;
-    }
-
-    public void setMarket(Market market) {
-        this.market = market;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
     }
 
     @Override
@@ -149,7 +88,7 @@ public final class Futures implements Securities {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ticker, name, asset, currency, expiration, market, board);
+        return Objects.hash(ticker, name, asset, currency, market, board);
     }
 
     @Override
@@ -165,12 +104,7 @@ public final class Futures implements Securities {
                 ", expiration=" + expiration +
                 ", market=" + market +
                 ", board=" + board +
+                ", exchangeMarket=" + exchangeMarket +
                 '}';
-    }
-
-    @Override
-    public int compareTo(Securities o) {
-        Futures futures = (Futures) o;
-        return Long.compare(futures.dayTradeVolume, dayTradeVolume);
     }
 }

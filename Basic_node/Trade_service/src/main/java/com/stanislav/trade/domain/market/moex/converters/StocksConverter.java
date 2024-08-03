@@ -2,6 +2,7 @@ package com.stanislav.trade.domain.market.moex.converters;
 
 import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.Currency;
+import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.Market;
 import com.stanislav.trade.entities.markets.Securities;
 import com.stanislav.trade.entities.markets.Stock;
@@ -127,6 +128,7 @@ public enum StocksConverter {
                 .dayTradeVolume(Long.parseLong(marketData[MarketData.VALTODAY.ordinal()].toString()))
                 .market(Market.Stock)
                 .board(Board.valueOf((String) dto[BOARDID.ordinal()]))
+                .exchangeMarket(ExchangeMarket.MOEX)
                 .build();
     }
 

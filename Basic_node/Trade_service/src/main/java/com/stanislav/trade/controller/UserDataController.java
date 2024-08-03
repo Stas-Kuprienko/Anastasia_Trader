@@ -1,45 +1,26 @@
 package com.stanislav.trade.controller;
 
 import com.stanislav.trade.controller.form.LogInUserForm;
-import com.stanislav.trade.controller.form.NewAccountForm;
 import com.stanislav.trade.controller.form.SignUpUserForm;
-import com.stanislav.trade.entities.Broker;
-import com.stanislav.trade.entities.user.Account;
 import com.stanislav.trade.entities.user.User;
-import com.stanislav.trade.model.AccountDto;
 import com.stanislav.trade.model.UserDto;
-import com.stanislav.trade.model.convertors.AccountDtoConverter;
 import com.stanislav.trade.model.convertors.UserDtoConvertor;
-import com.stanislav.trade.service.AccountService;
 import com.stanislav.trade.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserDataController {
 
     private final UserService userService;
-    private final AccountService accountService;
     private final UserDtoConvertor userDtoConvertor;
-    private final AccountDtoConverter accountDtoConverter;
 
     @Autowired
-    public UserDataController(UserService userService,
-                              AccountService accountService,
-                              UserDtoConvertor userDtoConvertor,
-                              AccountDtoConverter accountDtoConverter) {
+    public UserDataController(UserService userService, UserDtoConvertor userDtoConvertor) {
         this.userService = userService;
         this.userDtoConvertor = userDtoConvertor;
-        this.accountService = accountService;
-        this.accountDtoConverter = accountDtoConverter;
     }
 
 
@@ -68,40 +49,6 @@ public class UserDataController {
     public ResponseEntity<UserDto> getUserByLogin(@RequestParam("login") String login) {
         User user = userService.findUserByLogin(login);
         return ResponseEntity.ok(userDtoConvertor.convert(user));
-    }
-
-    @GetMapping("/{userId}/accounts")
-    public ResponseEntity<List<AccountDto>> getAccounts(@PathVariable("userId") Long userId) {
-        List<Account> accounts = accountService.findByUserId(userId);
-        List<AccountDto> dtoList = new ArrayList<>();
-        for (Account a : accounts) {
-            dtoList.add(accountDtoConverter.convert(a));
-        }
-        return ResponseEntity.ok(dtoList);
-    }
-
-    @GetMapping("/{userId}/accounts/account/{account}")
-    public ResponseEntity<AccountDto> getAccount(@PathVariable("userId") Long userId,
-                                                 @PathVariable("account") String accountParams) {
-        String[] accountData = accountParams.split(":");
-        if (accountData.length != 2) {
-            return ResponseEntity.badRequest().build();
-        }
-        Broker broker = Broker.valueOf(accountData[0]);
-        String clientId = accountData[1];
-        Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
-        return ResponseEntity.ok(accountDtoConverter.convert(account));
-    }
-
-    @PostMapping("/{userId}/accounts/account/account")
-    public ResponseEntity<Account> newAccountHandle(@PathVariable("userId") Long userId, NewAccountForm newAccountForm) {
-        Broker broker = Broker.valueOf(newAccountForm.broker());
-        Account account = accountService.createAccount(
-                userId,
-                newAccountForm.clientId(),
-                newAccountForm.token(),
-                broker.toString());
-        return ResponseEntity.ok(account);
     }
 
 }

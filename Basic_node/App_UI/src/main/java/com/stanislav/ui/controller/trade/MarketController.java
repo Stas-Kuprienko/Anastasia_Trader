@@ -4,6 +4,7 @@
 
 package com.stanislav.ui.controller.trade;
 
+import com.stanislav.ui.model.ExchangeMarket;
 import com.stanislav.ui.model.market.Futures;
 import com.stanislav.ui.model.market.Stock;
 import com.stanislav.ui.service.MarketDataService;
@@ -32,25 +33,31 @@ public final class MarketController {
 
     private final MarketDataService marketDataService;
 
+
     @Autowired
     public MarketController(MarketDataService marketDataService) {
         this.marketDataService = marketDataService;
     }
 
 
-    @GetMapping("/stock/{ticker}")
-    public String getStock(@PathVariable("ticker") String ticker, Model model) {
-        Stock stock = marketDataService.getStock(ticker);
+    @GetMapping("/{exchange}/stock/{ticker}")
+    public String getStock(@PathVariable("ticker") String ticker,
+                           @PathVariable("exchange") String exchange,
+                           Model model) {
+        ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
+        Stock stock = marketDataService.getStock(exchangeMarket, ticker);
         model.addAttribute(SEC_ITEM, stock);
         model.addAttribute("type", STOCK_URI);
         return ITEM_PAGE;
     }
 
-    @GetMapping("/stocks")
-    public String getStocks(Model model,
+    @GetMapping("/{exchange}/stocks")
+    public String getStocks(@PathVariable("exchange") String exchange,
                             @RequestParam(value = "sort-by", required = false) String sortByParam,
-                            @RequestParam(value = "sort-order", required = false) String sortOrderParam) {
+                            @RequestParam(value = "sort-order", required = false) String sortOrderParam,
+                            Model model) {
         List<Stock> stocks;
+        ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
         if (sortByParam != null) {
             MarketDataService.SortByColumn sortByColumn;
             MarketDataService.SortOrder sortOrder;
@@ -62,28 +69,33 @@ public final class MarketController {
                 sortByColumn = MarketDataService.SortByColumn.NONE;
                 sortOrder = MarketDataService.SortOrder.asc;
             }
-            stocks = marketDataService.getStocks(sortByColumn, sortOrder);
+            stocks = marketDataService.getStocks(exchangeMarket, sortByColumn, sortOrder);
         } else {
-            stocks = marketDataService.getStocks();
+            stocks = marketDataService.getStocks(exchangeMarket);
         }
         model.addAttribute(SEC_LIST, stocks);
         model.addAttribute("type", STOCK_URI);
         return LIST_PAGE;
     }
 
-    @GetMapping("/futures/{ticker}")
-    public String getFutures(@PathVariable("ticker") String ticker, Model model) {
-        Futures futures = marketDataService.getFutures(ticker);
+    @GetMapping("/{exchange}/futures/{ticker}")
+    public String getFutures(@PathVariable("exchange") String exchange,
+                             @PathVariable("ticker") String ticker,
+                             Model model) {
+        ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
+        Futures futures = marketDataService.getFutures(exchangeMarket, ticker);
         model.addAttribute(SEC_ITEM, futures);
         model.addAttribute("type", FUTURES_URI);
         return ITEM_PAGE;
     }
 
-    @GetMapping("/futures")
-    public String getFuturesList(Model model,
+    @GetMapping("/{exchange}/futures")
+    public String getFuturesList(@PathVariable("exchange") String exchange,
                                  @RequestParam(value = "sort-by", required = false) String sortByParam,
-                                 @RequestParam(value = "sort-order", required = false) String sortOrderParam) {
+                                 @RequestParam(value = "sort-order", required = false) String sortOrderParam,
+                                 Model model) {
         List<Futures> futuresList;
+        ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
         if (sortByParam != null) {
             MarketDataService.SortByColumn sortByColumn;
             MarketDataService.SortOrder sortOrder;
@@ -95,9 +107,9 @@ public final class MarketController {
                 sortByColumn = MarketDataService.SortByColumn.NONE;
                 sortOrder = MarketDataService.SortOrder.asc;
             }
-            futuresList = marketDataService.getFuturesList(sortByColumn, sortOrder);
+            futuresList = marketDataService.getFuturesList(exchangeMarket, sortByColumn, sortOrder);
         } else {
-            futuresList = marketDataService.getFuturesList();
+            futuresList = marketDataService.getFuturesList(exchangeMarket);
         }
         model.addAttribute(SEC_LIST, futuresList);
         model.addAttribute("type", FUTURES_URI);
