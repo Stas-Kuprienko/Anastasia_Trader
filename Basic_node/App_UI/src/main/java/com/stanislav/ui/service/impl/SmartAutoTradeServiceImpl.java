@@ -17,7 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Collections;
 import java.util.Set;
 
@@ -51,18 +50,7 @@ public class SmartAutoTradeServiceImpl implements SmartAutoTradeService {
 
     @Override
     public SmartSubscriptionResponse subscribe(long userId, String clientId, Broker broker, String ticker, Board board, String strategy, TimeFrame.Scope tf) {
-        GetRequestParametersBuilder url = new GetRequestParametersBuilder(resource);
-        String account = broker.toString() + ':' + clientId;
-        url.appendToUrl(userId)
-                .appendToUrl("/account/")
-                .appendToUrl(account)
-                .appendToUrl("/subscribe/")
-                .appendToUrl(strategy);
-        url.add("ticker", ticker)
-                .add("board", board)
-                .add("time_frame", tf);
-        ResponseEntity<SmartSubscriptionResponse> response = restTemplate
-                .exchange(url.build(), HttpMethod.POST, new HttpEntity<>(authorization), SmartSubscriptionResponse.class);
+        ResponseEntity<SmartSubscriptionResponse> response = doRequest(RequestType.SUBSCRIBE, userId, clientId, broker, ticker, board, strategy, tf);
         if (response.hasBody()) {
             return response.getBody();
         } else {
@@ -71,7 +59,39 @@ public class SmartAutoTradeServiceImpl implements SmartAutoTradeService {
     }
 
     @Override
-    public void unsubscribe(long userId, String clientId, Broker broker, String ticker, Board board, String strategy, TimeFrame.Scope tf) {
+    public SmartSubscriptionResponse unsubscribe(long userId, String clientId, Broker broker, String ticker, Board board, String strategy, TimeFrame.Scope tf) {
+        ResponseEntity<SmartSubscriptionResponse> response = doRequest(RequestType.UNSUBSCRIBE, userId, clientId, broker, ticker, board, strategy, tf);
+        if (response.hasBody()) {
+            return response.getBody();
+        } else {
+            throw new BadRequestException("Unsubscription request from strategy='%s' for user=%d on  is failed".formatted(strategy, userId));
+        }
+    }
 
+    private ResponseEntity<SmartSubscriptionResponse> doRequest(RequestType requestType, long userId, String clientId, Broker broker, String ticker, Board board, String strategy, TimeFrame.Scope tf) {
+        GetRequestParametersBuilder url = new GetRequestParametersBuilder(resource);
+        String account = broker.toString() + ':' + clientId;
+        url.appendToUrl(userId)
+                .appendToUrl("/account/")
+                .appendToUrl(account)
+                .appendToUrl(requestType.value)
+                .appendToUrl(strategy);
+        url.add("ticker", ticker)
+                .add("board", board)
+                .add("time_frame", tf);
+        return restTemplate
+                .exchange(url.build(), HttpMethod.POST, new HttpEntity<>(authorization), SmartSubscriptionResponse.class);
+    }
+
+    enum RequestType {
+
+        SUBSCRIBE("/subscribe/"),
+        UNSUBSCRIBE("/subscribe/");
+
+        final String value;
+
+        RequestType(String value) {
+            this.value = value;
+        }
     }
 }

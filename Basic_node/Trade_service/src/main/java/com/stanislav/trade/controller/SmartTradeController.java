@@ -49,7 +49,6 @@ public class SmartTradeController {
         Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
         String token = accountService.decodeToken(account.getToken());
         TimeFrame.Scope tf = TimeFrame.valueOf(timeFrame);
-        //TODO
         smartAutoTradeService.subscribe(
                 clientId,
                     broker,
@@ -58,8 +57,37 @@ public class SmartTradeController {
                                 strategy,
                                     tf,
                                         token);
+        //TODO
         SmartSubscriptionResponse response = new SmartSubscriptionResponse();
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/{userId}/accounts/{account}/unsubscribe/{strategy}")
+    public ResponseEntity<SmartSubscriptionResponse> unsubscribe(@PathVariable("userId") Long userId,
+                                                                 @PathVariable("account") String accountParams,
+                                                                 @PathVariable("strategy") String strategy,
+                                                                 @RequestParam("ticker") String ticker,
+                                                                 @RequestParam("board") String board,
+                                                                 @RequestParam(value = "time_frame", required = false) String timeFrame) {
+        String[] accountData = accountParams.split(":");
+        if (accountData.length != 2) {
+            throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParams));
+        }
+        Broker broker = Broker.valueOf(accountData[0]);
+        String clientId = accountData[1];
+        Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
+        String token = accountService.decodeToken(account.getToken());
+        TimeFrame.Scope tf = TimeFrame.valueOf(timeFrame);
+        smartAutoTradeService.unsubscribe(
+                clientId,
+                    broker,
+                        ticker,
+                            Board.valueOf(board),
+                                strategy,
+                                    tf,
+                                        token);
+        //TODO
+        SmartSubscriptionResponse response = new SmartSubscriptionResponse();
+        return ResponseEntity.ok(response);
+    }
 }
