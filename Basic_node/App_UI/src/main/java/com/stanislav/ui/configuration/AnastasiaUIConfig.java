@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 @Configuration
 @PropertySource("classpath:application.properties")
 @ComponentScan("com.stanislav.ui")
@@ -28,7 +30,6 @@ public class AnastasiaUIConfig {
 
     private final String id;
     private final String secretKey;
-
 
     public AnastasiaUIConfig(@Value("${api.id}") String id,
                              @Value("${api.secretKey}") String secretKey) {

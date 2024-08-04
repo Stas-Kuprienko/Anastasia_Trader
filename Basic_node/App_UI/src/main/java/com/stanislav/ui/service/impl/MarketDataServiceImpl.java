@@ -9,6 +9,8 @@ import com.stanislav.ui.model.market.Stock;
 import com.stanislav.ui.service.MarketDataService;
 import com.stanislav.ui.utils.GetRequestParametersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +39,7 @@ public class MarketDataServiceImpl implements MarketDataService {
         this.restTemplate = restTemplate;
     }
 
-
+    @Caching()
     @Override
     public Stock getStock(ExchangeMarket exchangeMarket, String ticker) {
         String url = resource +
@@ -55,11 +57,13 @@ public class MarketDataServiceImpl implements MarketDataService {
         }
     }
 
+    @Cacheable(value = "stock:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Stock> getStocks(ExchangeMarket exchangeMarket) {
         return getStocks(exchangeMarket, SortByColumn.NONE, SortOrder.asc);
     }
 
+    @Cacheable(value = "stock:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Stock> getStocks(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder) {
         GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);
@@ -78,6 +82,7 @@ public class MarketDataServiceImpl implements MarketDataService {
         }
     }
 
+    @Caching
     @Override
     public Futures getFutures(ExchangeMarket exchangeMarket, String ticker) {
         String url = resource +
@@ -95,11 +100,13 @@ public class MarketDataServiceImpl implements MarketDataService {
         }
     }
 
+    @Cacheable(value = "futures:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Futures> getFuturesList(ExchangeMarket exchangeMarket) {
         return getFuturesList(exchangeMarket, SortByColumn.NONE, SortOrder.asc);
     }
 
+    @Cacheable(value = "futures:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Futures> getFuturesList(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder) {
         GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);

@@ -9,6 +9,7 @@ import com.stanislav.trade.entities.Broker;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Table(name = "account")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@RedisHash("account")
 public final class Account implements Serializable {
 
     @Id

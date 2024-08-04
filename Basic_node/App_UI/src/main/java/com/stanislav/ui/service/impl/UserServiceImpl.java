@@ -8,6 +8,7 @@ import com.stanislav.ui.model.user.User;
 import com.stanislav.ui.service.UserService;
 import com.stanislav.ui.utils.GetRequestParametersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -86,6 +87,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Cacheable(value = "user:id", keyGenerator = "keyGeneratorById")
     @Override
     public User findById(Long id) {
         Optional<User> user = Optional.ofNullable(cacheById.get(id));
@@ -106,6 +108,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Cacheable(value = "user:login", keyGenerator = "keyGeneratorByParams")
     @Override
     public User findByLogin(String login) {
         Optional<User> user = Optional.ofNullable(cacheByLogin.get(login));

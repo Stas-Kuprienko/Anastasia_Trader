@@ -8,6 +8,8 @@ import com.stanislav.trade.entities.Board;
 import com.stanislav.trade.entities.Currency;
 import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.Market;
+import org.springframework.data.redis.core.RedisHash;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

@@ -42,7 +42,8 @@ public class TradingServiceImpl implements TradingService {
         String account = broker.toString() + ':' + clientId;
 
         getRequest.appendToUrl(userId)
-                .appendToUrl("/account/")
+                .appendToUrl("/accounts")
+                .appendToUrl('/')
                 .appendToUrl(account)
                 .appendToUrl("/portfolio");
 
@@ -64,7 +65,8 @@ public class TradingServiceImpl implements TradingService {
         String account = broker.toString() + ':' + clientId;
 
         getRequest.appendToUrl(userId)
-                .appendToUrl("/accounts/")
+                .appendToUrl("/accounts")
+                .appendToUrl('/')
                 .appendToUrl(account)
                 .appendToUrl("/orders");
 
@@ -88,7 +90,8 @@ public class TradingServiceImpl implements TradingService {
         String account = broker.toString() + ':' + clientId;
 
         url.append(userId)
-                .append("/accounts/")
+                .append("/accounts")
+                .append('/')
                 .append(account)
                 .append("/orders/")
                 .append(orderId);
@@ -109,7 +112,8 @@ public class TradingServiceImpl implements TradingService {
         String account = broker.toString() + ':' + clientId;
 
         url.append(userId)
-                .append("/accounts/")
+                .append("/accounts")
+                .append('/')
                 .append(account)
                 .append("/orders/")
                 .append("order");
@@ -133,6 +137,7 @@ public class TradingServiceImpl implements TradingService {
 
         url.append(userId)
                 .append("/accounts/")
+                .append('/')
                 .append(account)
                 .append("/orders/")
                 .append(orderId);

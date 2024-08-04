@@ -8,9 +8,12 @@ import com.stanislav.ui.model.Board;
 import com.stanislav.ui.model.ExchangeMarket;
 import com.stanislav.ui.model.Market;
 import lombok.Builder;
+import org.springframework.data.redis.core.RedisHash;
+
 import java.util.Currency;
 import java.util.Objects;
 
+@RedisHash("stock")
 public final class Stock extends Securities {
 
     private int lotSize;

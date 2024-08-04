@@ -605,7 +605,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9dc3aaa', en
             <ul role="list" class="t508__container t-container">
                 <c:forEach items="${accounts}" var = "account">
                     <li class="t-col t-col_6 t-prefix_4 t-item t-list__item ">
-                        <a href="/anastasia/user/account/${account.clientId}?broker=${account.broker}">
+                        <a href="/anastasia/user/account/${account.broker}:${account.clientId}">
                             <div class="t-cell t-valign_top">
                                 <div class="t508__bgimg t-bgimg loaded" imgfield="li_img__1476889049104"
                                      data-original="https://static.tildacdn.info/lib/emoji/fluent/briefcase_3d.png"

@@ -1,8 +1,12 @@
 package com.stanislav.ui.model.user;
 
+import org.springframework.data.redis.core.RedisHash;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class User {
+@RedisHash("user")
+public class User implements Serializable {
 
     private Long id;
     private String login;

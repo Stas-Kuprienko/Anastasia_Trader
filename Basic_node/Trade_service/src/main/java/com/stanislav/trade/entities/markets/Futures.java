@@ -9,9 +9,12 @@ import com.stanislav.trade.entities.Currency;
 import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.Market;
 import lombok.Builder;
+import org.springframework.data.redis.core.RedisHash;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+@RedisHash("futures")
 public final class Futures extends Securities {
 
 

@@ -20,7 +20,7 @@
       </TomcatInfo>
     </option>
     <option name="vmOptions" value="" />
-    <module name="App_UI" />
+    <module name="app_ui" />
     <method v="2" />
   </configuration>
 </component>

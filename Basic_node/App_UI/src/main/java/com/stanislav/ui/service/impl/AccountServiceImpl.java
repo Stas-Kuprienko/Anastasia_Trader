@@ -9,6 +9,9 @@ import com.stanislav.ui.model.forms.NewAccountForm;
 import com.stanislav.ui.model.user.Account;
 import com.stanislav.ui.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +41,8 @@ public class AccountServiceImpl implements AccountService {
     public Account createAccount(long userId, String clientId, String broker, String token) {
         NewAccountForm form = new NewAccountForm(broker, clientId, token);
         String url = resource + userId +
-                "/accounts/" +
+                "/accounts" +
+                '/' +
                 "account";
         HttpEntity<NewAccountForm> httpEntity = new HttpEntity<>(form, authorization);
         ResponseEntity<Account> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Account.class);
@@ -50,12 +54,14 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Cacheable(value = "account:parameters", keyGenerator = "keyGeneratorByParams")
     @Override
     public Account findByClientIdAndBroker(long userId, String clientId, Broker broker) {
         StringBuilder url = new StringBuilder(resource);
         String accountParams = broker.toString() + ':' + clientId;
         url.append(userId)
-                .append("/account/")
+                .append("/accounts")
+                .append('/')
                 .append(accountParams);
         ResponseEntity<Account> response = restTemplate
                 .exchange(url.toString(), HttpMethod.GET, new HttpEntity<>(authorization), Account.class);
@@ -67,6 +73,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Cacheable(value = "account:userId", keyGenerator = "keyGeneratorById")
     @Override
     public List<Account> findByUserId(long userId) {
         String url = resource + userId +
@@ -81,12 +88,15 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "account:userId", keyGenerator = "keyGeneratorById"),
+            @CacheEvict(value = "account:parameters", keyGenerator = "keyGeneratorByParams")})
     @Override
     public void deleteAccount(long userId, String clientId, Broker broker) {
         StringBuilder url = new StringBuilder(resource);
         String accountParams = broker.toString() + ':' + clientId;
         url.append(userId)
-                .append("/account/")
+                .append("/accounts/")
                 .append(accountParams);
         ResponseEntity<Boolean> response = restTemplate
                 .exchange(url.toString(), HttpMethod.DELETE, new HttpEntity<>(authorization), Boolean.class);

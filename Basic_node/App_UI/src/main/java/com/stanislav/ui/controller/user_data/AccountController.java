@@ -32,7 +32,7 @@ public class AccountController {
     }
 
 
-    @GetMapping("/account/{clientId}")
+    @GetMapping("/account/{account}")
     public String getAccount(@AuthenticationPrincipal UserDetails userDetails,
                              @PathVariable("account") String accountParams, Model model) {
 

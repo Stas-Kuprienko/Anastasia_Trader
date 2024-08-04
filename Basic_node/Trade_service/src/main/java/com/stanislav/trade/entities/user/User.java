@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Table(name = "user")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@RedisHash("user")
 public final class User implements Serializable {
 
     @Id
@@ -28,7 +30,6 @@ public final class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String login;
 
-    @JsonIgnore
     private String password;
 
     @Enumerated

@@ -2,9 +2,13 @@ package com.stanislav.ui.model.user;
 
 import com.stanislav.ui.model.Broker;
 import lombok.Builder;
+import org.springframework.data.redis.core.RedisHash;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Account {
+@RedisHash("account")
+public class Account implements Serializable {
 
     private Long id;
     private Long userId;
@@ -98,4 +102,6 @@ public class Account {
                 ", riskProfile=" + riskProfile +
                 '}';
     }
+
+    public record RiskProfile() implements Serializable {}
 }
