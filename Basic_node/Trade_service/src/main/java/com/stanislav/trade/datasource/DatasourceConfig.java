@@ -1,10 +1,12 @@
 package com.stanislav.trade.datasource;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -27,6 +29,8 @@ import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.Properties;
 
 @Slf4j
@@ -39,6 +43,7 @@ public class DatasourceConfig {
     private final String redisHost;
     private final Integer redisPort;
     private final String redisPassword;
+    private final Integer ttlHours;
 
     private RedisConnectionFactory redisConnectionFactory;
 
@@ -46,11 +51,13 @@ public class DatasourceConfig {
     public DatasourceConfig(@Value("${database.jpa.properties}") String jpa,
                             @Value("${redis.config.host}") String redisHost,
                             @Value("${redis.config.port}") Integer redisPort,
-                            @Value("${redis.config.password}") String redisPassword) {
+                            @Value("${redis.config.password}") String redisPassword,
+                            @Value("${redis.config.ttl}") Integer ttlHours) {
         jpaProperties = loadDatabaseProperties(jpa);
         this.redisHost = redisHost;
         this.redisPort = redisPort;
         this.redisPassword = redisPassword;
+        this.ttlHours = ttlHours;
     }
 
     // \/ <---------- JPA configuration ----------> \/ //
@@ -93,7 +100,7 @@ public class DatasourceConfig {
         RedisStandaloneConfiguration configuration =
                 new RedisStandaloneConfiguration(redisHost, redisPort);
 
-        configuration.setPassword(redisPassword);
+//        configuration.setPassword(redisPassword);
 
         var connectionFactory = new JedisConnectionFactory(configuration);
         redisConnectionFactory = connectionFactory;
@@ -120,21 +127,36 @@ public class DatasourceConfig {
 
         var valueSerializer = RedisSerializationContext
                 .SerializationPair
-                .fromSerializer(new GenericJackson2JsonRedisSerializer());
+                .fromSerializer(new GenericJackson2JsonRedisSerializer()
+                        .configure(o -> o.registerModule(new JavaTimeModule())));
 
         return RedisCacheConfiguration
-                .defaultCacheConfig()
+                .defaultCacheConfig().entryTtl(Duration.ofHours(ttlHours))
                 .serializeKeysWith(keySerializer)
                 .serializeValuesWith(valueSerializer);
     }
 
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory,
-                                     RedisCacheConfiguration redisCacheConfiguration) {
+    public CacheManager cacheManager() {
         return RedisCacheManager
-                .builder(redisConnectionFactory)
-                .cacheDefaults(redisCacheConfiguration)
+                .builder(redisConnectionFactory())
+                .cacheDefaults(redisCacheConfiguration())
                 .build();
+    }
+
+    @Bean("keyGeneratorById")
+    public KeyGenerator keyGeneratorById() {
+        return (target, method, params) -> params[0];
+    }
+
+    @Bean("keyGeneratorByParams")
+    public KeyGenerator keyGeneratorByParams() {
+        return (target, method, params) -> {
+            StringBuilder str = new StringBuilder();
+            Arrays.stream(params).forEach(p -> str.append(p.toString()).append(':'));
+            return str.deleteCharAt(str.length() - 1)
+                    .toString();
+        };
     }
 
     // /\ <--------- Redis configuration ---------> /\ //

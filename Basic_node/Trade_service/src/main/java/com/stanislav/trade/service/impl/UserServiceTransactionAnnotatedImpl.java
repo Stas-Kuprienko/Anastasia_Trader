@@ -20,8 +20,6 @@ import java.util.Optional;
 @Service("userService")
 public class UserServiceTransactionAnnotatedImpl implements UserService {
 
-    //TODO   TEMPORARY SOLUTION. NEED TO MAKE !!!!!!!!!!!
-
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
 
