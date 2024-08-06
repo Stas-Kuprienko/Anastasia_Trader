@@ -20,7 +20,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import javax.annotation.PreDestroy;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Configuration
@@ -59,15 +58,25 @@ public class DataCacheConfig {
     }
 
     @Bean
+    public StringRedisSerializer stringRedisSerializer() {
+        return new StringRedisSerializer();
+    }
+
+    @Bean
+    public GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer() {
+        return new GenericJackson2JsonRedisSerializer()
+                .configure(o -> o.registerModule(new JavaTimeModule()));
+    }
+
+    @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
         var keySerializer = RedisSerializationContext
                 .SerializationPair
-                .fromSerializer(new StringRedisSerializer());
+                .fromSerializer(stringRedisSerializer());
 
         var valueSerializer = RedisSerializationContext
                 .SerializationPair
-                .fromSerializer(new GenericJackson2JsonRedisSerializer()
-                        .configure(o -> o.registerModule(new JavaTimeModule())));
+                .fromSerializer(genericJackson2JsonRedisSerializer());
 
         return RedisCacheConfiguration
                 .defaultCacheConfig().entryTtl(Duration.ofHours(ttlHours))
@@ -101,10 +110,11 @@ public class DataCacheConfig {
     @Bean
     public <K, V> RedisTemplate<K, V> redisTemplate(JedisConnectionFactory connectionFactory) {
 
-        final RedisTemplate<K, V> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<K, V> redisTemplate = new RedisTemplate<>();
 
         redisTemplate.setConnectionFactory(connectionFactory);
-        redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setKeySerializer(stringRedisSerializer());
+        redisTemplate.setValueSerializer(genericJackson2JsonRedisSerializer());
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;

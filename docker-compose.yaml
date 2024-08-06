@@ -60,7 +60,7 @@ services:
       - ./Basic_node/.resource_files/setup.sql:/docker-entrypoint-initdb.d/setup.sql
 
   redis:
-    image: redis:7.2-rc-alpine
+    image: redis:latest
     restart: always
     container_name: rediska
     networks:
