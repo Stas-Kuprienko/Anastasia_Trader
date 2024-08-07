@@ -1,4 +1,4 @@
-package com.stanislav.ui.service;
+package com.stanislav.trade.service;
 
 import java.util.List;
 

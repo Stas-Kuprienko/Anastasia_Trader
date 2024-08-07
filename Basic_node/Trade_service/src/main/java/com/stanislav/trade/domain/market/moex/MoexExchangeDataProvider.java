@@ -1,12 +1,13 @@
 package com.stanislav.trade.domain.market.moex;
 
 import com.stanislav.trade.domain.market.ExchangeDataProvider;
-import com.stanislav.trade.domain.market.ExchangeDataCache;
 import com.stanislav.trade.domain.market.moex.converters.FuturesConverter;
 import com.stanislav.trade.domain.market.moex.converters.StocksConverter;
 import com.stanislav.trade.entities.ExchangeMarket;
 import com.stanislav.trade.entities.markets.Futures;
+import com.stanislav.trade.entities.markets.Securities;
 import com.stanislav.trade.entities.markets.Stock;
+import com.stanislav.trade.service.DataCacheService;
 import com.stanislav.trade.utils.ApiDataParser;
 import com.stanislav.trade.utils.GetRequestParametersBuilder;
 import com.stanislav.trade.utils.RestConsumer;
@@ -14,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import static com.stanislav.trade.domain.market.moex.MoexApiClient.Engine;
 import static com.stanislav.trade.domain.market.moex.MoexApiClient.Market;
 import static com.stanislav.trade.domain.market.moex.MoexExchangeDataProvider.Args.*;
@@ -31,16 +32,16 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
     private final String FUTURES_LIST_URL;
 
     private final ApiDataParser dataParser;
+    private final DataCacheService dataCacheService;
     private final RestConsumer restConsumer;
-    private final ExchangeDataCache exchangeDataCache;
 
 
     @Autowired
     public MoexExchangeDataProvider(@Qualifier("jsonParser") ApiDataParser dataParser,
-                                    RestConsumer restConsumer, ExchangeDataCache exchangeDataCache) {
+                                    DataCacheService dataCacheService, RestConsumer restConsumer) {
         this.dataParser = dataParser;
+        this.dataCacheService = dataCacheService;
         this.restConsumer = restConsumer;
-        this.exchangeDataCache = exchangeDataCache;
         this.STOCK_URL = stockUrl();
         this.STOCKS_URL = stocksUrl();
         this.FUTURES_URL = futuresUrl();
@@ -55,17 +56,20 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
 
     @Override
     public Optional<Stock> getStock(String ticker) {
-        String uri = String.format(STOCK_URL, ticker);
-        List<List<Object[]>> dtoLists = getSecurity(uri);
-        var dto = dtoLists.get(0);
-        var marketData = dtoLists.get(1);
-        if (dto.isEmpty() || marketData.isEmpty()) {
-            return Optional.empty();
-        } else {
-            var stock = Optional.of(StocksConverter.moexDtoToStock(dto.getFirst(), marketData.getFirst()));
-            stock.ifPresent(exchangeDataCache::add);
-            return stock;
+        String key = getExchange().toString() + ':' + Stock.class.getSimpleName();
+        Stock stock = dataCacheService.getAndParseFromJson(key, ticker, Stock.class);
+        if (stock == null) {
+            String uri = String.format(STOCK_URL, ticker);
+            List<List<Object[]>> dtoLists = getSecurity(uri);
+            var dto = dtoLists.get(0);
+            var marketData = dtoLists.get(1);
+            if (dto.isEmpty() || marketData.isEmpty()) {
+                return Optional.empty();
+            } else {
+                stock = StocksConverter.moexDtoToStock(dto.getFirst(), marketData.getFirst());
+            }
         }
+        return Optional.of(stock);
     }
 
     @Override
@@ -77,45 +81,43 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
     public List<Stock> getStocks(SortByColumn sortByColumn, SortOrder sortOrder) {
         boolean toSort = sortByColumn.equals(SortByColumn.TRADE_VOLUME) && sortOrder.equals(SortOrder.desc);
         //TODO sorting criteria
-        if (isUpToDate(exchangeDataCache.getStocksUpdated())) {
-            List<Stock> stocks = exchangeDataCache.getAllStocks();
-            if (!stocks.isEmpty()) {
+
+        String key = getExchange().toString() + ':' + Stock.class.getSimpleName();
+        List<Stock> stocks = dataCacheService.getAndParseListForKeyFromJson(key, Stock.class);
+        if (stocks == null || stocks.isEmpty()) {
+            GetRequestParametersBuilder query = new GetRequestParametersBuilder(STOCKS_URL);
+            List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
+            var dto = dtoLists.get(0);
+            var marketData = dtoLists.get(1);
+            if (dto.isEmpty() || marketData.isEmpty()) {
+                return Collections.emptyList();
+            } else {
+                stocks = StocksConverter.moexDtoToStocks(dto, marketData);
+                putSecuritiesToCache(stocks);
                 if (toSort) {
                     stocks = stocks.stream().sorted().toList();
                 }
-                return stocks;
             }
         }
-        GetRequestParametersBuilder query = new GetRequestParametersBuilder(STOCKS_URL);
-        List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
-        var dto = dtoLists.get(0);
-        var marketData = dtoLists.get(1);
-        if (dto.isEmpty() || marketData.isEmpty()) {
-            return Collections.emptyList();
-        } else {
-            List<Stock> stocks = StocksConverter.moexDtoToStocks(dto, marketData);
-            exchangeDataCache.addStockList(stocks);
-            exchangeDataCache.stocksUpdated();
-            if (toSort) {
-                stocks = stocks.stream().sorted().toList();
-            }
-            return stocks;
-        }
+        return stocks;
     }
 
     @Override
     public Optional<Futures> getFutures(String ticker) {
-        String uri = String.format(FUTURES_URL, ticker);
-        List<List<Object[]>> dtoLists = getSecurity(uri);
-        var dto = dtoLists.get(0);
-        var marketData = dtoLists.get(1);
-        if (dto.isEmpty() || marketData.isEmpty()) {
-            return Optional.empty();
-        } else {
-            var futures = Optional.of(FuturesConverter.moexDtoToFutures(dto.getFirst(), marketData.getFirst()));
-            futures.ifPresent(exchangeDataCache::add);
-            return futures;
+        String key = getExchange().toString() + ':' + Futures.class.getSimpleName();
+        Futures futures = dataCacheService.getAndParseFromJson(key, ticker, Futures.class);
+        if (futures == null) {
+            String uri = String.format(FUTURES_URL, ticker);
+            List<List<Object[]>> dtoLists = getSecurity(uri);
+            var dto = dtoLists.get(0);
+            var marketData = dtoLists.get(1);
+            if (dto.isEmpty() || marketData.isEmpty()) {
+                return Optional.empty();
+            } else {
+                futures = FuturesConverter.moexDtoToFutures(dto.getFirst(), marketData.getFirst());
+            }
         }
+        return Optional.of(futures);
     }
 
     @Override
@@ -127,30 +129,25 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
     public List<Futures> getFuturesList(SortByColumn sortByColumn, SortOrder sortOrder) {
         boolean toSort = sortByColumn.equals(SortByColumn.TRADE_VOLUME) && sortOrder.equals(SortOrder.desc);
         //TODO sorting criteria
-        if (isUpToDate(exchangeDataCache.getFuturesUpdated())) {
-            List<Futures> futuresList = exchangeDataCache.getAllFutures();
-            if (!futuresList.isEmpty()) {
+
+        String key = getExchange().toString() + ':' + Futures.class.getSimpleName();
+        List<Futures> futuresList = dataCacheService.getAndParseListForKeyFromJson(key, Futures.class);
+        if (futuresList == null || futuresList.isEmpty()) {
+            GetRequestParametersBuilder query = new GetRequestParametersBuilder(FUTURES_LIST_URL);
+            List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
+            var dto = dtoLists.get(0);
+            var marketData = dtoLists.get(1);
+            if (dto.isEmpty() || marketData.isEmpty()) {
+                return Collections.emptyList();
+            } else {
+                futuresList = FuturesConverter.moexDtoToFuturesList(dto, marketData);
+                putSecuritiesToCache(futuresList);
                 if (toSort) {
                     futuresList = futuresList.stream().sorted().toList();
                 }
-                return futuresList;
             }
         }
-        GetRequestParametersBuilder query = new GetRequestParametersBuilder(FUTURES_LIST_URL);
-        List<List<Object[]>> dtoLists = getSecurities(query, sortByColumn, sortOrder);
-        var dto = dtoLists.get(0);
-        var marketData = dtoLists.get(1);
-        if (dto.isEmpty() || marketData.isEmpty()) {
-            return Collections.emptyList();
-        } else {
-            List<Futures> futuresList = FuturesConverter.moexDtoToFuturesList(dto, marketData);
-            exchangeDataCache.addFuturesList(futuresList);
-            exchangeDataCache.futuresUpdated();
-            if (toSort) {
-                futuresList = futuresList.stream().sorted().toList();
-            }
-            return futuresList;
-        }
+        return futuresList;
     }
 
 
@@ -185,11 +182,11 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
         return List.of(dto, marketData);
     }
 
-    private boolean isUpToDate(LocalDateTime time) {
-        if (time == null) {
-            return false;
+    private void putSecuritiesToCache(List<? extends Securities> securitiesList) {
+        String key = getExchange().toString();
+        for(Securities s : securitiesList) {
+            dataCacheService.putAsJson(key + ':' + s.getClass().getSimpleName(), s.getTicker(), s);
         }
-        return LocalDateTime.now().isBefore(time.plusHours(24));
     }
 
     private String stockUrl() {

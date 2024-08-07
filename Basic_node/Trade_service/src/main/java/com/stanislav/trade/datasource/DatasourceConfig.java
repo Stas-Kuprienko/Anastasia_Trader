@@ -69,8 +69,6 @@ public class DatasourceConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-        log.info("Datasource=" + dataSource);
-
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 
@@ -108,27 +106,25 @@ public class DatasourceConfig {
     }
 
     @Bean
-    public <K, V> RedisTemplate<K, V> redisTemplate(JedisConnectionFactory connectionFactory) {
+    public StringRedisSerializer stringRedisSerializer() {
+        return new StringRedisSerializer();
+    }
 
-        final RedisTemplate<K, V> redisTemplate = new RedisTemplate<>();
-
-        redisTemplate.setConnectionFactory(connectionFactory);
-        redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.afterPropertiesSet();
-
-        return redisTemplate;
+    @Bean
+    public GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer() {
+        return new GenericJackson2JsonRedisSerializer()
+                .configure(o -> o.registerModule(new JavaTimeModule()));
     }
 
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
         var keySerializer = RedisSerializationContext
                 .SerializationPair
-                .fromSerializer(new StringRedisSerializer());
+                .fromSerializer(stringRedisSerializer());
 
         var valueSerializer = RedisSerializationContext
                 .SerializationPair
-                .fromSerializer(new GenericJackson2JsonRedisSerializer()
-                        .configure(o -> o.registerModule(new JavaTimeModule())));
+                .fromSerializer(genericJackson2JsonRedisSerializer());
 
         return RedisCacheConfiguration
                 .defaultCacheConfig().entryTtl(Duration.ofHours(ttlHours))
@@ -157,6 +153,19 @@ public class DatasourceConfig {
             return str.deleteCharAt(str.length() - 1)
                     .toString();
         };
+    }
+
+    @Bean
+    public <K, V> RedisTemplate<K, V> redisTemplate(JedisConnectionFactory connectionFactory) {
+
+        RedisTemplate<K, V> redisTemplate = new RedisTemplate<>();
+
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setKeySerializer(stringRedisSerializer());
+        redisTemplate.setValueSerializer(genericJackson2JsonRedisSerializer());
+        redisTemplate.afterPropertiesSet();
+
+        return redisTemplate;
     }
 
     // /\ <--------- Redis configuration ---------> /\ //

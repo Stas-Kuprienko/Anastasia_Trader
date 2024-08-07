@@ -1,8 +1,8 @@
-package com.stanislav.ui.service.impl;
+package com.stanislav.trade.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stanislav.ui.service.DataCacheService;
+import com.stanislav.trade.service.DataCacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;

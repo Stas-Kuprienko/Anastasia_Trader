@@ -5,13 +5,12 @@ import com.stanislav.ui.configuration.auth.TokenAuthService;
 import com.stanislav.ui.exception.NotFoundException;
 import com.stanislav.ui.model.ExchangeMarket;
 import com.stanislav.ui.model.market.Futures;
+import com.stanislav.ui.model.market.Securities;
 import com.stanislav.ui.model.market.Stock;
 import com.stanislav.ui.service.DataCacheService;
 import com.stanislav.ui.service.MarketDataService;
 import com.stanislav.ui.utils.GetRequestParametersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,10 +40,10 @@ public class MarketDataServiceImpl implements MarketDataService {
         this.restTemplate = restTemplate;
     }
 
-    @Caching()
     @Override
     public Stock getStock(ExchangeMarket exchangeMarket, String ticker) {
-        Stock stock = dataCacheService.get(exchangeMarket.toString(), ticker, Stock.class);
+        String key = exchangeMarket.toString() + ':' + Stock.class.getSimpleName();
+        Stock stock = dataCacheService.getAndParseFromJson(key, ticker, Stock.class);
         if (stock == null) {
             String url = resource +
                     exchangeMarket +
@@ -55,7 +54,6 @@ public class MarketDataServiceImpl implements MarketDataService {
                     .exchange(url, HttpMethod.GET, new HttpEntity<>(authorization), Stock.class);
             if (response.hasBody() && response.getBody() != null) {
                 stock = response.getBody();
-                dataCacheService.put(exchangeMarket.toString(), stock.getTicker(), stock);
             } else {
                 throw new NotFoundException(
                         "Not found stock by ticker='%s' at the exchange market '%s'".formatted(ticker, exchangeMarket));
@@ -64,44 +62,47 @@ public class MarketDataServiceImpl implements MarketDataService {
         return stock;
     }
 
-    @Cacheable(value = "stock:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Stock> getStocks(ExchangeMarket exchangeMarket) {
         return getStocks(exchangeMarket, SortByColumn.NONE, SortOrder.asc);
     }
 
-    @Cacheable(value = "stock:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Stock> getStocks(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder) {
-        List<Stock> stocks = dataCacheService.getListForKey(exchangeMarket.toString(), Stock.class);
-        if (stocks != null && !stocks.isEmpty()) {
-            //TODO check elements quantity
-            if (sortByColumn == SortByColumn.TRADE_VOLUME) {
-                return stocks.stream().sorted().toList();
+        String key = exchangeMarket.toString() + ':' + Stock.class.getSimpleName();
+        List<Stock> stocks = dataCacheService.getAndParseListForKeyFromJson(key, Stock.class);
+        if (stocks == null || stocks.isEmpty()) {
+            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);
+
+            getRequest.appendToUrl(exchangeMarket)
+                    .appendToUrl("/securities/")
+                    .appendToUrl("stocks");
+            getRequest.add(SORT_BY, sortByColumn)
+                    .add(SORT_ORDER, sortOrder);
+
+            ParameterizedTypeReference<List<Stock>> responseType = new ParameterizedTypeReference<>() {};
+
+            ResponseEntity<List<Stock>> response = restTemplate
+                    .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorization), responseType);
+
+            if (response.hasBody() && response.getBody() != null) {
+                stocks = response.getBody();
+                putSecuritiesToCache(key, stocks);
+            } else {
+                return Collections.emptyList();
             }
-            return stocks;
         }
-        GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);
-        getRequest.appendToUrl(exchangeMarket)
-                .appendToUrl("/securities/")
-                .appendToUrl("stocks");
-        getRequest.add(SORT_BY, sortByColumn)
-                .add(SORT_ORDER, sortOrder);
-        ParameterizedTypeReference<List<Stock>> responseType = new ParameterizedTypeReference<>() {
-        };
-        ResponseEntity<List<Stock>> response = restTemplate
-                .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorization), responseType);
-        if (response.hasBody()) {
-            return response.getBody();
-        } else {
-            return Collections.emptyList();
+        //TODO check elements quantity
+        if (sortByColumn == SortByColumn.TRADE_VOLUME) {
+            return stocks.stream().sorted().toList();
         }
+        return stocks;
     }
 
-    @Caching
     @Override
     public Futures getFutures(ExchangeMarket exchangeMarket, String ticker) {
-        Futures futures = dataCacheService.get(exchangeMarket.toString(), ticker, Futures.class);
+        String key = exchangeMarket.toString() + ':' + Futures.class.getSimpleName();
+        Futures futures = dataCacheService.getAndParseFromJson(key, ticker, Futures.class);
         if (futures == null) {
             String url = resource +
                     exchangeMarket +
@@ -110,8 +111,8 @@ public class MarketDataServiceImpl implements MarketDataService {
                     ticker;
             ResponseEntity<Futures> response = restTemplate
                     .exchange(url, HttpMethod.GET, new HttpEntity<>(authorization), Futures.class);
-            if (response.hasBody()) {
-                return response.getBody();
+            if (response.hasBody() && response.getBody() != null) {
+                futures = response.getBody();
             } else {
                 throw new NotFoundException(
                         "Not found futures by ticker='%s' at the exchange market '%s'".formatted(ticker, exchangeMarket));
@@ -120,36 +121,47 @@ public class MarketDataServiceImpl implements MarketDataService {
         return futures;
     }
 
-    @Cacheable(value = "futures:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Futures> getFuturesList(ExchangeMarket exchangeMarket) {
         return getFuturesList(exchangeMarket, SortByColumn.NONE, SortOrder.asc);
     }
 
-    @Cacheable(value = "futures:exchange", keyGenerator = "keyGeneratorById")
     @Override
     public List<Futures> getFuturesList(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder) {
-        List<Futures> futuresList = dataCacheService.getListForKey(exchangeMarket.toString(), Futures.class);
-        if (futuresList != null && !futuresList.isEmpty()) {
-            //TODO check elements quantity
-            if (sortByColumn == SortByColumn.TRADE_VOLUME) {
-                return futuresList.stream().sorted().toList();
+        String key = exchangeMarket.toString() + ':' + Futures.class.getSimpleName();
+        List<Futures> futuresList = dataCacheService.getAndParseListForKeyFromJson(key, Futures.class);
+        if (futuresList == null || futuresList.isEmpty()) {
+            GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);
+
+            getRequest.appendToUrl(exchangeMarket)
+                    .appendToUrl("/securities/")
+                    .appendToUrl("futures-list");
+            getRequest.add(SORT_BY, sortByColumn)
+                    .add(SORT_ORDER, sortOrder);
+
+            ParameterizedTypeReference<List<Futures>> responseType = new ParameterizedTypeReference<>() {};
+
+            ResponseEntity<List<Futures>> response = restTemplate
+                    .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorization), responseType);
+
+            if (response.hasBody() && response.getBody() != null) {
+                futuresList = response.getBody();
+                putSecuritiesToCache(key, futuresList);
+            } else {
+                return Collections.emptyList();
             }
         }
-        GetRequestParametersBuilder getRequest = new GetRequestParametersBuilder(resource);
-        getRequest.appendToUrl(exchangeMarket)
-                .appendToUrl("/securities/")
-                .appendToUrl("futures-list");
-        getRequest.add(SORT_BY, sortByColumn)
-                .add(SORT_ORDER, sortOrder);
-        ParameterizedTypeReference<List<Futures>> responseType = new ParameterizedTypeReference<>() {
-        };
-        ResponseEntity<List<Futures>> response = restTemplate
-                .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorization), responseType);
-        if (response.hasBody()) {
-            return response.getBody();
-        } else {
-            return Collections.emptyList();
+        //TODO check elements quantity
+        if (sortByColumn == SortByColumn.TRADE_VOLUME) {
+            return futuresList.stream().sorted().toList();
+        }
+        return futuresList;
+    }
+
+
+    private void putSecuritiesToCache(String key, List<? extends Securities> securitiesList) {
+        for(Securities s : securitiesList) {
+            dataCacheService.putAsJson(key, s.getTicker(), s);
         }
     }
 }
