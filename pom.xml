@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.stanislav</groupId>
-    <artifactId>anastasia_trader</artifactId>
+    <groupId>com.anastasia</groupId>
+    <artifactId>anastasia-trader</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
 
     <modules>
-        <module>Basic_node</module>
-        <module>Smart_service</module>
-        <module>Telegram_bot</module>
+        <module>trade-service</module>
+        <module>smart-service</module>
+        <module>telegram-bot</module>
     </modules>
 
     <properties>

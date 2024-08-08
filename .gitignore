@@ -37,12 +37,12 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
-/Telegram_bot/src/main/resources/application.properties
-/Smart_service/src/main/resources/application.properties
-/Basic_node/Trade_service/src/main/resources/application.properties
-/Basic_node/Trade_service/src/main/java/com/stanislav/trade/Example.java
-/Smart_service/src/main/java/com/stanislav/smart/Example.java
 **/.smarttomcat/
-/Basic_node/App_UI/src/main/resources/application.properties
-/Basic_node/App_UI/local-tomcat/
-/Basic_node/Trade_service/local-tomcat/
+/trade-service/trade-service-api/src/main/resources/application.properties
+/trade-service/trade-service-api/local-tomcat/
+/trade-service/trade-service-ui/src/main/resources/application.properties
+/trade-service/trade-service-ui/local-tomcat/
+/telegram-bot/src/main/resources/application.properties
+/smart-service/src/main/resources/application.properties
+/smart-service/src/main/java/com/anastasia/smart/Example.java
+/trade-service/trade-service-api/src/main/java/com/anastasia/trade/Example.java
