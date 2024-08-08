@@ -5,7 +5,7 @@
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-gRPC-mediumturquoise?style=flat-square&logo=java&logoColor=mediumturquoise&label=%3C-%3E|&labelColor=grey)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Telegram_API-blue?logo=telegram&label=%7C)
 
-<img src="Basic_node/web/src/main/webapp/style/hello.webp" style="max-width: 96px; width: 96px;">
+<img src="Basic_node/App_UI/src/main/webapp/style/hello.webp" style="max-width: 96px; width: 96px;">
 
 ## Сервис для торговли на бирже, с возможностью автоматической торговли по выбранным стратегиям.
 ### Проект состоит из трёх модулей (микросервисов) - основное приложение, сервис автоматической торговли и телеграм-бот.
@@ -14,8 +14,8 @@
 ## Стэк технологий
 + #### Java 21
 + #### Maven
++ #### Redis
 + #### Kafka (планирую подключить)
-+ #### Redis (планирую подключить)
 ***
 + ### Basic node:
   + Spring Framework 6
