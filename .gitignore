@@ -46,3 +46,4 @@ build/
 /smart-service/src/main/resources/application.properties
 /smart-service/src/main/java/com/anastasia/smart/Example.java
 /trade-service/trade-service-api/src/main/java/com/anastasia/trade/Example.java
+/trade-service/resources/data/

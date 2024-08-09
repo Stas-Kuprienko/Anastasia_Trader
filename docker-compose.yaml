@@ -1,11 +1,8 @@
-version: '3'
+version: '4.3'
 
 networks:
   app-networks:
     driver: bridge
-
-volumes:
-  mysql_data:
 
 services:
   app:
@@ -45,8 +42,9 @@ services:
       - '8081:8081'
 
   mysql:
-    image: mysql:8.0.38
+    image: mysql:8
     container_name: mysql_db
+    restart: always
     networks:
       - app-networks
     environment:
@@ -55,9 +53,9 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: 1234
     ports:
-      - '3307:3306'
+      - '3306:3306'
     volumes:
-      - ./trade-service/.resource_files/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./trade-service/resources/data:/var/lib/mysql/
 
   redis:
     image: redis:latest
@@ -67,4 +65,4 @@ services:
       - app-networks
     ports:
       - '6379:6379'
-#    command: redis-server --save 20 1 --loglevel warning --requirepass 12345
+    command: redis-server --save 20 1 --loglevel warning --requirepass 12345

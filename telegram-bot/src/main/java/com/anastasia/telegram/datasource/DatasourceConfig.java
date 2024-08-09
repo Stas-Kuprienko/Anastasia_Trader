@@ -50,7 +50,6 @@ public class DatasourceConfig {
         entityManagerFactory.setDataSource(dataSource);
         entityManagerFactory.setPackagesToScan("com.anastasia.telegram.entities");
         entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
-        entityManagerFactory.setPersistenceProvider(vendorAdapter.getPersistenceProvider());
         entityManagerFactory.setJpaProperties(properties);
 
         return entityManagerFactory;
