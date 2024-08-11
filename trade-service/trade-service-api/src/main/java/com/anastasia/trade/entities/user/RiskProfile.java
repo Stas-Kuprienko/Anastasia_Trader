@@ -4,22 +4,12 @@
 
 package com.anastasia.trade.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+
 import java.util.Objects;
 
-@Entity
-@Table(name = "risk_profile")
+@Embeddable
 public class RiskProfile {
-
-    @Id
-    private Long accountId;
-
-    @MapsId
-    @OneToOne
-    @JoinColumn(name = "account", nullable = false)
-    @JsonIgnore
-    private Account account;
 
     private byte dealLossPercentage;
 
@@ -29,14 +19,11 @@ public class RiskProfile {
 
     private byte StockInAccountPercentage;
 
-    @Enumerated(EnumType.STRING)
     private RiskType riskType;
 
 
-    public RiskProfile(long accountId, Account account, byte dealLossPercentage, byte accountLossPercentage,
+    public RiskProfile(byte dealLossPercentage, byte accountLossPercentage,
                        byte futuresInAccountPercentage, byte stockInAccountPercentage, RiskType riskType) {
-        this.accountId = accountId;
-        this.account = account;
         this.dealLossPercentage = dealLossPercentage;
         this.accountLossPercentage = accountLossPercentage;
         this.futuresInAccountPercentage = futuresInAccountPercentage;
@@ -46,22 +33,6 @@ public class RiskProfile {
 
     public RiskProfile() {}
 
-
-    public long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 
     public byte getDealLossPercentage() {
         return dealLossPercentage;
@@ -116,20 +87,25 @@ public class RiskProfile {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof RiskProfile that)) return false;
-        return Objects.equals(accountId, that.accountId) &&
-                Objects.equals(account, that.account);
+        return dealLossPercentage == that.dealLossPercentage &&
+                accountLossPercentage == that.accountLossPercentage &&
+                futuresInAccountPercentage == that.futuresInAccountPercentage &&
+                StockInAccountPercentage == that.StockInAccountPercentage &&
+                riskType == that.riskType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountId, account);
+        return Objects.hash(dealLossPercentage,
+                accountLossPercentage,
+                futuresInAccountPercentage,
+                StockInAccountPercentage, riskType);
     }
 
     @Override
     public String toString() {
         return "RiskProfile{" +
-                "accountId=" + accountId +
-                ", dealLossPercentage=" + dealLossPercentage +
+                "dealLossPercentage=" + dealLossPercentage +
                 ", accountLossPercentage=" + accountLossPercentage +
                 ", futuresInAccountPercentage=" + futuresInAccountPercentage +
                 ", StockInAccountPercentage=" + StockInAccountPercentage +

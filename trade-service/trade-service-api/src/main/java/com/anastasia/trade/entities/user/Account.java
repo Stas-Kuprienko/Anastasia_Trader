@@ -38,7 +38,7 @@ public final class Account implements Serializable {
 
     private String token;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.REFRESH)
+    @Embedded
     private RiskProfile riskProfile;
 
 
