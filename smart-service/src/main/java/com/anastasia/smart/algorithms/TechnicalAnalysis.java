@@ -6,6 +6,9 @@ import com.anastasia.smart.entities.candles.PricePoint;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The utility class of technical analysis algorithms. Usable to analyze {@link PriceCandle candles} of stock exchange charts.
+ */
 public final class TechnicalAnalysis {
 
     private TechnicalAnalysis(){}
@@ -75,6 +78,12 @@ public final class TechnicalAnalysis {
     }
 
 
+    /**
+     * Method to dynamically adjust sensitivity based on volatility. Calculate the average true range (ATR).
+     * @param candles the List of the {@link PriceCandle candles}.
+     * @param baseSensitivity the base sensitivity value for calculating.
+     * @return the average true range (ATR) double value.
+     */
     public static double ATR(List<PriceCandle> candles, double baseSensitivity) {
         double averageTrueRange = 0.0;
         for (int i = 1; i < candles.size(); i++) {
@@ -89,8 +98,10 @@ public final class TechnicalAnalysis {
     }
 
 
-    public static List<SupportLevel> supportLevels(List<PriceCandle> candles, double sensitivity, int minTouches) {
-        double dynamicSensitivity = ATR(candles, sensitivity);
+    public static List<SupportLevel> supportLevels(List<PriceCandle> candles, double sensitivity, int minTouches, boolean withATR) {
+        if (withATR) {
+            sensitivity = ATR(candles, sensitivity);
+        }
         List<PricePoint> localLows = findLocalLows(candles);
         List<SupportLevel> supportLevels = new ArrayList<>();
 
@@ -99,7 +110,7 @@ public final class TechnicalAnalysis {
             double price = low.price().doubleValue();
 
             for (SupportLevel support : supportLevels) {
-                if (Math.abs(support.getLevel() - price) <= dynamicSensitivity) {
+                if (Math.abs(support.getLevel() - price) <= sensitivity) {
                     support.addTouch(low);
                     foundCluster = true;
                     break;
@@ -143,8 +154,10 @@ public final class TechnicalAnalysis {
     }
 
 
-    public static List<ResistanceLevel> resistanceLevels(List<PriceCandle> candles, double sensitivity, int minTouches) {
-        double dynamicSensitivity = ATR(candles, sensitivity);
+    public static List<ResistanceLevel> resistanceLevels(List<PriceCandle> candles, double sensitivity, int minTouches, boolean withATR) {
+        if (withATR) {
+            sensitivity = ATR(candles, sensitivity);
+        }
         List<PricePoint> localHighs = findLocalHighs(candles);
         List<ResistanceLevel> resistanceLevels = new ArrayList<>();
 
@@ -153,7 +166,7 @@ public final class TechnicalAnalysis {
             double price = high.price().doubleValue();
 
             for (ResistanceLevel resistance : resistanceLevels) {
-                if (Math.abs(resistance.getLevel() - price) <= dynamicSensitivity) {
+                if (Math.abs(resistance.getLevel() - price) <= sensitivity) {
                     resistance.addTouch(high);
                     foundCluster = true;
                     break;

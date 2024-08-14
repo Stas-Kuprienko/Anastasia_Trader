@@ -1,5 +1,6 @@
 package com.anastasia.trade.authentication;
 
+import com.anastasia.trade.entities.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
@@ -39,7 +40,9 @@ public class RestAuthService {
         }
         if (claims.getId().equals(id)) {
             String serviceName = claims.getIssuer();
-            ApiKeyAuthentication authentication = new ApiKeyAuthentication(token, serviceName);
+            //TODO details
+            MyUserDetails userDetails = new MyUserDetails(new User());
+            ApiKeyAuthentication authentication = new ApiKeyAuthentication(token, serviceName, userDetails);
             authentication.setAuthenticated(true);
             return authentication;
         } else throw new BadCredentialsException("Token ID is wrong.");
