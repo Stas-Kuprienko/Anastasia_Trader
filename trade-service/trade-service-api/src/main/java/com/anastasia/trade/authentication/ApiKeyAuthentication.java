@@ -7,13 +7,11 @@ public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
     private final String apiKey;
     private final String serviceName;
-    private final MyUserDetails userDetails;
 
-    public ApiKeyAuthentication(String apiKey, String serviceName, MyUserDetails userDetails) {
+    public ApiKeyAuthentication(String apiKey, String serviceName) {
         super(AuthorityUtils.NO_AUTHORITIES);
         this.apiKey = apiKey;
         this.serviceName = serviceName;
-        this.userDetails = userDetails;
     }
 
     //TODO to add more of user data
@@ -26,10 +24,5 @@ public class ApiKeyAuthentication extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return apiKey;
-    }
-
-    @Override
-    public Object getDetails() {
-        return userDetails;
     }
 }

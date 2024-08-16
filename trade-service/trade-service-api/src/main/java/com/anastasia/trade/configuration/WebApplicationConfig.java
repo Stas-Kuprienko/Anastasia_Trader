@@ -41,7 +41,7 @@ public class WebApplicationConfig extends AbstractSecurityWebApplicationInitiali
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //TODO exception handling
+        //TODO
         http.securityMatcher("/api/**").csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(myJwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
