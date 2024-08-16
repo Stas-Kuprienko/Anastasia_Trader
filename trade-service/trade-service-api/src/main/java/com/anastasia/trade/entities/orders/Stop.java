@@ -4,47 +4,32 @@
 
 package com.anastasia.trade.entities.orders;
 
+import com.anastasia.trade.entities.Board;
+import com.anastasia.trade.entities.Broker;
 import com.anastasia.trade.entities.Direction;
-import com.anastasia.trade.entities.user.Account;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Entity
-@Table(name = "stop")
 public final class Stop {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private int stopId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
-    @JsonIgnore
-    private Account account;
-
+    private String clientId;
+    private Broker broker;
     private String ticker;
-
+    private Board board;
     private int quantity;
-
     private BigDecimal price;
-
-    @Enumerated(EnumType.STRING)
     private Direction direction;
-
-    @Enumerated(EnumType.STRING)
     private Type type;
 
 
-    public Stop(long id, int stopId, Account account, String ticker,
+    public Stop(int stopId, String clientId, Broker broker, String ticker, Board board,
                 int quantity, BigDecimal price, Direction direction, Type type) {
-        this.id = id;
         this.stopId = stopId;
-        this.account = account;
+        this.clientId = clientId;
+        this.broker = broker;
         this.ticker = ticker;
+        this.board = board;
         this.quantity = quantity;
         this.price = price;
         this.direction = direction;
@@ -58,13 +43,6 @@ public final class Stop {
         return new Stop().new StopBuilder();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public int getStopId() {
         return stopId;
@@ -74,12 +52,20 @@ public final class Stop {
         this.stopId = stopId;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public Broker getBroker() {
+        return broker;
+    }
+
+    public void setBroker(Broker broker) {
+        this.broker = broker;
     }
 
     public String getTicker() {
@@ -88,6 +74,14 @@ public final class Stop {
 
     public void setTicker(String ticker) {
         this.ticker = ticker;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public int getQuantity() {
@@ -126,27 +120,20 @@ public final class Stop {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Stop stop)) return false;
-        return id == stop.id;
+        return stopId == stop.stopId &&
+                Objects.equals(clientId, stop.clientId) &&
+                broker == stop.broker &&
+                Objects.equals(ticker, stop.ticker) &&
+                board == stop.board &&
+                direction == stop.direction;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(stopId, clientId, broker, ticker, board, direction);
     }
 
-    @Override
-    public String toString() {
-        return "Stop{" +
-                "id=" + id +
-                ", stopId=" + stopId +
-                ", account='" + account.getClientId() + '\'' +
-                ", ticker='" + ticker + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", direction=" + direction +
-                ", type=" + type +
-                '}';
-    }
+
 
     public enum Type {
         STOP_LOSS,
@@ -158,23 +145,28 @@ public final class Stop {
 
         private StopBuilder() {}
 
-        public StopBuilder id(long id) {
-            Stop.this.setId(id);
-            return this;
-        }
-
         public StopBuilder stopId(int stopId) {
             Stop.this.setStopId(stopId);
             return this;
         }
 
-        public StopBuilder account(Account account) {
-            Stop.this.setAccount(account);
+        public StopBuilder clientId(String clientId) {
+            Stop.this.setClientId(clientId);
+            return this;
+        }
+
+        public StopBuilder broker(Broker broker) {
+            Stop.this.setBroker(broker);
             return this;
         }
 
         public StopBuilder ticker(String ticker) {
             Stop.this.setTicker(ticker);
+            return this;
+        }
+
+        public StopBuilder board(Board board) {
+            Stop.this.setBoard(board);
             return this;
         }
 
