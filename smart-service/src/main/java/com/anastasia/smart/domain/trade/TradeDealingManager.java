@@ -5,7 +5,7 @@ import com.anastasia.smart.entities.criteria.NewOrderCriteria;
 import com.anastasia.smart.domain.trade.utils.AsyncTradeOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;

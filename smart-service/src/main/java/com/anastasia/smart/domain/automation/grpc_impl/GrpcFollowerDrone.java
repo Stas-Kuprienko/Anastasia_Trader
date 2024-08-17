@@ -8,7 +8,7 @@ import com.anastasia.smart.entities.TimeFrame;
 import com.anastasia.smart.entities.criteria.NewOrderCriteria;
 import com.anastasia.smart.domain.trade.TradeDealingManager;
 import io.grpc.stub.StreamObserver;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;

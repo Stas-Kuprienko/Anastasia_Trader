@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package stanislav.anastasia.trade;
+package com.anastasia.trade;
 
 import "google/protobuf/empty.proto";
 

@@ -7,20 +7,20 @@ package com.anastasia.smart.domain.analysis.technical.support_resistance;
 import com.anastasia.smart.domain.analysis.AnalysisAide;
 import com.anastasia.smart.entities.TimeFrame;
 import com.anastasia.smart.entities.candles.PriceCandleBox;
-
+import com.anastasia.trade.Smart;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class SupportResistanceLevelsAide implements AnalysisAide {
 
-    private final String ticker;
+    private final Smart.Security security;
     private final PriceCandleBox priceCandleBox;
     private final TimeFrame.Scope timeFrame;
     private final HashMap<PriceRange, Level> levels;
 
 
-    SupportResistanceLevelsAide(String ticker, PriceCandleBox priceCandleBox, TimeFrame.Scope timeFrame) {
-        this.ticker = ticker;
+    SupportResistanceLevelsAide(Smart.Security security, PriceCandleBox priceCandleBox, TimeFrame.Scope timeFrame) {
+        this.security = security;
         this.priceCandleBox = priceCandleBox;
         this.timeFrame = timeFrame;
         this.levels = new HashMap<>();
@@ -35,8 +35,8 @@ public class SupportResistanceLevelsAide implements AnalysisAide {
 
     }
 
-    public String getTicker() {
-        return ticker;
+    public Smart.Security getSecurity() {
+        return security;
     }
 
     public PriceCandleBox getCandles() {

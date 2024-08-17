@@ -7,7 +7,7 @@ import grpc.tradeapi.v1.EventsGrpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proto.tradeapi.v1.Events;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 

@@ -7,7 +7,7 @@ import com.anastasia.trade.entities.Direction;
 import com.anastasia.trade.entities.notify.SmartSubscribeNotification;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;

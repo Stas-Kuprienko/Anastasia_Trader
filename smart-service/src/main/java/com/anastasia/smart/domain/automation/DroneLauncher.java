@@ -1,7 +1,7 @@
 package com.anastasia.smart.domain.automation;
 
 import io.grpc.stub.StreamObserver;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 
 public interface DroneLauncher {
 

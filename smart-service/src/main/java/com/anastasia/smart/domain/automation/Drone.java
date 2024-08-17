@@ -1,7 +1,7 @@
 package com.anastasia.smart.domain.automation;
 
 import com.anastasia.smart.entities.Stoppable;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 
 public interface Drone extends Runnable, Stoppable {
 

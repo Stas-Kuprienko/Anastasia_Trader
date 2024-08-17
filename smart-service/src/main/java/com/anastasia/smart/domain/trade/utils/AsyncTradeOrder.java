@@ -4,7 +4,7 @@ import com.anastasia.smart.domain.trade.TradingService;
 import com.anastasia.smart.entities.criteria.NewOrderCriteria;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 
 @Component
 public class AsyncTradeOrder {

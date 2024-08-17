@@ -2,7 +2,7 @@ package com.anastasia.trade.domain.smart.finam_grpc;
 
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 
 @Slf4j
 public class UnsubscribeResponseObserver implements StreamObserver<Smart.UnsubscribeResponse> {

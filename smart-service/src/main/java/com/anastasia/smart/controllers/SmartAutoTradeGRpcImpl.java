@@ -1,5 +1,7 @@
 package com.anastasia.smart.controllers;
 
+import com.anastasia.trade.Smart;
+import com.anastasia.trade.SmartAutoTradeGrpc;
 import com.anastasia.smart.configuration.grpc_impl.security.ServerSecurityInterceptor;
 import com.google.protobuf.Empty;
 import com.anastasia.smart.domain.automation.strategy_suppliers.StrategiesDispatcher;
@@ -7,8 +9,6 @@ import com.anastasia.smart.domain.automation.DroneLauncher;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
-import stanislav.anastasia.trade.Smart;
-import stanislav.anastasia.trade.SmartAutoTradeGrpc;
 import java.util.NoSuchElementException;
 
 @GrpcService(interceptors = ServerSecurityInterceptor.class)

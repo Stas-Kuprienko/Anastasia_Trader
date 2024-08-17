@@ -9,7 +9,7 @@ import com.anastasia.smart.entities.Board;
 import com.anastasia.smart.entities.TimeFrame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 import java.util.HashMap;
 
 @Component

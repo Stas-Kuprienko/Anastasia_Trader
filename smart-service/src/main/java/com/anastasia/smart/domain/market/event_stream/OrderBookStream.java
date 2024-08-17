@@ -1,6 +1,6 @@
 package com.anastasia.smart.domain.market.event_stream;
 
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 
 public interface OrderBookStream {
 

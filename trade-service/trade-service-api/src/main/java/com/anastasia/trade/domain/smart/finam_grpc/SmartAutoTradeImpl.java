@@ -14,8 +14,8 @@ import com.anastasia.trade.entities.Broker;
 import com.anastasia.trade.entities.TimeFrame;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
-import stanislav.anastasia.trade.Smart;
-import stanislav.anastasia.trade.SmartAutoTradeGrpc;
+import com.anastasia.trade.Smart;
+import com.anastasia.trade.SmartAutoTradeGrpc;
 import java.util.HashSet;
 import java.util.Set;
 

@@ -1,7 +1,7 @@
 package com.anastasia.trade.entities;
 
 
-import stanislav.anastasia.trade.Smart;
+import com.anastasia.trade.Smart;
 
 public final class TimeFrame {
 
