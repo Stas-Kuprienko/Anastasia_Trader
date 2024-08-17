@@ -4,10 +4,7 @@ import com.anastasia.ui.configuration.auth.TokenAuthService;
 import com.anastasia.ui.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.util.Collection;
@@ -43,6 +40,7 @@ public class MyRestClient {
     public <R> ResponseEntity<R> post(User user, String url, Class<R> type) {
 
         HttpHeaders headers = tokenAuthService.authorize(user);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         return restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(headers), type);
     }
 
@@ -50,6 +48,7 @@ public class MyRestClient {
     public <P, R> ResponseEntity<R> post(User user, String url, P parameters, Class<R> type) {
 
         HttpHeaders headers = tokenAuthService.authorize(user);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<P> httpEntity = new HttpEntity<>(parameters, headers);
         return restTemplate.exchange(url, HttpMethod.POST, httpEntity, type);
     }

@@ -1,8 +1,8 @@
 package com.anastasia.trade.domain.market.moex;
 
+import com.anastasia.trade.domain.market.ExchangeDataProvider;
 import com.anastasia.trade.domain.market.moex.converters.FuturesConverter;
 import com.anastasia.trade.domain.market.moex.converters.StocksConverter;
-import com.anastasia.trade.domain.market.ExchangeDataProvider;
 import com.anastasia.trade.entities.ExchangeMarket;
 import com.anastasia.trade.entities.markets.Futures;
 import com.anastasia.trade.entities.markets.Securities;
@@ -10,15 +10,13 @@ import com.anastasia.trade.entities.markets.Stock;
 import com.anastasia.trade.service.DataCacheService;
 import com.anastasia.trade.utils.ApiDataParser;
 import com.anastasia.trade.utils.GetRequestParametersBuilder;
-import com.anastasia.trade.utils.RestConsumer;
+import com.anastasia.trade.utils.MyRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static com.anastasia.trade.domain.market.moex.MoexApiClient.Engine;
 import static com.anastasia.trade.domain.market.moex.MoexApiClient.Market;
 import static com.anastasia.trade.domain.market.moex.MoexExchangeDataProvider.Args.*;
@@ -33,15 +31,16 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
 
     private final ApiDataParser dataParser;
     private final DataCacheService dataCacheService;
-    private final RestConsumer restConsumer;
+
+    private final MyRestClient myRestClient;
 
 
     @Autowired
     public MoexExchangeDataProvider(@Qualifier("jsonParser") ApiDataParser dataParser,
-                                    DataCacheService dataCacheService, RestConsumer restConsumer) {
+                                    DataCacheService dataCacheService, MyRestClient myRestClient) {
         this.dataParser = dataParser;
         this.dataCacheService = dataCacheService;
-        this.restConsumer = restConsumer;
+        this.myRestClient = myRestClient;
         this.STOCK_URL = stockUrl();
         this.STOCKS_URL = stocksUrl();
         this.FUTURES_URL = futuresUrl();
@@ -174,7 +173,7 @@ public class MoexExchangeDataProvider implements ExchangeDataProvider {
     }
 
     private List<List<Object[]>> getListOfLists(String uri) {
-        String response = restConsumer.doRequest(uri, HttpMethod.GET);
+        String response = myRestClient.get(uri, null, String.class).getBody();
         String[] layers = {"securities", "data"};
         List<Object[]> dto = dataParser.parseObjectsList(response, Object[].class, layers);
         layers = new String[]{"marketdata", "data"};

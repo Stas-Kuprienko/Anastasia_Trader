@@ -12,17 +12,14 @@ import com.anastasia.trade.entities.markets.Futures;
 import com.anastasia.trade.entities.markets.Stock;
 import com.anastasia.trade.utils.ApiDataParser;
 import com.anastasia.trade.utils.GetRequestParametersBuilder;
-import com.anastasia.trade.utils.RestConsumer;
+import com.anastasia.trade.utils.MyRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.client.HttpStatusCodeException;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static com.anastasia.trade.domain.market.finam.FinamExchangeDataProvider.Args.*;
 import static com.anastasia.trade.domain.market.finam.FinamExchangeDataProvider.Resource.*;
 
@@ -30,19 +27,20 @@ import static com.anastasia.trade.domain.market.finam.FinamExchangeDataProvider.
 public class FinamExchangeDataProvider implements ExchangeDataProvider {
 
     private final String token;
+    private final String resource;
     private final ApiDataParser dataParser;
-    private final RestConsumer restConsumer;
+    private final MyRestClient myRestClient;
 
 
-    public FinamExchangeDataProvider(@Autowired @Qualifier("jsonParser") ApiDataParser dataParser,
-                                     @Autowired RestConsumer restConsumer,
+    @Autowired
+    public FinamExchangeDataProvider(MyRestClient myRestClient,
                                      @Value("${api.finam}") String resource,
-                                     @Value("${token}") String token) {
+                                     @Value("${token}") String token,
+                                     @Qualifier("jsonParser") ApiDataParser dataParser) {
         this.dataParser = dataParser;
-        this.restConsumer = restConsumer;
-        this.restConsumer.setAuthorization(RestConsumer.Authorization.API_KEY);
-        this.restConsumer.setResource(resource);
+        this.myRestClient = myRestClient;
         this.token = token;
+        this.resource = resource;
     }
 
 
@@ -53,10 +51,10 @@ public class FinamExchangeDataProvider implements ExchangeDataProvider {
 
     @Override
     public Optional<Stock> getStock(String ticker) {
-        GetRequestParametersBuilder query = new GetRequestParametersBuilder(SECURITIES.value);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(resource + SECURITIES.value);
         query.add(BOARD.value, Board.TQBR).add(SEC_CODE.value, ticker);
         try {
-            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
+            String response = myRestClient.get(query.build(), token, String.class).getBody();
             String[] layers = {"data", "securities"};
             List<FinamSecuritiesResponseDto> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponseDto.class, layers);
             if (dtoList.isEmpty()) {
@@ -73,10 +71,10 @@ public class FinamExchangeDataProvider implements ExchangeDataProvider {
 
     @Override
     public List<Stock> getStocks() {
-        GetRequestParametersBuilder query = new GetRequestParametersBuilder(SECURITIES.value);
+        GetRequestParametersBuilder query = new GetRequestParametersBuilder(resource + SECURITIES.value);
         query.add(BOARD.value, Board.TQBR);
         try {
-            String response = restConsumer.doRequest(query.build(), HttpMethod.GET, token);
+            String response = myRestClient.get(query.build(), token, String.class).getBody();
             String[] layers = {"data", "securities"};
             List<FinamSecuritiesResponseDto> dtoList = dataParser.parseObjectsList(response, FinamSecuritiesResponseDto.class, layers);
             if (dtoList.isEmpty()) {

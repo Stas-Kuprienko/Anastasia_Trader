@@ -39,6 +39,7 @@ public class TradingController {
     public ResponseEntity<Portfolio> getPortfolio(@PathVariable("userId") Long userId,
                                                   @PathVariable("account") String accountParam,
                                                   @RequestParam(value = "withPositions", required = false, defaultValue = "false") boolean withPositions) {
+
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
@@ -53,12 +54,14 @@ public class TradingController {
         return ResponseEntity.ok(ts.getPortfolio(account.getClientId(), token, withPositions));
     }
 
+
     @GetMapping("/{userId}/accounts/{account}/orders")
     public List<Order> getOrders(@PathVariable("userId") Long userId,
                                  @PathVariable("account") String accountParam,
                                  @RequestParam(value = "matches", required = false, defaultValue = "false") boolean includeMatched,
                                  @RequestParam(value = "canceled", required = false, defaultValue = "false") boolean includeCanceled,
                                  @RequestParam(value = "active", required = false, defaultValue = "true") boolean includeActive) {
+
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
@@ -78,10 +81,12 @@ public class TradingController {
                 includeActive);
     }
 
+
     @GetMapping("/{userId}/accounts/{account}/orders/{orderId}")
     public ResponseEntity<Order> getOrder(@PathVariable("userId") Long userId,
                                           @PathVariable("account") String accountParam,
                                           @PathVariable("orderId") Integer orderId) {
+
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
@@ -99,10 +104,12 @@ public class TradingController {
         return findable.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(404).build());
     }
 
+
     @PostMapping("/{userId}/accounts/{account}/orders/order")
     public ResponseEntity<Order> newOrder(@PathVariable("userId") Long userId,
                                           @PathVariable("account") String accountParam,
-                                          NewOrderForm form) {
+                                          @RequestBody NewOrderForm form) {
+
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));
@@ -146,10 +153,12 @@ public class TradingController {
         return ResponseEntity.ok(order);
     }
 
+
     @DeleteMapping("/{userId}/accounts/{account}/orders/{orderId}")
     public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") Long userId,
                                                @PathVariable("account") String accountParam,
                                                @PathVariable("orderId") Integer orderId) {
+
         String[] accountData = accountParam.split(":");
         if (accountData.length != 2) {
             throw new IllegalArgumentException("Account parameters = '%s'".formatted(accountParam));

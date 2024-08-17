@@ -4,7 +4,7 @@ import com.anastasia.ui.configuration.AnastasiaUIConfig;
 import com.anastasia.ui.configuration.auth.TokenAuthService;
 import com.anastasia.ui.exception.BadRequestException;
 import com.anastasia.ui.exception.NotFoundException;
-import com.anastasia.ui.model.forms.NewUserForm;
+import com.anastasia.ui.model.forms.SignUpUserForm;
 import com.anastasia.ui.model.user.User;
 import com.anastasia.ui.service.UserService;
 import com.anastasia.ui.utils.GetRequestParametersBuilder;
@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registry(String login, String password, String name) {
-        NewUserForm newUserForm = new NewUserForm(login, password, name);
-        HttpEntity<NewUserForm> httpEntity = new HttpEntity<>(newUserForm, authorizeHeaders);
+        SignUpUserForm signUpUserForm = new SignUpUserForm(login, password, name);
+        HttpEntity<SignUpUserForm> httpEntity = new HttpEntity<>(signUpUserForm, authorizeHeaders);
         ResponseEntity<User> response = restTemplate
                 .exchange(resource + "user", HttpMethod.POST, httpEntity, User.class);
         if (response.hasBody() && response.getBody() != null) {

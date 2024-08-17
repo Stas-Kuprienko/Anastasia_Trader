@@ -25,7 +25,7 @@ public class UserDataController {
 
 
     @PostMapping("/user")
-    public ResponseEntity<User> signUp(SignUpUserForm form) {
+    public ResponseEntity<User> signUp(@RequestBody SignUpUserForm form) {
         User user = userService.createUser(
                 form.login(),
                 form.password(),
@@ -34,7 +34,7 @@ public class UserDataController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<UserDto> logIn(LogInUserForm form) {
+    public ResponseEntity<UserDto> logIn(@RequestBody LogInUserForm form) {
         User user = userService.findUserByLoginAndPassword(form.login(), form.password());
         return ResponseEntity.ok(userDtoConvertor.convert(user));
     }
