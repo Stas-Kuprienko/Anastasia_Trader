@@ -1,22 +1,21 @@
 package com.anastasia.ui.service.impl;
 
-import com.anastasia.ui.utils.GetRequestParametersBuilder;
 import com.anastasia.ui.configuration.AnastasiaUIConfig;
-import com.anastasia.ui.configuration.auth.TokenAuthService;
 import com.anastasia.ui.exception.BadRequestException;
 import com.anastasia.ui.model.Board;
 import com.anastasia.ui.model.Broker;
 import com.anastasia.ui.model.TimeFrame;
 import com.anastasia.ui.model.trade.SmartSubscriptionResponse;
+import com.anastasia.ui.model.user.User;
 import com.anastasia.ui.service.SmartAutoTradeService;
+import com.anastasia.ui.service.UserService;
+import com.anastasia.ui.utils.GetRequestParametersBuilder;
+import com.anastasia.ui.utils.MyRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -25,24 +24,27 @@ public class SmartAutoTradeServiceImpl implements SmartAutoTradeService {
 
     private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "smart/";
 
-    private final RestTemplate restTemplate;
-    private final HttpHeaders authorization;
+    private final UserService userService;
+    private final MyRestClient myRestClient;
 
 
     @Autowired
-    public SmartAutoTradeServiceImpl(RestTemplate restTemplate, TokenAuthService authService) {
-        this.restTemplate = restTemplate;
-        this.authorization = authService.authorize();
+    public SmartAutoTradeServiceImpl(UserService userService, MyRestClient myRestClient) {
+        this.userService = userService;
+        this.myRestClient = myRestClient;
     }
 
 
     @Override
-    public Set<String> getStrategies() {
+    public Set<String> getStrategies(long userId) {
+        User user = userService.findById(userId);
         ParameterizedTypeReference<Set<String>> responseType = new ParameterizedTypeReference<>() {};
-        ResponseEntity<Set<String>> response = restTemplate
-                .exchange(responseType + "strategies", HttpMethod.GET, new HttpEntity<>(authorization), responseType);
+
+        ResponseEntity<? extends Collection<String>> response =
+                myRestClient.get(user, resource + "strategies", responseType);
+
         if (response.hasBody()) {
-            return response.getBody();
+            return (Set<String>) response.getBody();
         } else {
             return Collections.emptySet();
         }
@@ -71,6 +73,7 @@ public class SmartAutoTradeServiceImpl implements SmartAutoTradeService {
     private ResponseEntity<SmartSubscriptionResponse> doRequest(RequestType requestType, long userId, String clientId, Broker broker, String ticker, Board board, String strategy, TimeFrame.Scope tf) {
         GetRequestParametersBuilder url = new GetRequestParametersBuilder(resource);
         String account = broker.toString() + ':' + clientId;
+
         url.appendToUrl(userId)
                 .appendToUrl("/account/")
                 .appendToUrl(account)
@@ -79,9 +82,11 @@ public class SmartAutoTradeServiceImpl implements SmartAutoTradeService {
         url.add("ticker", ticker)
                 .add("board", board)
                 .add("time_frame", tf);
-        return restTemplate
-                .exchange(url.build(), HttpMethod.POST, new HttpEntity<>(authorization), SmartSubscriptionResponse.class);
+
+        User user = userService.findById(userId);
+        return myRestClient.post(user, url.build(), SmartSubscriptionResponse.class);
     }
+
 
     enum RequestType {
 

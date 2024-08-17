@@ -1,23 +1,22 @@
 package com.anastasia.ui.service.impl;
 
-import com.anastasia.ui.utils.GetRequestParametersBuilder;
 import com.anastasia.ui.configuration.AnastasiaUIConfig;
-import com.anastasia.ui.configuration.auth.TokenAuthService;
 import com.anastasia.ui.exception.BadRequestException;
 import com.anastasia.ui.exception.NotFoundException;
 import com.anastasia.ui.model.Broker;
-import com.anastasia.ui.model.trade.Order;
 import com.anastasia.ui.model.forms.NewOrderForm;
+import com.anastasia.ui.model.trade.Order;
 import com.anastasia.ui.model.user.Portfolio;
+import com.anastasia.ui.model.user.User;
 import com.anastasia.ui.service.TradingService;
+import com.anastasia.ui.service.UserService;
+import com.anastasia.ui.utils.GetRequestParametersBuilder;
+import com.anastasia.ui.utils.MyRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,13 +25,14 @@ public class TradingServiceImpl implements TradingService {
 
     private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "trade/";
 
-    private final RestTemplate restTemplate;
-    private final HttpHeaders authorization;
+    private final UserService userService;
+    private final MyRestClient myRestClient;
+
 
     @Autowired
-    public TradingServiceImpl(RestTemplate restTemplate, TokenAuthService authService) {
-        this.restTemplate = restTemplate;
-        authorization = authService.authorize();
+    public TradingServiceImpl(UserService userService, MyRestClient myRestClient) {
+        this.userService = userService;
+        this.myRestClient = myRestClient;
     }
 
 
@@ -46,11 +46,10 @@ public class TradingServiceImpl implements TradingService {
                 .appendToUrl('/')
                 .appendToUrl(account)
                 .appendToUrl("/portfolio");
-
         getRequest.add("withPositions", withPositions);
 
-        ResponseEntity<Portfolio> response = restTemplate
-                .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorization), Portfolio.class);
+        User user = userService.findById(userId);
+        ResponseEntity<Portfolio> response = myRestClient.get(user, getRequest.build(), Portfolio.class);
 
         if (response.hasBody()) {
             return response.getBody();
@@ -74,18 +73,20 @@ public class TradingServiceImpl implements TradingService {
                 .add("includeCanceled", includeCanceled)
                 .add("includeActive", includeActive);
 
+        User user = userService.findById(userId);
         ParameterizedTypeReference<List<Order>> responseType = new ParameterizedTypeReference<>() {};
-        ResponseEntity<List<Order>> response = restTemplate
-                .exchange(getRequest.build(), HttpMethod.GET, new HttpEntity<>(authorization), responseType);
+
+        ResponseEntity<? extends Collection<Order>> response = myRestClient.get(user, getRequest.build(), responseType);
+
         if (response.hasBody()) {
-            return response.getBody();
+            return (List<Order>) response.getBody();
         } else {
             return Collections.emptyList();
         }
     }
 
     @Override
-    public Order getOrder(long userId, Broker broker, String clientId, Integer orderId) {
+    public Order getOrder(long userId, Broker broker, String clientId, int orderId) {
         StringBuilder url = new StringBuilder(resource);
         String account = broker.toString() + ':' + clientId;
 
@@ -96,8 +97,8 @@ public class TradingServiceImpl implements TradingService {
                 .append("/orders/")
                 .append(orderId);
 
-        ResponseEntity<Order> response = restTemplate
-                .exchange(url.toString(), HttpMethod.GET, new HttpEntity<>(authorization), Order.class);
+        User user = userService.findById(userId);
+        ResponseEntity<Order> response = myRestClient.get(user, url.toString(), Order.class);
 
         if (response.hasBody()) {
             return response.getBody();
@@ -118,9 +119,8 @@ public class TradingServiceImpl implements TradingService {
                 .append("/orders/")
                 .append("order");
 
-        HttpEntity<NewOrderForm> httpEntity = new HttpEntity<>(newOrderForm, authorization);
-        ResponseEntity<Order> response = restTemplate
-                .exchange(url.toString(), HttpMethod.POST, httpEntity, Order.class);
+        User user = userService.findById(userId);
+        ResponseEntity<Order> response = myRestClient.post(user, url.toString(), newOrderForm, Order.class);
 
         if (response.hasBody()) {
             return response.getBody();
@@ -131,7 +131,7 @@ public class TradingServiceImpl implements TradingService {
     }
 
     @Override
-    public boolean cancelOrder(long userId, Broker broker, String clientId, Integer orderId) {
+    public boolean cancelOrder(long userId, Broker broker, String clientId, int orderId) {
         StringBuilder url = new StringBuilder(resource);
         String account = broker.toString() + ':' + clientId;
 
@@ -142,8 +142,8 @@ public class TradingServiceImpl implements TradingService {
                 .append("/orders/")
                 .append(orderId);
 
-        ResponseEntity<Boolean> response = restTemplate
-                .exchange(url.toString(), HttpMethod.DELETE, new HttpEntity<>(authorization), Boolean.class);
+        User user = userService.findById(userId);
+        ResponseEntity<Boolean> response = myRestClient.delete(user, url.toString(), Boolean.class);
 
         if (response.hasBody()) {
             return Boolean.TRUE.equals(response.getBody());

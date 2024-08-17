@@ -4,12 +4,15 @@
 
 package com.anastasia.ui.controller.trade;
 
+import com.anastasia.ui.configuration.auth.form.MyUserDetails;
 import com.anastasia.ui.model.ExchangeMarket;
 import com.anastasia.ui.model.market.Futures;
 import com.anastasia.ui.model.market.Stock;
 import com.anastasia.ui.service.MarketDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,23 +44,27 @@ public final class MarketController {
 
 
     @GetMapping("/{exchange}/stock/{ticker}")
-    public String getStock(@PathVariable("ticker") String ticker,
+    public String getStock(@AuthenticationPrincipal UserDetails userDetails,
+                           @PathVariable("ticker") String ticker,
                            @PathVariable("exchange") String exchange,
                            Model model) {
+        Long userId = ((MyUserDetails) userDetails).getId();
         ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
-        Stock stock = marketDataService.getStock(exchangeMarket, ticker);
+        Stock stock = marketDataService.getStock(userId, exchangeMarket, ticker);
         model.addAttribute(SEC_ITEM, stock);
         model.addAttribute("type", STOCK_URI);
         return ITEM_PAGE;
     }
 
     @GetMapping("/{exchange}/stocks")
-    public String getStocks(@PathVariable("exchange") String exchange,
+    public String getStocks(@AuthenticationPrincipal UserDetails userDetails,
+                            @PathVariable("exchange") String exchange,
                             @RequestParam(value = "sort-by", required = false) String sortByParam,
                             @RequestParam(value = "sort-order", required = false) String sortOrderParam,
                             Model model) {
         List<Stock> stocks;
         ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
+        Long userId = ((MyUserDetails) userDetails).getId();
         if (sortByParam != null) {
             MarketDataService.SortByColumn sortByColumn;
             MarketDataService.SortOrder sortOrder;
@@ -69,9 +76,9 @@ public final class MarketController {
                 sortByColumn = MarketDataService.SortByColumn.NONE;
                 sortOrder = MarketDataService.SortOrder.asc;
             }
-            stocks = marketDataService.getStocks(exchangeMarket, sortByColumn, sortOrder);
+            stocks = marketDataService.getStocks(userId, exchangeMarket, sortByColumn, sortOrder);
         } else {
-            stocks = marketDataService.getStocks(exchangeMarket);
+            stocks = marketDataService.getStocks(userId, exchangeMarket);
         }
         model.addAttribute(SEC_LIST, stocks);
         model.addAttribute("type", STOCK_URI);
@@ -79,22 +86,26 @@ public final class MarketController {
     }
 
     @GetMapping("/{exchange}/futures/{ticker}")
-    public String getFutures(@PathVariable("exchange") String exchange,
+    public String getFutures(@AuthenticationPrincipal UserDetails userDetails,
+                             @PathVariable("exchange") String exchange,
                              @PathVariable("ticker") String ticker,
                              Model model) {
+        Long userId = ((MyUserDetails) userDetails).getId();
         ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
-        Futures futures = marketDataService.getFutures(exchangeMarket, ticker);
+        Futures futures = marketDataService.getFutures(userId, exchangeMarket, ticker);
         model.addAttribute(SEC_ITEM, futures);
         model.addAttribute("type", FUTURES_URI);
         return ITEM_PAGE;
     }
 
     @GetMapping("/{exchange}/futures")
-    public String getFuturesList(@PathVariable("exchange") String exchange,
+    public String getFuturesList(@AuthenticationPrincipal UserDetails userDetails,
+                                 @PathVariable("exchange") String exchange,
                                  @RequestParam(value = "sort-by", required = false) String sortByParam,
                                  @RequestParam(value = "sort-order", required = false) String sortOrderParam,
                                  Model model) {
         List<Futures> futuresList;
+        Long userId = ((MyUserDetails) userDetails).getId();
         ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange);
         if (sortByParam != null) {
             MarketDataService.SortByColumn sortByColumn;
@@ -107,9 +118,9 @@ public final class MarketController {
                 sortByColumn = MarketDataService.SortByColumn.NONE;
                 sortOrder = MarketDataService.SortOrder.asc;
             }
-            futuresList = marketDataService.getFuturesList(exchangeMarket, sortByColumn, sortOrder);
+            futuresList = marketDataService.getFuturesList(userId, exchangeMarket, sortByColumn, sortOrder);
         } else {
-            futuresList = marketDataService.getFuturesList(exchangeMarket);
+            futuresList = marketDataService.getFuturesList(userId, exchangeMarket);
         }
         model.addAttribute(SEC_LIST, futuresList);
         model.addAttribute("type", FUTURES_URI);

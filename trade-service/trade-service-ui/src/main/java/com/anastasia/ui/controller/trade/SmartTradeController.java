@@ -37,10 +37,11 @@ public class SmartTradeController {
 
     @GetMapping("/select")
     public String selectSmart(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        long userId = ((MyUserDetails) userDetails).getId();
         List<Account> accounts = accountService
-                .findByUserId(((MyUserDetails) userDetails).getId());
+                .findByUserId(userId);
 
-        Set<String> strategies = smartAutoTradeService.getStrategies();
+        Set<String> strategies = smartAutoTradeService.getStrategies(userId);
         model.addAttribute("accounts", accounts);
         model.addAttribute("strategies", strategies);
         return "select_smart";

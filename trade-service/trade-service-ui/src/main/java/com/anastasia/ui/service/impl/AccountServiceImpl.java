@@ -1,24 +1,23 @@
 package com.anastasia.ui.service.impl;
 
 import com.anastasia.ui.configuration.AnastasiaUIConfig;
-import com.anastasia.ui.configuration.auth.TokenAuthService;
 import com.anastasia.ui.exception.BadRequestException;
 import com.anastasia.ui.exception.NotFoundException;
 import com.anastasia.ui.model.Broker;
 import com.anastasia.ui.model.forms.NewAccountForm;
 import com.anastasia.ui.model.user.Account;
+import com.anastasia.ui.model.user.User;
 import com.anastasia.ui.service.AccountService;
+import com.anastasia.ui.service.UserService;
+import com.anastasia.ui.utils.MyRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,13 +26,14 @@ public class AccountServiceImpl implements AccountService {
 
     private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "users/";
 
-    private final RestTemplate restTemplate;
-    private final HttpHeaders authorization;
+    private final UserService userService;
+    private final MyRestClient myRestClient;
+
 
     @Autowired
-    public AccountServiceImpl(RestTemplate restTemplate, TokenAuthService authService) {
-        this.restTemplate = restTemplate;
-        this.authorization = authService.authorize();
+    public AccountServiceImpl(UserService userService, MyRestClient myRestClient) {
+        this.userService = userService;
+        this.myRestClient = myRestClient;
     }
 
 
@@ -44,8 +44,8 @@ public class AccountServiceImpl implements AccountService {
                 "/accounts" +
                 '/' +
                 "account";
-        HttpEntity<NewAccountForm> httpEntity = new HttpEntity<>(form, authorization);
-        ResponseEntity<Account> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Account.class);
+        User user = userService.findById(userId);
+        ResponseEntity<Account> response = myRestClient.post(user, url, form, Account.class);
         if (response.hasBody()) {
             return response.getBody();
         } else {
@@ -63,8 +63,8 @@ public class AccountServiceImpl implements AccountService {
                 .append("/accounts")
                 .append('/')
                 .append(accountParams);
-        ResponseEntity<Account> response = restTemplate
-                .exchange(url.toString(), HttpMethod.GET, new HttpEntity<>(authorization), Account.class);
+        User user = userService.findById(userId);
+        ResponseEntity<Account> response = myRestClient.get(user, url.toString(), Account.class);
         if (response.hasBody()) {
             return response.getBody();
         } else {
@@ -78,11 +78,11 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> findByUserId(long userId) {
         String url = resource + userId +
                 "/accounts";
+        User user = userService.findById(userId);
         ParameterizedTypeReference<List<Account>> responseType = new ParameterizedTypeReference<>() {};
-        ResponseEntity<List<Account>> response = restTemplate
-                .exchange(url, HttpMethod.GET, new HttpEntity<>(authorization), responseType);
+        ResponseEntity<? extends Collection<Account>> response = myRestClient.get(user, url, responseType);
         if (response.hasBody()) {
-            return response.getBody();
+            return (List<Account>) response.getBody();
         } else {
             return Collections.emptyList();
         }
@@ -98,8 +98,8 @@ public class AccountServiceImpl implements AccountService {
         url.append(userId)
                 .append("/accounts/")
                 .append(accountParams);
-        ResponseEntity<Boolean> response = restTemplate
-                .exchange(url.toString(), HttpMethod.DELETE, new HttpEntity<>(authorization), Boolean.class);
+        User user = userService.findById(userId);
+        ResponseEntity<Boolean> response = myRestClient.delete(user, url.toString(), Boolean.class);
         if (!response.hasBody() || Boolean.FALSE.equals(response.getBody())) {
             throw new BadRequestException(
                     "Account deletion with parameters: '%s:%s' for user=%d is failed".formatted(broker, clientId, userId));

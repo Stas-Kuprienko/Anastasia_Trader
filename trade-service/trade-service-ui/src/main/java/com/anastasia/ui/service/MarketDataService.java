@@ -7,17 +7,17 @@ import java.util.List;
 
 public interface MarketDataService {
 
-    Stock getStock(ExchangeMarket exchangeMarket, String ticker);
+    Stock getStock(long userId, ExchangeMarket exchangeMarket, String ticker);
 
-    List<Stock> getStocks(ExchangeMarket exchangeMarket);
+    List<Stock> getStocks(long userId, ExchangeMarket exchangeMarket);
 
-    List<Stock> getStocks(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder);
+    List<Stock> getStocks(long userId, ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder);
 
-    Futures getFutures(ExchangeMarket exchangeMarket, String ticker);
+    Futures getFutures(long userId, ExchangeMarket exchangeMarket, String ticker);
 
-    List<Futures> getFuturesList(ExchangeMarket exchangeMarket);
+    List<Futures> getFuturesList(long userId, ExchangeMarket exchangeMarket);
 
-    List<Futures> getFuturesList(ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder);
+    List<Futures> getFuturesList(long userId, ExchangeMarket exchangeMarket, SortByColumn sortByColumn, SortOrder sortOrder);
 
 
     enum SortByColumn {

@@ -138,10 +138,10 @@ public final class TradingController {
         List<Account> accounts = accountService.findByUserId(userId);
         model.addAttribute("accounts", accounts);
         if (type.equals(STOCK_TYPE)) {
-            Stock stock = marketDataService.getStock(exchangeMarket, ticker);
+            Stock stock = marketDataService.getStock(userId, exchangeMarket, ticker);
             model.addAttribute(ITEM, stock);
         } else if (type.equals(FUTURES_TYPE)) {
-            Futures futures = marketDataService.getFutures(exchangeMarket, ticker);
+            Futures futures = marketDataService.getFutures(userId, exchangeMarket, ticker);
             model.addAttribute(ITEM, futures);
         } else {
             log.error("type of security = " + type);
