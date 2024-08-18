@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,8 +13,6 @@ import java.util.concurrent.Executors;
 @Configuration
 @ComponentScan("com.anastasia.smart")
 @PropertySource("classpath:application.properties")
-@EnableScheduling
-@EnableAsync
 public class SmartServiceConfig {
 
     //TODO configure TLS security
