@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.anastasia.trade;
+
+import "proto/anastasia/trade/entities.proto";
+
+
+service HighsAndLows {
+
+  rpc findLocalHighs(Instrument) returns (PricePointList);
+  rpc findLocalHighCandles(Instrument) returns (PriceCandleList);
+  rpc findLocalLows(Instrument) returns (PricePointList);
+  rpc findLocalLowCandles(Instrument) returns (PriceCandleList);
+
+}

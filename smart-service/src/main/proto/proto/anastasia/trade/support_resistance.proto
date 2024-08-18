@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package com.anastasia.trade;
+
+import "proto/anastasia/trade/entities.proto";
+
+
+service SupportResistance {
+
+  rpc supportLevels(LevelParameters) returns (anastasia.trade.PriceLevelList);
+  rpc resistanceLevels(LevelParameters) returns (anastasia.trade.PriceLevelList);
+  rpc supportZones(ZoneParameters) returns (anastasia.trade.PriceZoneList);
+  rpc resistanceZones(ZoneParameters) returns (anastasia.trade.PriceZoneList);
+
+}
+
+message LevelParameters {
+
+  anastasia.trade.Instrument instrument = 1;
+  double sensitivity = 2;
+  int32 minTouches = 3;
+  bool withATR = 4;
+
+}
+
+message ZoneParameters {
+
+  anastasia.trade.Instrument instrument = 1;
+  double width = 2;
+
+}

@@ -1,6 +1,5 @@
 package com.anastasia.smart.algorithms.model;
 
-import com.anastasia.smart.entities.candles.PricePoint;
 import java.util.ArrayList;
 import java.util.List;
 

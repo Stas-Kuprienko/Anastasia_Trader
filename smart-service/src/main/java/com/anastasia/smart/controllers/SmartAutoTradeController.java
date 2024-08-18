@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.NoSuchElementException;
 
 @GrpcService(interceptors = ServerSecurityInterceptor.class)
-public class SmartAutoTradeGRpcImpl extends SmartAutoTradeGrpc.SmartAutoTradeImplBase {
+public class SmartAutoTradeController extends SmartAutoTradeGrpc.SmartAutoTradeImplBase {
 
     private final StrategiesDispatcher dispatcher;
     private final DroneLauncher droneLauncher;
 
     @Autowired
-    public SmartAutoTradeGRpcImpl(StrategiesDispatcher dispatcher, DroneLauncher droneLauncher) {
+    public SmartAutoTradeController(StrategiesDispatcher dispatcher, DroneLauncher droneLauncher) {
         this.dispatcher = dispatcher;
         this.droneLauncher = droneLauncher;
     }

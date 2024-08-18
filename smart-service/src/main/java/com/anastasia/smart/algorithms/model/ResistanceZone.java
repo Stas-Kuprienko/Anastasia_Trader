@@ -1,15 +1,17 @@
 package com.anastasia.smart.algorithms.model;
 
 public class ResistanceZone {
+
     private double minLevel;
     private double maxLevel;
-    private double zoneWidth;
+    private final double zoneWidth;
 
     public ResistanceZone(double initialLevel, double zoneWidth) {
         this.minLevel = initialLevel - zoneWidth;
         this.maxLevel = initialLevel + zoneWidth;
         this.zoneWidth = zoneWidth;
     }
+
 
     public void addLevel(double level) {
         minLevel = Math.min(minLevel, level - zoneWidth);

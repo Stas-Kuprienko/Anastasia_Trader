@@ -2,7 +2,7 @@ package com.anastasia.smart.algorithms;
 
 import com.anastasia.smart.algorithms.model.*;
 import com.anastasia.smart.entities.candles.PriceCandle;
-import com.anastasia.smart.entities.candles.PricePoint;
+import com.anastasia.smart.algorithms.model.PricePoint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +23,7 @@ public final class TechnicalAnalysis {
             PriceCandle next = candles.get(i + 1);
 
             if (curr.high().compareTo(prev.high()) > 0 && curr.high().compareTo(next.high()) > 0) {
-                localHighs.add(new PricePoint(i, curr.high()));
+                localHighs.add(new PricePoint(curr.dateTime(), curr.high()));
             }
         }
         return localHighs;
@@ -55,7 +55,7 @@ public final class TechnicalAnalysis {
             PriceCandle next = candles.get(i + 1);
 
             if (curr.low().compareTo(prev.low()) < 0 && curr.low().compareTo(next.low()) < 0) {
-                localLows.add(new PricePoint(i, curr.low()));
+                localLows.add(new PricePoint(curr.dateTime(), curr.low()));
             }
         }
         return localLows;
