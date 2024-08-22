@@ -72,7 +72,7 @@ public class AccountController {
         accounts.add(account);
         model.addAttribute("accounts", accounts);
         return MVC.REDIRECT + WebApplicationUIConfig.resource +
-                "user/account/" + clientId + "?broker=" + broker;
+                "user/account/" + broker + ':' + clientId;
     }
 
 

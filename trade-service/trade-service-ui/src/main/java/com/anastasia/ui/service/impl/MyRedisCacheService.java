@@ -152,4 +152,21 @@ public class MyRedisCacheService implements DataCacheService {
             throw new IllegalArgumentException("argument is null");
         }
     }
+
+    @Override
+    public void remove(@NonNull String key, String... fields) {
+        byte[] keyToBytes = stringSerializer.serialize(key);
+        byte[][] fieldToBytes;
+        if (fields == null || fields.length == 0) {
+            fieldToBytes = new byte[0][];
+        } else {
+            fieldToBytes = new byte[fields.length][];
+            for (int i = 0; i < fields.length; i++) {
+                fieldToBytes[i] = stringSerializer.serialize(fields[i]);
+            }
+        }
+        if (keyToBytes != null) {
+            hashCommands.hDel(keyToBytes, fieldToBytes);
+        }
+    }
 }

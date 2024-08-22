@@ -15,4 +15,6 @@ public interface DataCacheService {
     <V> V getAndParseFromJson(String key, String field, Class<V> valueClass);
 
     <V> List<V> getAndParseListForKeyFromJson(String key, Class<V> valueClass);
+
+    void remove(String key, String... fields);
 }

@@ -8,12 +8,10 @@ import com.anastasia.ui.model.forms.NewAccountForm;
 import com.anastasia.ui.model.user.Account;
 import com.anastasia.ui.model.user.User;
 import com.anastasia.ui.service.AccountService;
+import com.anastasia.ui.service.DataCacheService;
 import com.anastasia.ui.service.UserService;
 import com.anastasia.ui.utils.MyRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,14 +23,17 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
 
     private static final String resource = AnastasiaUIConfig.BACKEND_RESOURCE + "users/";
+    private static final String cacheKey = "account";
 
     private final UserService userService;
+    private final DataCacheService dataCacheService;
     private final MyRestClient myRestClient;
 
 
     @Autowired
-    public AccountServiceImpl(UserService userService, MyRestClient myRestClient) {
+    public AccountServiceImpl(UserService userService, DataCacheService dataCacheService, MyRestClient myRestClient) {
         this.userService = userService;
+        this.dataCacheService = dataCacheService;
         this.myRestClient = myRestClient;
     }
 
@@ -47,50 +48,63 @@ public class AccountServiceImpl implements AccountService {
         User user = userService.findById(userId);
         ResponseEntity<Account> response = myRestClient.post(user, url, form, Account.class);
         if (response.hasBody()) {
-            return response.getBody();
+            return putToCache(userId, response.getBody());
         } else {
             throw new BadRequestException(
                     "Account for user=%d with parameters: '%s:%s' is failed".formatted(userId, broker, clientId));
         }
     }
 
-    @Cacheable(value = "account:parameters", keyGenerator = "keyGeneratorByParams")
     @Override
     public Account findByClientIdAndBroker(long userId, String clientId, Broker broker) {
-        StringBuilder url = new StringBuilder(resource);
         String accountParams = broker.toString() + ':' + clientId;
-        url.append(userId)
-                .append("/accounts")
-                .append('/')
-                .append(accountParams);
+        var account = dataCacheService.getAndParseFromJson(cacheKey + ':' + userId, accountParams, Account.class);
+        if (account != null) {
+            return account;
+        }
+        String url = resource +
+                userId +
+                "/accounts" +
+                '/' +
+                accountParams;
         User user = userService.findById(userId);
-        ResponseEntity<Account> response = myRestClient.get(user, url.toString(), Account.class);
+
+        ResponseEntity<Account> response = myRestClient.get(user, url, Account.class);
         if (response.hasBody()) {
-            return response.getBody();
+            return putToCache(userId, response.getBody());
         } else {
             throw new NotFoundException(
                     "Account='%s' for user=%d is not found".formatted(accountParams, userId));
         }
     }
 
-    @Cacheable(value = "account:userId", keyGenerator = "keyGeneratorById")
     @Override
     public List<Account> findByUserId(long userId) {
-        String url = resource + userId +
-                "/accounts";
-        User user = userService.findById(userId);
-        ParameterizedTypeReference<List<Account>> responseType = new ParameterizedTypeReference<>() {};
-        ResponseEntity<? extends Collection<Account>> response = myRestClient.get(user, url, responseType);
-        if (response.hasBody()) {
-            return (List<Account>) response.getBody();
+        String key = cacheKey + ':' + userId;
+        var accounts = dataCacheService.getAndParseListForKeyFromJson(key, Account.class);
+        if (accounts != null && !accounts.isEmpty()) {
+            return accounts;
         } else {
-            return Collections.emptyList();
+            String url = resource +
+                    userId +
+                    "/accounts";
+            User user = userService.findById(userId);
+            ParameterizedTypeReference<List<Account>> responseType = new ParameterizedTypeReference<>() {};
+
+            ResponseEntity<? extends Collection<Account>> response = myRestClient.get(user, url, responseType);
+
+            if (response.hasBody() && response.getBody() != null) {
+                var accountList = (List<Account>) response.getBody();
+                for (Account a : accountList) {
+                    putToCache(userId, a);
+                }
+                return accountList;
+            } else {
+                return Collections.emptyList();
+            }
         }
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "account:userId", keyGenerator = "keyGeneratorById"),
-            @CacheEvict(value = "account:parameters", keyGenerator = "keyGeneratorByParams")})
     @Override
     public void deleteAccount(long userId, String clientId, Broker broker) {
         StringBuilder url = new StringBuilder(resource);
@@ -99,10 +113,25 @@ public class AccountServiceImpl implements AccountService {
                 .append("/accounts/")
                 .append(accountParams);
         User user = userService.findById(userId);
+
         ResponseEntity<Boolean> response = myRestClient.delete(user, url.toString(), Boolean.class);
+
+        dataCacheService.remove(cacheKey + ':' + userId, accountParams);
+
         if (!response.hasBody() || Boolean.FALSE.equals(response.getBody())) {
             throw new BadRequestException(
                     "Account deletion with parameters: '%s:%s' for user=%d is failed".formatted(broker, clientId, userId));
         }
+    }
+
+
+    private Account putToCache(long userId, Account account) {
+        if (account == null) {
+            throw new IllegalArgumentException("account is null");
+        }
+        String key = cacheKey + ':' + userId;
+        String field = account.getBroker().toString() + ':' + account.getClientId();
+        dataCacheService.putAsJson(key, field, account);
+        return account;
     }
 }

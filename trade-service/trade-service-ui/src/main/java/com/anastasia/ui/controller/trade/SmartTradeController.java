@@ -75,4 +75,29 @@ public class SmartTradeController {
         return "ok";
     }
 
+    @PostMapping("/unsubscribe")
+    public String unsubscribeToStrategy(@AuthenticationPrincipal UserDetails userDetails,
+                                      @RequestParam("account") String accountParam,
+                                      @RequestParam("time_frame") String timeFrame,
+                                      @RequestParam("strategy") String strategy) {
+        String[] accountData = accountParam.split(":");
+        if (accountData.length != 2) {
+            log.error("account data = " + accountParam);
+        }
+        //TODO TEMPORARY, JUST FOR SAMPLE
+        Broker broker = Broker.valueOf(accountData[0]);
+        String clientId = accountData[1];
+        long userId = ((MyUserDetails) userDetails).getId();
+        Account account = accountService.findByClientIdAndBroker(userId, clientId, broker);
+        TimeFrame.Scope tf = TimeFrame.valueOf(timeFrame);
+        smartAutoTradeService
+                .subscribe(userId, account.getClientId(), account.getBroker(), "SBER", Board.TQBR, strategy, tf);
+        return "ok";
+    }
+
+
+    @GetMapping("/test")
+    public String test() {
+        return "ok";
+    }
 }

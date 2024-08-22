@@ -75,7 +75,7 @@ public class SmartAutoTradeServiceImpl implements SmartAutoTradeService {
         String account = broker.toString() + ':' + clientId;
 
         url.appendToUrl(userId)
-                .appendToUrl("/account/")
+                .appendToUrl("/accounts/")
                 .appendToUrl(account)
                 .appendToUrl(requestType.value)
                 .appendToUrl(strategy);

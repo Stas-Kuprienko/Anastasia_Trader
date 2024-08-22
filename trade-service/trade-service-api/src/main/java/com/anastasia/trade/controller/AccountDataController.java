@@ -50,7 +50,8 @@ public class AccountDataController {
     }
 
     @PostMapping("/{userId}/accounts/account")
-    public ResponseEntity<Account> newAccount(@PathVariable("userId") Long userId, NewAccountForm newAccountForm) {
+    public ResponseEntity<Account> newAccount(@PathVariable("userId") Long userId,
+                                              @RequestBody NewAccountForm newAccountForm) {
         Broker broker = Broker.valueOf(newAccountForm.broker());
         Account account = accountService.createAccount(
                 userId,
