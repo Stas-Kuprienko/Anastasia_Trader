@@ -10,19 +10,21 @@ import proto.tradeapi.v1.Events;
 import com.anastasia.trade.Smart;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service("orderBookStream")
 public class FinamOrderBookStream implements OrderBookStream {
 
     private static final String ORDER_BOOK_REQUEST_ID = "32ef5786-e887";
 
-    private final ExecutorService executorService;
+    private final ScheduledExecutorService scheduledExecutorService;
     private final EventsGrpc.EventsStub stub;
     private final ConcurrentHashMap<Smart.Security, OrderBookRpcThreadListener> eventStreamMap;
 
     @Autowired
-    public FinamOrderBookStream(ExecutorService executorService, GRpcClient rpcClient) {
-        this.executorService = executorService;
+    public FinamOrderBookStream(ScheduledExecutorService scheduledExecutorService, GRpcClient rpcClient) {
+        this.scheduledExecutorService = scheduledExecutorService;
         this.stub = EventsGrpc.newStub(rpcClient.getChannel()).withCallCredentials(rpcClient.getAuthenticator());
         this.eventStreamMap = new ConcurrentHashMap<>();
     }
@@ -33,7 +35,7 @@ public class FinamOrderBookStream implements OrderBookStream {
         var subscribe = buildSubscribeRequest(security);
         var unsubscribe = buildUnsubscribeRequest(security);
         OrderBookRpcThreadListener listener = new OrderBookRpcThreadListener(subscribe, unsubscribe, stub);
-        var future = executorService.submit(listener.initStreamThread());
+        var future = scheduledExecutorService.schedule(listener.initStreamThread(), 1, TimeUnit.SECONDS);
         listener.setFuture(future);
         eventStreamMap.put(security, listener);
         return listener;

@@ -36,14 +36,14 @@ public class DroneLauncherGrpc implements DroneLauncher {
     public void launchDrone(Smart.SubscribeTradeRequest request, StreamObserver<Smart.SubscribeTradeResponse> response) {
         DroneCard card = new DroneCard(request.getSecurity(), request.getStrategy());
         Drone drone = launched.get(card);
-        if (drone == null || ((GrpcFollowerDrone) drone).getFuture().isDone()) {
+        if (drone == null || ((DroneGrpcImpl) drone).getFuture().isDone()) {
             TimeFrame.Scope timeFrame = TimeFrame.parse(request.getStrategy().getTimeFrame());
             TradeStrategy strategy = strategiesDispatcher
                     .getStrategySupplier(request.getStrategy().getName())
                     .supply(request.getSecurity(), timeFrame);
-            drone = new GrpcFollowerDrone(dealingManager, strategy, request.getSecurity(), response);
+            drone = new DroneGrpcImpl(dealingManager, strategy, request.getSecurity(), response);
             var future = executorService.submit(drone);
-            ((GrpcFollowerDrone) drone).setFuture(future);
+            ((DroneGrpcImpl) drone).setFuture(future);
             launched.put(card, drone);
         }
         drone.addAccount(request.getAccount());

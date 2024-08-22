@@ -19,6 +19,7 @@ class OrderBookObserver implements StreamObserver<Events.Event> {
     public void onNext(Events.Event event) {
         try {
             collector.addOrderBookEvent(event);
+            System.out.println(event.getOrderBook());
         } catch (EventStreamException e) {
             onCompleted();
         }

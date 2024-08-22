@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-public class GrpcFollowerDrone implements Drone {
+public class DroneGrpcImpl implements Drone {
 
     private final TradeDealingManager dealingManager;
     private final TradeStrategy strategy;
@@ -26,8 +26,8 @@ public class GrpcFollowerDrone implements Drone {
     private boolean isActive;
 
 
-    public GrpcFollowerDrone(TradeDealingManager dealingManager, TradeStrategy strategy,
-                             Smart.Security security, StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
+    public DroneGrpcImpl(TradeDealingManager dealingManager, TradeStrategy strategy,
+                         Smart.Security security, StreamObserver<Smart.SubscribeTradeResponse> responseObserver) {
         this.dealingManager = dealingManager;
         this.strategy = strategy;
         this.security = security;

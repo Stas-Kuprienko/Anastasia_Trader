@@ -3,6 +3,7 @@ package com.anastasia.smart.domain.market.event_stream.finam;
 import com.anastasia.smart.domain.market.event_stream.OrderBookRow;
 import com.anastasia.smart.domain.market.event_stream.OrderBookStreamListener;
 import com.anastasia.smart.exceptions.EventStreamException;
+import com.google.protobuf.Descriptors;
 import proto.tradeapi.v1.Events;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -49,7 +50,8 @@ public class FinamOrderBookCollector implements OrderBookStreamListener.OrderBoo
     }
 
     public void addOrderBookEvent(Events.Event event) throws EventStreamException {
-        if (event.getOrderBook().hasField(Events.OrderBookEvent.getDescriptor().findFieldByName("Asks"))) {
+        //TODO !!!
+        if (event.getPayloadCase().getNumber() == 3) {
             checkSize(asks);
             checkSize(bids);
             asks.add(event.getOrderBook().getAsks(0));
