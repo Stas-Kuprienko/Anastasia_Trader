@@ -1,6 +1,11 @@
 package com.anastasia.smart.exceptions;
 
-public class EventStreamException extends Exception {
+import java.util.List;
+
+public class EventStreamException extends RuntimeException {
 
 
+    public EventStreamException(List<?> errorsList) {
+        super(errorsList.toString());
+    }
 }

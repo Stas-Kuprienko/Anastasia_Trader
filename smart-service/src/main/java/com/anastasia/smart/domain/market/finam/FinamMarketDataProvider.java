@@ -23,12 +23,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 @Service("markerDataProvider")
-public class FinamGRpcMarketDataProvider implements MarketDataProvider {
+public class FinamMarketDataProvider implements MarketDataProvider {
 
     private final CandlesGrpc.CandlesBlockingStub stub;
 
     @Autowired
-    public FinamGRpcMarketDataProvider(GRpcClient client) {
+    public FinamMarketDataProvider(GRpcClient client) {
         this.stub = CandlesGrpc.newBlockingStub(client.getChannel())
                 .withCallCredentials(client.getAuthenticator());
     }

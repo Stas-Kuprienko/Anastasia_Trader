@@ -49,7 +49,7 @@ public class FinamOrderBookCollector implements OrderBookStreamListener.OrderBoo
         return bids.getLast().getPrice();
     }
 
-    public void addOrderBookEvent(Events.Event event) throws EventStreamException {
+    public void addOrderBookEvent(Events.Event event) {
         //TODO !!!
         if (event.getPayloadCase().getNumber() == 3) {
             checkSize(asks);
@@ -60,8 +60,7 @@ public class FinamOrderBookCollector implements OrderBookStreamListener.OrderBoo
             System.out.println(event.getResponse());
             if (!event.getResponse().getSuccess()) {
                 //TODO loggers
-                event.getResponse().getErrorsList();
-                throw new EventStreamException();
+                throw new EventStreamException(event.getResponse().getErrorsList());
             }
         }
     }
