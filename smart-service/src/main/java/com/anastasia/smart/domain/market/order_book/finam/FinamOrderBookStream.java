@@ -2,7 +2,6 @@ package com.anastasia.smart.domain.market.order_book.finam;
 
 import com.anastasia.smart.domain.automation.TradeStrategy;
 import com.anastasia.smart.domain.market.order_book.OrderBookStream;
-import com.anastasia.smart.domain.market.order_book.OrderBookStreamObserver;
 import com.anastasia.smart.domain.utils.StreamObserverDriver;
 import io.grpc.stub.StreamObserver;
 import proto.tradeapi.v1.Events;
@@ -11,18 +10,20 @@ import java.util.List;
 
 public class FinamOrderBookStream implements OrderBookStream<Events.OrderBookRow> {
 
-    private final OrderBookStreamObserver streamObserver;
+    private final FinamOrderBookStreamObserver streamObserver;
+    private final FinamOrderBookEntry entry;
     private final StreamObserverDriver<TradeStrategy> driver;
 
-    public FinamOrderBookStream(OrderBookStreamObserver streamObserver, StreamObserverDriver<TradeStrategy> driver) {
+    public FinamOrderBookStream(FinamOrderBookStreamObserver streamObserver, StreamObserverDriver<TradeStrategy> driver) {
         this.streamObserver = streamObserver;
+        entry = streamObserver.entry();
         this.driver = driver;
     }
 
     @Override
     public Events.OrderBookRow bid() {
-        if (streamObserver.entry().isActive() && !streamObserver.entry().isEmpty()) {
-            return streamObserver.entry().getOrderBook().getBids(0);
+        if (entry.isActive() && !streamObserver.entry().isEmpty()) {
+            return entry.getOrderBook().getBids(0);
         } else {
             throw new EmptyStackException();
         }
@@ -30,8 +31,8 @@ public class FinamOrderBookStream implements OrderBookStream<Events.OrderBookRow
 
     @Override
     public Events.OrderBookRow ask() {
-        if (streamObserver.entry().isActive() && !streamObserver.entry().isEmpty()) {
-            return streamObserver.entry().getOrderBook().getAsks(0);
+        if (entry.isActive() && !streamObserver.entry().isEmpty()) {
+            return entry.getOrderBook().getAsks(0);
         } else {
             throw new EmptyStackException();
         }
@@ -39,8 +40,8 @@ public class FinamOrderBookStream implements OrderBookStream<Events.OrderBookRow
 
     @Override
     public List<Events.OrderBookRow> bidsList() {
-        if (streamObserver.entry().isActive() && !streamObserver.entry().isEmpty()) {
-            return streamObserver.entry().getOrderBook().getBidsList();
+        if (entry.isActive() && !streamObserver.entry().isEmpty()) {
+            return entry.getOrderBook().getBidsList();
         } else {
             throw new EmptyStackException();
         }
@@ -48,8 +49,8 @@ public class FinamOrderBookStream implements OrderBookStream<Events.OrderBookRow
 
     @Override
     public List<Events.OrderBookRow> asksList() {
-        if (streamObserver.entry().isActive() && !streamObserver.entry().isEmpty()) {
-            return streamObserver.entry().getOrderBook().getAsksList();
+        if (entry.isActive() && !streamObserver.entry().isEmpty()) {
+            return entry.getOrderBook().getAsksList();
         } else {
             throw new EmptyStackException();
         }

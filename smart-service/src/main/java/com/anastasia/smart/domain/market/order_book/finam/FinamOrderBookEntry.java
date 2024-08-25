@@ -1,17 +1,17 @@
-package com.anastasia.smart.domain.market.order_book;
+package com.anastasia.smart.domain.market.order_book.finam;
 
 import com.anastasia.smart.exceptions.EventStreamException;
 import proto.tradeapi.v1.Events;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class OrderBookEntry {
+public class FinamOrderBookEntry {
 
     private final Lock lock;
     private Events.OrderBookEvent orderBook;
     private boolean isActive;
 
-    public OrderBookEntry() {
+    public FinamOrderBookEntry() {
         lock = new ReentrantLock();
     }
 

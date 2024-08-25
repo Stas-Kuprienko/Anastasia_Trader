@@ -4,7 +4,10 @@ import com.anastasia.smart.configuration.grpc_impl.GRpcClient;
 import com.anastasia.smart.domain.automation.TradeStrategy;
 import com.anastasia.smart.domain.market.OrderBookProvider;
 import com.anastasia.smart.domain.market.order_book.*;
+import com.anastasia.smart.domain.market.order_book.finam.FinamOrderBookEntry;
 import com.anastasia.smart.domain.market.order_book.finam.FinamOrderBookStream;
+import com.anastasia.smart.domain.market.order_book.finam.FinamOrderBookStreamObserver;
+import com.anastasia.smart.domain.market.order_book.finam.OrderBookStreamWrapper;
 import com.anastasia.smart.domain.utils.StreamObserverDriver;
 import com.anastasia.trade.Smart;
 import grpc.tradeapi.v1.EventsGrpc;
@@ -15,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
 @Component
-public class FinamOrderBookProvider implements OrderBookProvider {
+public class FinamOrderBookProvider implements OrderBookProvider<Events.OrderBookRow> {
 
     private static final String ORDER_BOOK_REQUEST_ID = "32ef5786-e887";
 
@@ -33,7 +36,7 @@ public class FinamOrderBookProvider implements OrderBookProvider {
 
 
     @Override
-    public OrderBookStreamWrapper subscribe(Smart.Security security, TradeStrategy strategy) {
+    public OrderBookStream<Events.OrderBookRow> subscribe(Smart.Security security, TradeStrategy strategy) {
         var streamWrapper = streamStore.get(security);
         if (streamWrapper == null) {
             var subscription = buildSubscribeRequest(security);
@@ -43,15 +46,15 @@ public class FinamOrderBookProvider implements OrderBookProvider {
             streamWrapper = new OrderBookStreamWrapper(orderBookStream, subscription, unsubscription);
             streamStore.put(security, streamWrapper);
         }
-        return streamWrapper;
+        return streamWrapper.orderBookStream();
     }
 
     @Override
     public void unsubscribe(Smart.Security security) {
         var wrapper = streamStore.get(security);
         if (wrapper != null) {
-            OrderBookStreamObserver streamObserver =
-                    (OrderBookStreamObserver) wrapper.orderBookStream().getStreamObserver();
+            FinamOrderBookStreamObserver streamObserver =
+                    (FinamOrderBookStreamObserver) wrapper.orderBookStream().getStreamObserver();
             var observer = stub.getEvents(streamObserver);
             observer.onCompleted();
             observer.onNext(wrapper.unsubscription());
@@ -61,7 +64,7 @@ public class FinamOrderBookProvider implements OrderBookProvider {
 
 
     private OrderBookStream<Events.OrderBookRow> enable(Events.SubscriptionRequest subscription) {
-        OrderBookStreamObserver streamObserver = new OrderBookStreamObserver(new OrderBookEntry());
+        FinamOrderBookStreamObserver streamObserver = new FinamOrderBookStreamObserver(new FinamOrderBookEntry());
         var streamObserverDriver = new StreamObserverDriver<TradeStrategy>(
                 scheduledExecutorService,
                 () -> stub.getEvents(streamObserver).onNext(subscription));
