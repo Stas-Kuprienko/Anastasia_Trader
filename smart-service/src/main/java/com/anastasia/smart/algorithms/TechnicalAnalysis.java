@@ -1,8 +1,7 @@
 package com.anastasia.smart.algorithms;
 
 import com.anastasia.smart.algorithms.model.*;
-import com.anastasia.smart.entities.candles.PriceCandle;
-import com.anastasia.smart.algorithms.model.PricePoint;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public final class TechnicalAnalysis {
             PriceCandle next = candles.get(i + 1);
 
             if (curr.high().compareTo(prev.high()) > 0 && curr.high().compareTo(next.high()) > 0) {
-                localHighs.add(new PricePoint(curr.dateTime(), curr.high()));
+                localHighs.add(new PricePoint(curr.dateTime(), curr.high(), curr.volume()));
             }
         }
         return localHighs;
@@ -55,7 +54,7 @@ public final class TechnicalAnalysis {
             PriceCandle next = candles.get(i + 1);
 
             if (curr.low().compareTo(prev.low()) < 0 && curr.low().compareTo(next.low()) < 0) {
-                localLows.add(new PricePoint(curr.dateTime(), curr.low()));
+                localLows.add(new PricePoint(curr.dateTime(), curr.low(), curr.volume()));
             }
         }
         return localLows;
@@ -139,15 +138,16 @@ public final class TechnicalAnalysis {
         for (SupportLevel level : supportLevels) {
             boolean merged = false;
 
+            int volume = calculateAverageVolume(level.getTouches());
             for (SupportZone zone : supportZones) {
                 if (Math.abs(zone.getCenter() - level.getLevel()) <= zoneWidth) {
-                    zone.addLevel(level.getLevel());
+                    zone.addLevel(level.getLevel(), level.getTouchCount(), volume);
                     merged = true;
                     break;
                 }
             }
             if (!merged) {
-                supportZones.add(new SupportZone(level.getLevel(), zoneWidth));
+                supportZones.add(new SupportZone(level.getLevel(), zoneWidth, level.getTouchCount(), volume));
             }
         }
         return supportZones;
@@ -195,15 +195,16 @@ public final class TechnicalAnalysis {
         for (ResistanceLevel level : resistanceLevels) {
             boolean merged = false;
 
+            int volume = calculateAverageVolume(level.getTouches());
             for (ResistanceZone zone : resistanceZones) {
                 if (Math.abs(zone.getCenter() - level.getLevel()) <= zoneWidth) {
-                    zone.addLevel(level.getLevel());
+                    zone.addLevel(level.getLevel(), level.getTouchCount(), volume);
                     merged = true;
                     break;
                 }
             }
             if (!merged) {
-                resistanceZones.add(new ResistanceZone(level.getLevel(), zoneWidth));
+                resistanceZones.add(new ResistanceZone(level.getLevel(), zoneWidth, level.getTouchCount(), volume));
             }
         }
         return resistanceZones;
@@ -258,5 +259,25 @@ public final class TechnicalAnalysis {
             }
         }
         return confluenceZones;
+    }
+
+
+    public static int calculateAverageVolume(List<PricePoint> points) {
+        long volume = 0;
+        for (PricePoint p : points) {
+            volume += p.volume();
+        }
+        return (int) (volume / points.size());
+    }
+
+
+    public static void normalizeWeights(List<PriceZone> zones) {
+        double maxVolume = zones.stream().mapToDouble(PriceZone::getTotalVolume).max().orElse(1.0);
+
+        for (PriceZone zone : zones) {
+            int weight = ((int) ((zone.getTotalVolume() / maxVolume) * 10));
+            weight *= zone.getTouches();
+            zone.setWeight(weight);
+        }
     }
 }
